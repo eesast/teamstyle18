@@ -1,68 +1,82 @@
-#暂定主基地branch属性为0, 1-8依次为小鲜肉，黑客，改造人战士，主战坦克，电子对抗坦克，核子坦克，无人机，鹰式战斗机,剩余9-19为建筑
+#暂定主基地为0, 1-8依次为小鲜肉，黑客，改造人战士，主战坦克，电子对抗坦克，核子坦克，无人机，鹰式战斗机,剩余9-19为建筑
+#物体名称
+#name_list ={'base':0,'meat':1,'hacker':2,'superman':3,'battle_tank':4,'bolt_tank':5,'nuke_tank':6,'uav':7,'eagle':8,
+#            'hack_lab':9,'bid_lab':10,'car_lab':11,'elec_lab':12,'radiation_lab':13,'uav_lab':14,'aircraft_lab':15,
+#           'build_lab':16,'finance_lab':17,'material_lab':18,'nano_lab':19}
+
 #tuple内数据依次为【原始HP上限】，【原始最大速度】，【原始射程】，【原始防御】，【原始攻击】，【技能1CD】，【技能2CD】，【最大数量】，【人口占用】，【金钱消耗】，【科技消耗】
 #建筑的最大数量，人口占用，金钱消耗，科技消耗均为0
-origin_attribute = ((10000,0,10,0,10,None,1,0,0,0,0),#主基地数据
-                   (100,3,1,10,0,None,None,None,1,100,0),(150,3,18,20,0,1,None,None,2,600,300),(500,4,10,150,15,1,50,1,10,2000,1500),#步兵
-                   (900,7,14,200,100,10,None,None,4,1500,600),(500,6,12,100,200,10,None,None,3,1000,500),(700,5,20,150,300,10,150,1,10,4000,2000),#坦克
-                   (300,12,10,50,5,1,None,None,2,400,100),(600,15,16,200,200,20,50,1),#飞机
-                   (100000000,0,0,0,0,None,None,0,0,0,0),(100000000,0,0,0,0,None,None,0,0,0,0),(100000000,0,0,0,0,None,None,0,0,0,0),(100000000,0,0,0,0,None,None,0,0,0,0),#各种建筑，并没有什么区别
-                   (100000000,0,0,0,0,None,None,0,0,0,0),(100000000,0,0,0,0,None,None,0,0,0,0),(100000000,0,0,0,0,None,None,0,0,0,0),
-                   (100000000,0,0,0,0,None,None,0,0,0,0),(100000000,0,0,0,0,None,None,0,0,0,0),(100000000,0,0,0,0,None,None,0,0,0,0),(100000000,0,0,0,0,None,None,0,0,0,0))
+
+#type_name
+BASE = 0
+INFANTRY = 1
+VEHICLE = 2
+AIRCRAFT = 3
+BULIDING = 4
+#buff全局变量
+unit_buff_0 = {
+    'infantry':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    'vehicle':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    'aircraft':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    }
+unit_buff_1 = {
+    'infantry':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    'vehicle':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    'aircraft':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    }
+
+origin_attribute = {
+    'base':          {'unit_type':BASE,    'origin_max_health':10000,    'origin_max_speed':0, 'origin_shot_range':10,'origin_defense':0,  'origin_attack':10, 'skill_cd_1':None,'skill_cd_2':1,    'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'meat':          {'unit_type':INFANTRY,'origin_max_health':100,      'origin_max_speed':3, 'origin_shot_range':1, 'origin_defense':10, 'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':None,'people_cost':1, 'money_cost':100, 'tech_cost':0   },
+    'hacker':        {'unit_type':INFANTRY,'origin_max_health':150,      'origin_max_speed':3, 'origin_shot_range':18,'origin_defense':20, 'origin_attack':0,  'skill_cd_1':1,   'skill_cd_2':None, 'max_account':None,'people_cost':2, 'money_cost':600, 'tech_cost':300 },
+    'superman':      {'unit_type':INFANTRY,'origin_max_health':500,      'origin_max_speed':4, 'origin_shot_range':10,'origin_defense':150,'origin_attack':15, 'skill_cd_1':1,   'skill_cd_2':50,   'max_account':1,   'people_cost':10,'money_cost':2000,'tech_cost':1500},
+    'battle_tank':   {'unit_type':VEHICLE, 'origin_max_health':900,      'origin_max_speed':7, 'origin_shot_range':14,'origin_defense':200,'origin_attack':100,'skill_cd_1':10,  'skill_cd_2':None, 'max_account':None,'people_cost':4, 'money_cost':1500,'tech_cost':600 },
+    'bolt_tank':     {'unit_type':VEHICLE, 'origin_max_health':500,      'origin_max_speed':6, 'origin_shot_range':12,'origin_defense':100,'origin_attack':200,'skill_cd_1':10,  'skill_cd_2':None, 'max_account':None,'people_cost':3, 'money_cost':1000,'tech_cost':500 },
+    'nuke_tank':     {'unit_type':VEHICLE, 'origin_max_health':700,      'origin_max_speed':5, 'origin_shot_range':20,'origin_defense':150,'origin_attack':300,'skill_cd_1':10,  'skill_cd_2':150,  'max_account':1,   'people_cost':10,'money_cost':4000,'tech_cost':2000},
+    'uav':           {'unit_type':AIRCRAFT,'origin_max_health':300,      'origin_max_speed':12,'origin_shot_range':10,'origin_defense':50, 'origin_attack':5,  'skill_cd_1':1,   'skill_cd_2':None, 'max_account':None,'people_cost':2, 'money_cost':400, 'tech_cost':100 },
+    'eagle':         {'unit_type':AIRCRAFT,'origin_max_health':600,      'origin_max_speed':15,'origin_shot_range':16,'origin_defense':200,'origin_attack':200,'skill_cd_1':20,  'skill_cd_2':50,   'max_account':1,   'people_cost':1, 'money_cost':3000,'tech_cost':1500},
+    'hack_lab':      {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'bid_lab':       {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'car_lab':       {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'elec_lab':      {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'radiation_lab': {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'uav_lab':       {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'aircraft_lab':  {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'build_lab':     {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'finance_lab':   {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'material_lab':  {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'nano_lab':      {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'teach_building':{'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'bank':          {'unit_type':BULIDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':None,'skill_cd_2':None, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   }
+}
+
+
+#-----------------------------------
 #生产CD待定
-origin_max_health = 0
-origin_max_speed = 1
-origin_shot_range = 2
-origin_defense = 3
-origin_attack = 4
-skill_cd_1 = 5
-skill_cd_2 = 6
-max_account = 7
-people_cost = 8
-money_cost = 9
-tech_cost =10
-#------主基地
-base = 0
-#------单位
-fresh_meat = 1
-hack = 2
-superman = 3
-battle_tank = 4
-electronic = 5
-nuke_tank = 6
-uav = 7
-eagle_fighter = 8
-#------生产建筑
-hacker_academic = 9
-biochemistry_lab = 10
-vehicle_department = 11
-electronic_battle_academic = 12
-radiation_department = 13
-uav_department = 14
-advanced_aircraft_lab = 15
-#------技能建筑
-construction_department = 16
-finance_lab = 17
-material_lab = 18
-nano_lab = 19
-#物体名称
-name_list =['主基地','小鲜肉','黑客','改造人战士','主战坦克','电子对抗坦克','核子坦克','无人战机','鹰式战斗机',
-            '黑客学院','生化研究院','特种车辆系','电子对抗学院','辐射系','无人机系','高等飞行器研究院',
-            '建造学院','社科金融研究院','特殊材料研究院','纳米科技研究院']
+#-----------------------------------
+
+
+
+
+#def move(Object, des):
+#	pass
+#
+#def skill_1(object_id_1, object_id_2):
+#	pass
+#
+#def skill_2(object_id_1, object_id_2):
+#	pass
 
 class UnitObject(object):
     #单位固有属性
-    __unit_type = None #单位类型，建筑飞机坦克步兵
-    __name = None #单位名字，要不要估计也无所谓
-    __branch = None #具体类型
-    #__origin_max_health = 500 #原始HP上限
-    #__origin_max_speed = 6 #原始最大速度
-    #__origin_shot_range = 15 #原始射程
-    #__origin_defense = 150 #原始防御
-    #__origin_attack = 200  #原始攻击
-
+    __unit_type = None #单位大类，建筑4飞机3坦克2步兵1基地0
+    __type_name = None #具体类型
+    __producing_building = None #生产建筑
 
 
     #单位动态属性
+    unit_id = 0
+    name = None  # 单位名字，给选手闹着玩的
     flag = None #所属阵营
     position = None #单位位置，目测是一个point之类的东西
     motor_type = None  # 移动方式，分地面和空中，精英步兵的技能会用到
@@ -72,283 +86,60 @@ class UnitObject(object):
     shot_range_now = None #当前射程(现阶段貌似没有提升射程的技能，不过先保留)
     defense_now = None #当前防御
     attack_now = None  #当前攻击
+    healing_rate = None  # 治疗/维修速率
+    hacked_point = None #被黑的点数
+    is_disable = False  # 是否被瘫痪
+    disable_since = None  # 被瘫痪的时间点，用于判断瘫痪时间
+    skill_last_release_time1 = None #上次技能1释放时间
+    skill_last_release_time2 = None #上次技能2释放时间
+    attack_mode = None #攻击模式，例如可对空，可对坦克，可对步兵之类的
 
-    def __init__(self, unit_id, flag, branch, position):
+    def __init__(self, unit_id, flag, type_name, position):
         self.unit_id = unit_id
         self.flag = flag
         self.position = position
-        self.__branch = branch
-        self.health_now = origin_attribute[self.__branch][origin_max_health]#单位生成时默认为最大血量，以下同理
-        self.max_health_now = origin_attribute[self.__branch][origin_max_health]
-        self.max_speed_now = origin_attribute[self.__branch][origin_max_speed]
-        self.shot_range_now = origin_attribute[self.__branch][origin_shot_range]
-        self.defense_now = origin_attribute[self.__branch][origin_defense]
-        self.attack_now = origin_attribute[self.__branch][origin_attack]
+        self.__type_name = type_name
+        self.__unit_type = origin_attribute[type_name]['unit_type']
 
-        self.__max_num = origin_attribute[self.__branch][max_account]  # 最大生产数量
-        self.__people_cost = origin_attribute[self.__branch][people_cost]  # 人口
-        self.__money_cost = origin_attribute[self.__branch][money_cost]  # 金钱
-        self.__tech_cost = origin_attribute[self.__branch][tech_cost]  # 科技
+        self.health_now = origin_attribute[type_name]['origin_max_health']#单位生成时默认为最大血量，以下同理
+        self.max_health_now = origin_attribute[type_name]['origin_max_health']
+        self.max_speed_now = origin_attribute[type_name]['origin_max_speed']
+        self.shot_range_now = origin_attribute[type_name]['origin_shot_range']
+        self.defense_now = origin_attribute[type_name]['origin_defense']
+        self.attack_now = origin_attribute[type_name]['origin_attack']
 
-        self.__skill_1_cd = origin_attribute[self.__branch][skill_cd_1]
-        self.__skill_2_cd = origin_attribute[self.__branch][skill_cd_2]
+        self.__skill_1_cd = origin_attribute[type_name]['skill_cd_1']
+        self.__skill_2_cd = origin_attribute[type_name]['skill_cd_2']
 
-        self.__name = name_list[self.__branch]
         #输出基本信息，已实现，测试用
 
     def print_info(self):
-        print('id:',self.unit_id,'阵营:',self.flag, '位置:',self.position, '兵种:',self.__branch,'名称:',self.__name,
+        print('id:',self.unit_id,'阵营:',self.flag, '位置:',self.position, '类型:',self.__unit_type,'兵种:',self.__type_name,'自定名称:',self.name,
               'HP:',self.health_now, 'MAXHP:',self.max_health_now, '速度:',self.max_speed_now, '射程:',self.shot_range_now, '防御:',self.defense_now, '攻击:',self.attack_now,
-              '最大数量:',self.__max_num, '人口:',self.__people_cost, '金钱消耗:',self.__money_cost, '科技消耗:',self.__tech_cost, 'CD1:',self.__skill_1_cd, 'CD2:',self.__skill_2_cd)
-
-    def set_unit_attribute(self, health_buff=1, attack_buff=1, defense_buff=1, speed_buff=1, shot_range_buff=1):
-        pass #这里一并更新属性，如果担心性能的话可以分开写
-
-    def get_cd(self):
-        pass  #获取两类CD
-
-
-class Building(UnitObject):
-    __unit_type = 0
-    flag = -1
-
-    def captured(self, capture_flag):
-        pass
-
-class ConstructBuilding(Building):
-    produce_time1 = None #上一次生产的时间，用于判断CD
-    produce_object = None #生产单位类型，这里的实现我不太确定，如果直接实例化对应的类就不需要了，或者可以考虑直接按照类名实例化
-
-    def produce(self, infantry_cost_buff=1, vehicle_cost_buff=1, aircraft_cost_buff=1):
-        pass  #参数用于判断关于三种类型的生产消耗的被动技能
-
-    def passive_skill(self):
-        pass
-
-
-class SkillBuilding(Building):
-
-    def passive_skill_1(self):
-        pass
-
-    def passive_skill_2(self):
-        pass
-
-class MainBase(ConstructBuilding):#主基地
-    __branch = 0
-    def attack(self, target_id):
-        pass
-
-class FightingUnits(UnitObject):
-    __producing_building = None  # 生产建筑
-    attack_mode = None #攻击模式，例如可对空，可对坦克，可对步兵之类的
-    attack_time = None  # 上次攻击时间
-
-    def normal_attack(self, target_id):
-        pass
-
-    def move(self, destination):
-        pass
-
-class Infantry(FightingUnits):
-    cure_rate =None #治疗比率
-
-    def cure(self):
-        pass
-
-
-class Vehicle(UnitObject):
-    repair_rate = None #维修比率，下同
-    is_disable = False #是否被瘫痪
-    disable_since = None #被瘫痪的时间点，用于判断瘫痪时间
-    def repair(self):
-        pass
-
-class Aircraft(UnitObject):
-    repair_rate = None
-
-    def repair(self):
-        pass
-
-class FreshMeat(Infantry):#小鲜肉
-
-    __branch = 1
-    __producing_building = base  # 生产建筑
-
-    def normal_attack(self, target_id):
-        pass #机制不同
-
-class Hacker(Infantry):#黑客
-
-    __branch = 2
-    __producing_building = hacker_academic  # 生产建筑
-
-    def normal_attack(self, target_id):
-        pass #机制不同
-
-class XFighter(Infantry):#改造人战士
-
-    __branch = 3
-    __producing_building = biochemistry_lab  # 生产建筑
-    skill_release_time = None  # 上次技能释放时间
-
-    def skill_2(self):
-        pass
-
-
-class HeavyTank(Vehicle):  #主战坦克
-
-    __branch = 4
-    __producing_building = vehicle_department  # 生产建筑
-
-
-class EMPTank(Vehicle):  #电子对抗坦克
-
-    __branch = 5
-    __producing_building = electronic_battle_academic # 生产建筑
-
-
-class NuclearTank(Infantry):  # 核子坦克
-
-    __branch = 6
-    __producing_building = radiation_department  # 生产建筑
-    __max_num = 1  # 最大生产数量
-    __people_cost = 10  # 人口
-    __money_cost = 4000  # 金钱
-    __tech_cost = 2000 # 科技
-    skill_release_time = None  # 上次技能释放时间
-
-    def skill_2(self, target_pos, target_id=-1):#既可以对目标，也可以对地点，地点优先
-        pass
-
-
-class UAV(Aircraft):  #无人战机
-
-    __branch = 7
-    __producing_building = uav_department  # 生产建筑
-
-
-class Eagle(Aircraft):  #鹰式战斗机
-
-    __branch = 8
-    __producing_building = advanced_aircraft_lab  # 生产建筑
-    skill_release_time = None  # 上次技能释放时间
-
-    def normal_attack(self, target_pos, target_id=-1):
-        pass  # 机制略有不同,可aoe,
-    def skill_2(self, target_pos, target_pos2, target_id=-1 ,target_id2=-1):  # 既可以对目标，也可以对地点，地点优先,同时打两个地方
-        pass
-
-
-class HackerAcademic(ConstructBuilding):#黑客学院
-    __branch = 9
-    def passive_skill(self):
-        pass
-
-    def produce(self, infantry_cost_buff=1, vehicle_cost_buff=1, aircraft_cost_buff=1):
-        pass
-
-
-
-class BiochemistryLab(ConstructBuilding):#生化研究院
-    __branch = 10
-    def passive_skill(self):
-        pass
-
-    def produce(self, infantry_cost_buff=1, vehicle_cost_buff=1, aircraft_cost_buff=1):
-        pass
-
-
-class VehicleDepartment(ConstructBuilding):#特种车辆系
-    __branch = 11
-
-    def passive_skill(self):
-        pass
-
-    def produce(self, infantry_cost_buff=1, vehicle_cost_buff=1, aircraft_cost_buff=1):
-        pass
-
-
-class ElectronicBattleAcademic(ConstructBuilding):#电子对抗学院
-    __branch = 12
-
-    def passive_skill(self):
-        pass
-
-    def produce(self, infantry_cost_buff=1, vehicle_cost_buff=1, aircraft_cost_buff=1):
-        pass
-
-
-class RadiationDepartment(ConstructBuilding):#辐射系
-    __branch = 13
-
-    def passive_skill(self):
-        pass
-
-    def produce(self, infantry_cost_buff=1, vehicle_cost_buff=1, aircraft_cost_buff=1):
-        pass
-
-
-class UAVDepartment(ConstructBuilding):#无人机系
-    __branch = 14
-
-    def passive_skill(self):
-        pass
-
-    def produce(self, infantry_cost_buff=1, vehicle_cost_buff=1, aircraft_cost_buff=1):
-        pass
-
-
-class AdvancedAircraftLab(ConstructBuilding):#高等飞行器研究院
-    __branch = 15
-
-    def passive_skill(self):
-        pass
-
-    def produce(self, infantry_cost_buff=1, vehicle_cost_buff=1, aircraft_cost_buff=1):
-        pass
-
-
-class ConstructionDepartment(SkillBuilding):#建造学院
-    __branch = 16
-
-    def passive_skill_1(self):
-        pass
-
-    def passive_skill_2(self):
-        pass
-
-
-class FinanceLab(SkillBuilding):#社科金融学院
-    __branch = 17
-
-    def passive_skill_1(self):
-        pass
-
-    def passive_skill_2(self):
-        pass
-
-
-class MaterialLab(SkillBuilding):#特殊材料学院
-    __branch = 18
-
-    def passive_skill_1(self):
-        pass
-
-    def passive_skill_2(self):
-        pass
-
-
-class NanoLab(SkillBuilding):#纳米研究院
-    __branch = 19
-
-    def passive_skill_1(self):
-        pass
-
-    def passive_skill_2(self):
-        pass
-
-#-------------测试一发，并没有卵用-------------
-tank = NuclearTank(1, 1, nuke_tank, 8823)
-tank.health_now -= 50
+              '最大数量:',origin_attribute[self.__type_name]['max_account'],
+              '人口:',origin_attribute[self.__type_name]['people_cost'],
+              '金钱消耗:',origin_attribute[self.__type_name]['money_cost'],
+              '科技消耗:',origin_attribute[self.__type_name]['tech_cost'],
+              'CD1:',self.__skill_1_cd, 'CD2:',self.__skill_2_cd)
+
+      #写了一个接口虽然不觉得有什么卵用
+    def reset_attribute(self, **kwargs):
+        if 'health' in kwargs:
+            self.health_now = kwargs['health']
+        if 'max_health' in kwargs:
+            self.max_health_now = kwargs['max_health']
+        if 'speed' in kwargs:
+            self.max_speed_now = kwargs['speed']
+        if 'shot_range' in kwargs:
+            self.shot_range_now = kwargs['shot_range']
+        if 'defense' in kwargs:
+            self.defense_now = kwargs['defense']
+        if 'attack' in kwargs:
+            self.attack_now = kwargs['attack']
+
+
+#-------------实例化-------------
+tank = UnitObject(1, 1, 'nuke_tank', (22, 33))
+tank.print_info()
+tank.reset_attribute(speed=15, health=6666)
 tank.print_info()
