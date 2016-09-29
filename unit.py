@@ -14,16 +14,28 @@ VEHICLE = 2
 AIRCRAFT = 3
 BULIDING = 4
 #buff全局变量
-unit_buff_0 = {
-    'infantry':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
-    'vehicle':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
-    'aircraft':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
-    }
-unit_buff_1 = {
-    'infantry':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
-    'vehicle':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
-    'aircraft':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
-    }
+
+FLAG_0 = 0
+FLAG_1 = 1
+
+
+unit_buff = {
+    FLAG_0:{
+    INFANTRY:{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    VEHICLE:{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    AIRCRAFT:{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0}
+	},
+	FLAG_1:{
+	INFANTRY:{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    VEHICLE:{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+    AIRCRAFT:{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0}
+	}
+}
+#unit_buff_1 = {
+#    'infantry':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+#    'vehicle':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+#    'aircraft':{'health_buff':0.0,'attack_buff':0.0,'speed_buff':0.0,'defense_buff':0.0,'shot_range_buff':0.0},
+#    }
 
 origin_attribute = {
     'base':          {'unit_type':BASE,    'origin_max_health':10000,    'origin_max_speed':0, 'origin_shot_range':10,'origin_defense':0,  'origin_attack':10, 'skill_cd_1':None,'skill_cd_2':1,    'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
@@ -101,12 +113,13 @@ class UnitObject(object):
         self.__type_name = type_name
         self.__unit_type = origin_attribute[type_name]['unit_type']
 
-        self.health_now = origin_attribute[type_name]['origin_max_health']#单位生成时默认为最大血量，以下同理
-        self.max_health_now = origin_attribute[type_name]['origin_max_health']
-        self.max_speed_now = origin_attribute[type_name]['origin_max_speed']
-        self.shot_range_now = origin_attribute[type_name]['origin_shot_range']
-        self.defense_now = origin_attribute[type_name]['origin_defense']
-        self.attack_now = origin_attribute[type_name]['origin_attack']
+        self.health_now = origin_attribute[type_name]['origin_max_health'] * (1+unit_buff[flag][self.__unit_type]['health_buff'])   #单位生成时默认为最大血量，以下同理
+		
+        self.max_health_now = origin_attribute[type_name]['origin_max_health'] * (1+unit_buff[flag][self.__unit_type]['health_buff'])
+        self.max_speed_now = origin_attribute[type_name]['origin_max_speed'] * (1+unit_buff[flag][self.__unit_type]['speed_buff'])
+        self.shot_range_now = origin_attribute[type_name]['origin_shot_range'] * (1+unit_buff[flag][self.__unit_type]['shot_range_buff'])
+        self.defense_now = origin_attribute[type_name]['origin_defense'] * (1+unit_buff[flag][self.__unit_type]['defense_buff'])
+        self.attack_now = origin_attribute[type_name]['origin_attack'] * (1+unit_buff[flag][self.__unit_type]['attack_buff'])
 
         self.__skill_1_cd = origin_attribute[type_name]['skill_cd_1']
         self.__skill_2_cd = origin_attribute[type_name]['skill_cd_2']
