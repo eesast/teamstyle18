@@ -1,3 +1,7 @@
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
 class GameMain:
     units = {}  # 单位dict
     hqs = []  # 主基地

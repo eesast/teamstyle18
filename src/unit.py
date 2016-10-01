@@ -1,3 +1,7 @@
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
 #暂定主基地为0, 1-8依次为小鲜肉，黑客，改造人战士，主战坦克，电子对抗坦克，核子坦克，无人机，鹰式战斗机,剩余9-19为建筑
 #物体名称
 #name_list ={'base':0,'meat':1,'hacker':2,'superman':3,'battle_tank':4,'bolt_tank':5,'nuke_tank':6,'uav':7,'eagle':8,
