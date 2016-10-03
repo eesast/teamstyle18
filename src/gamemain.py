@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from src import unit
 
 class GameMain:
     units = {}  # 单位dict
@@ -9,8 +10,24 @@ class GameMain:
     turn_flag = 0  # 谁的回合
     turn_num = 0  # 回合数
     phase_num = 0  # 回合阶段指示
-    buffs0 = []  # 选手0的buffs
-    buffs1 = []  # 选手1的buffs
+    buff = {
+        unit.FLAG_0: {
+            unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                       'shot_range_buff': 0.0},
+            unit.VEHICLE: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                      'shot_range_buff': 0.0},
+            unit.AIRCRAFT: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                       'shot_range_buff': 0.0}
+        },
+        unit.FLAG_1: {
+            unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                       'shot_range_buff': 0.0},
+            unit.VEHICLE: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                      'shot_range_buff': 0.0},
+            unit.AIRCRAFT: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                       'shot_range_buff': 0.0}
+        }
+    }
 
     def __init__(self):
         pass
