@@ -44,10 +44,10 @@ class GameMain:
         # 胜利判定
         pass
 
-    def timeup_determin(self):
+    def timeup_determine(self):
         #超时胜利判定
         pass
-    
+
     def cleanup_phase(self):
         # 单位死亡判定
 
