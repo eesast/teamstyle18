@@ -7,9 +7,17 @@ class GameMain:
     units = {}  # 单位dict
     hqs = []  # 主基地
     buildings = []  # 中立建筑
-    turn_flag = 0  # 谁的回合
+    #turn_flag = 0  # 谁的回合
     turn_num = 0  # 回合数
     phase_num = 0  # 回合阶段指示
+    skill_instr_0=[]#ai0的当前回合指令
+    skill_instr_1=[]#ai1的当前回合制令
+    produce_instr_0=[]
+    produce_instr_1=[]
+    move_instr_0=[]
+    move_instr_1=[]
+    capture_instr_0=[]
+    capture_instr_1=[]
     buff = {
         unit.FLAG_0: {
             unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
@@ -32,52 +40,56 @@ class GameMain:
     def __init__(self):
         pass
 
-    def windetermine_phase(self):
+    def win_determine(self):
         # 胜利判定
         pass
 
-    def cleanup_phase(self, ai_id):
+    def timeup_determin(self):
+        #超时胜利判定
+        pass
+    
+    def cleanup_phase(self):
         # 单位死亡判定
-        """
 
-        :type ai_id: int
-        """
         pass
 
-    def skill_phase(selfself, ai_id):
+    def skill_phase(selfself):
         # 技能结算
-        """
 
-        :type ai_id: int
-        """
         pass
 
-    def move_phase(self, ai_id):
+    def move_phase(self):
         # 移动指令结算
-        """
 
-        :type ai_id: int
-        """
         pass
 
-    def produce_phase(self, ai_id):
+    def produce_phase(self):
         # 兵种获取指令结算
-        """
 
-        :type ai_id: int
-        """
         pass
 
-    def capture_phase(self, ai_id):
+    def capture_phase(self):
         # 占领建筑阶段
-        """
+        pass
 
-        :type ai_id: int
-        """
+    def fetch_instruction(self):
+        #获取指令存入两个指令list
+        pass
+
+    def check_legal(self):
+        #检查双方指令是否合法，去重
         pass
 
     def next_tick(self):
-        # 进入下一回合前通信等任务
+        # 获取指令，指令检测合法与去重，回合演算
+        self.check_legal()
+        self.skill_phase()
+        self.cleanup_phase()
+        self.win_determine()
+        self.move_phase()
+        self.produce_phase()
+        self.capture_phase()
+        self.timeup_determine()
         pass
 
     def to_string(self):
