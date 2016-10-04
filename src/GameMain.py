@@ -10,8 +10,14 @@ class GameMain:
     #turn_flag = 0  # 谁的回合
     turn_num = 0  # 回合数
     phase_num = 0  # 回合阶段指示
-    instr_0=[]#ai0的当前回合指令
-    instr_1=[]#ai1的当前回合制令
+    skill_instr_0=[]#ai0的当前回合指令
+    skill_instr_1=[]#ai1的当前回合制令
+    produce_instr_0=[]
+    produce_instr_1=[]
+    move_instr_0=[]
+    move_instr_1=[]
+    capture_instr_0=[]
+    capture_instr_1=[]
     buff = {
         unit.FLAG_0: {
             unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
