@@ -58,13 +58,15 @@ class GameMain:
         player0_y = (box_base0_y - 1) * 10 + random.randint(1, 5)
         player1_x = 100 - player0_x
         player1_y = 100 - player0_y
-        self.hqs = [(player0_x, player0_y), (player1_x, player1_y)]
         base0 = unit.UnitObject(self.total_id, ai_id0, 'base', (player0_x, player0_y))
         self.units[ai_id0] = self.total_id
+        self.hqs.append(self.total_id)
         self.total_id += 1
         base1 = unit.UnitObject(self.total_id, ai_id1, 'base', (player1_x, player1_y))
         self.units[ai_id1] = self.total_id
+        self.hqs.append(self.total_id)
         self.total_id += 1
+        self.hqs = [(player0_x, player0_y), (player1_x, player1_y)]
         tech0 = unit.UnitObject(self.total_id, ai_id0, 'teach_building', (player0_x, player0_y + 2))
         self.units[ai_id0] = self.total_id
         self.total_id += 1
@@ -96,15 +98,23 @@ class GameMain:
                 tech_y = (box_y - 1) * 10 + random.randint(1, 5)
                 tech_1_x = 100 - tech_x
                 tech_1_y = 100 - tech_y
-                tech0 = unit.UnitObject(None, None, 'teach_building', (tech_x, tech_y))
-                tech1 = unit.UnitObject(None, None, 'teach_building', (tech_1_x, tech_1_y))
+                tech0 = unit.UnitObject(self.total_id, None, 'teach_building', (tech_x, tech_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                tech1 = unit.UnitObject(self.total_id, None, 'teach_building', (tech_1_x, tech_1_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if type_rand == 1:
                 bank_x = (box_x - 1) * 10 + random.randint(1, 9)
                 bank_y = (box_y - 1) * 10 + random.randint(1, 5)
                 bank_1_x = 100 - bank_x
                 bank_1_y = 100 - bank_y
-                bank0 = unit.UnitObject(None, None, 'teach_building', (bank_x, bank_y))
-                bank1 = unit.UnitObject(None, None, 'teach_building', (bank_1_x, bank_1_y))
+                bank0 = unit.UnitObject(self.total_id, None, 'teach_building', (bank_x, bank_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                bank1 = unit.UnitObject(self.total_id, None, 'teach_building', (bank_1_x, bank_1_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             bank_and_teach -= 1
         #生成11个具有特定技能的建筑 不进行building_id编号和占有方编号
         building_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
@@ -118,38 +128,82 @@ class GameMain:
             building_y = (box_y - 1) * 10 + random.randint(7, 9)
             building_type = choice(building_list)
             if building_type == 1:
-                building0 = unit.UnitObject(None, None, 'hack_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'hack_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'hack_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'hack_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 2:
-                building0 = unit.UnitObject(None, None, 'bid_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'bid_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'bid_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'bid_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 3:
-                building0 = unit.UnitObject(None, None, 'car_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'car_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'car_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'car_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 4:
-                building0 = unit.UnitObject(None, None, 'elec_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'elec_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'elec_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'elec_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 5:
-                building0 = unit.UnitObject(None, None, 'radiation_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'radiation_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'radiation_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'radiation_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 6:
-                building0 = unit.UnitObject(None, None, 'uav_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'uav_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'uav_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'uav_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 7:
-                building0 = unit.UnitObject(None, None, 'aircraft_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'aircraft_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'aircraft_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'aircraft_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 8:
-                building0 = unit.UnitObject(None, None, 'build_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'build_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'build_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'build_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 9:
-                building0 = unit.UnitObject(None, None, 'finance_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'finance_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'finance_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'finance_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 10:
-                building0 = unit.UnitObject(None, None, 'material_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'material_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'material_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'material_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             if building_type == 11:
-                building0 = unit.UnitObject(None, None, 'nano_lab', (building_x, building_y))
-                building1 = unit.UnitObject(None, None, 'nano_lab', (100 - building_x, 100 - building_y))
+                building0 = unit.UnitObject(self.total_id, None, 'nano_lab', (building_x, building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
+                building1 = unit.UnitObject(self.total_id, None, 'nano_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(self.total_id)
+                self.total_id += 1
             building_list.remove(building_type)
             total_building -= 1
         pass
@@ -287,6 +341,7 @@ class GameMain:
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['base_lab']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['base']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['base']['tech_cost']
+        self.units[ai_id].append(self.total_id)
         self.total_id += 1
         ai_id = id_collection[1]
         for building_id in self.produce_instr_1:
@@ -363,6 +418,7 @@ class GameMain:
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['base_lab']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['base']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['base']['tech_cost']
+        self.units[ai_id].append(self.total_id)
         self.total_id += 1
         # 兵种获取指令结算
         pass
