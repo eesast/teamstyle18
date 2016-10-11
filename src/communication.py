@@ -8,8 +8,8 @@ class recv_thread(threading.Thread):
     def __init__(self):
         self.request_list=[]
         #Access gamemain instrction queue directly?
-        order_list_0=queue.Queue()
-        order_list_1=queue.Queue()
+        self.order_list_0=queue.Queue()
+        self.order_list_1=queue.Queue()
         threading.Thread.__init__(self)
     def run(self):
         pass
@@ -23,10 +23,10 @@ class send_thread(threading.Thread):
 
 class main_handler(socketserver.BaseRequestHandler):
     def handler(self):
-        send=send_thread(request)
+        send=send_thread(self.request)
         send.daemon=True
-        send.append(send)
-        recv.request_list.append(request)
+        send.append(self.send)
+        recv.request_list.append(self.request)
         send.start
 
 class main_tcp_server(socketserver.TCPServer):
@@ -37,6 +37,6 @@ class main_tcp_server(socketserver.TCPServer):
     def serialize(non_string_object):
         pass
     def send_message_to_players(non_string_object,player_no):
-        send[player_no].send_queue.put(serialize(non_string_object))
+        self.send[player_no].send_queue.put(serialize(non_string_object))
     def add_order_to_game_main():
         pass
