@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import math
-import unit
-import gamemain
+from src import unit
+from src.unit import origin_attribute
+from src import gamemain
 
 class GameMain:
     units = {}  # 单位dict
