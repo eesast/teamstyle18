@@ -1,9 +1,10 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import math
-import unit
-import gamemain
+
+from src import unit
+from src.unit import origin_attribute
+from src import gamemain
 
 class GameMain:
     units = {}  # 单位dict
@@ -235,9 +236,11 @@ def superman_skill2(id):
         my_information.reset_attribute(motor_type=1,speed=12,health=my_information.health.now*1.02)
         my_information.reset_attribute(skill_last_release_time1=A.turn_num)
 
-tank = UnitObject(1, 1, 'nuke_tank', (22, 33))
-fuck = UnitObject(2, 0, 'battle_tank', (22, 32))
-A=GameMain()
+
+A=gamemain.GameMain()
+tank = unit.UnitObject(1, 1, 'nuke_tank', (22, 33))
+fuck = unit.UnitObject(2, 0, 'battle_tank', (22, 32))
+
 A.units[1]=tank
 A.units[2]=fuck
 A.units[1].print_info()
