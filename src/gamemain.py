@@ -43,8 +43,8 @@ class GameMain:
     resource = {} #双方金钱、科技、剩余人口容量记录
 
     def __init__(self):
-        """地图生成模块
-        id_collection = list(self.units)  # 寻找传入ai_id对应的value
+        #地图生成模块
+        id_collection = [0,1]  # 寻找传入ai_id对应的value
         ai_id0 = id_collection[0]
         ai_id1 = id_collection[1]
         #初始化self.resource
@@ -206,7 +206,7 @@ class GameMain:
                 self.buildings.append(self.total_id)
                 self.total_id += 1
             building_list.remove(building_type)
-            total_building -= 1"""
+            total_building -= 1
         pass
 
     def win_determine(self):
@@ -219,7 +219,7 @@ class GameMain:
 
     def cleanup_phase(self):
         # 单位死亡判定
-        id_collection = list(self.units)  # 寻找传入ai_id对应的value
+        id_collection = [0,1]  # 寻找传入ai_id对应的value
         for ai_id in id_collection:
             unit_obj=list(self.units.get(ai_id))
             for things in unit_obj:
@@ -430,7 +430,7 @@ class GameMain:
         pass
 
     def produce_phase(self):
-        id_collection = list(self.units)  # 寻找传入ai_id对应的value
+        id_collection = [0,1]  # 寻找传入ai_id对应的value
         ai_id = id_collection[0]
         for building_id in self.produce_instr_0:
             if building_id.__type_name == 'hack_lab':
@@ -592,7 +592,7 @@ class GameMain:
         #资源结算阶段
         bank_count = 0
         teaching_building_count = 0
-        id_collection = list(self.units)  # 寻找传入ai_id对应的value
+        id_collection = [0,1]  # 寻找传入ai_id对应的value
         for ai_id in id_collection:
             unit_obj = list(self.units.get(ai_id))
             for things in unit_obj:
