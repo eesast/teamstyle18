@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import math
+
 from src import unit
 from src.unit import origin_attribute
 from src import gamemain
