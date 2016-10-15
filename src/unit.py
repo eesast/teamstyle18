@@ -88,6 +88,9 @@ class UnitObject(object):
         self.__type_name = type_name
         self.__unit_type = origin_attribute[type_name]['unit_type']
 
+        self.skill_last_release_time1 = -1000
+        self.skill_last_release_time2 = -1000
+
         self.health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])   #单位生成时默认为最大血量，以下同理
         self.max_health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])
         self.max_speed_now = origin_attribute[type_name]['origin_max_speed'] * (1+buff[flag][self.__unit_type]['speed_buff'])
@@ -109,7 +112,13 @@ class UnitObject(object):
               '科技消耗:',origin_attribute[self.__type_name]['tech_cost'],
               'CD1:',self.__skill_1_cd, 'CD2:',self.__skill_2_cd)
 
-      #写了一个接口虽然不觉得有什么卵用
+    def Get_unit_type(self):
+        return self.__unit_type
+
+    def Get_type_name(self):
+        return self.__type_name
+
+    #写了一个接口虽然不觉得有什么卵用
     def reset_attribute(self, buff, **kwargs):
         if 'health' in kwargs:
             self.health_now = kwargs['health']
@@ -123,6 +132,16 @@ class UnitObject(object):
             self.defense_now = kwargs['defense']
         if 'attack' in kwargs:
             self.attack_now = kwargs['attack']
+        if 'is_disable' in kwargs:
+            self.is_disable = kwargs['is_disable']
+        if 'hacked_point' in kwargs:
+            self.hacked_point = kwargs['hacked_point']
+        if 'motor_type' in kwargs:
+            self.motor_type = kwargs['motor_type']
+        if 'skill_last_release_time1' in kwargs:
+            self.skill_last_release_time2 = kwargs['skill_last_release_time1']
+        if 'skill_last_release_time2' in kwargs:
+            self.skill_last_release_time2 = kwargs['skill_last_release_time2']
 
         self.max_health_now = origin_attribute[self.__type_name]['origin_max_health'] * (1 + buff[self.flag][self.__unit_type]['health_buff'])
         self.max_speed_now = origin_attribute[self.__type_name]['origin_max_speed'] * (1 + buff[self.flag][self.__unit_type]['speed_buff'])
@@ -160,7 +179,7 @@ test_buff = {
 
 
 #-------------实例化-------------
-tank = UnitObject(1, 1, 'nuke_tank', (22, 33), test_buff)
+"""tank = UnitObject(1, 1, 'nuke_tank', (22, 33), test_buff)
 tank.print_info()
 tank.reset_attribute(test_buff, speed=15, health=6666)
-tank.print_info()
+tank.print_info()"""
