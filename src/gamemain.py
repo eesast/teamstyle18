@@ -594,7 +594,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['radiation_lab']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['radiation_lab']['tech_cost']:
                     return
-                tank[1] = unit.UnitObject(self.total_id, ai_id, 'nuke_tank', building_id.position)
+                person = unit.UnitObject(self.total_id, ai_id, 'nuke_tank', building_id.position)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['radiation_lab']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['radiation_lab']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['radiation_lab']['tech_cost']
