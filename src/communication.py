@@ -42,7 +42,7 @@ class MainServer(asyncore.dispatcher):
         pair = self.accept()
         print("Accept")
         if pair is not None:
-            handler = IO_Handler(pair[0])
+            handler = IOHandler(pair[0])
             self.conn_list.append(handler)
 
     def send_to_player(self, info):
