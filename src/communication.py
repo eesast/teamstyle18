@@ -4,10 +4,11 @@ import threading
 import socket
 import queue
 import asyncore
+import struct
 
 
 class IOHandler(asyncore.dispatcher):
-
+    send_list=[]    #Things to send
     def __init__(self, sock):
         asyncore.dispatcher.__init__(self, sock)
         self.info_queue = queue.Queue()
@@ -15,14 +16,28 @@ class IOHandler(asyncore.dispatcher):
     def handle_read(self):
         instruction = str(self.recv(8192))
         if instruction:
-            self.add_to_gamemain(instruction.decode('utf-8'))
+            self.add_to_gamemain(instruction)
 
     def handle_write(self):
-        self.send(self.info_queue.get().encode('utf-8'))
+        obj_list=self.info_queue.get()
+        byte_message_list=self.serializer(obj_list)
+        for byte_message in byte_message_list:
+            self.send(byte_message)
 
     def writable(self):
         return not self.info_queue.empty()
 
+    def serializer(self, object_list):
+        byte_message_list=[]
+        for obj in object_list:
+            args=[]
+            pack_header=""
+            for name, value in vars(obj).items():
+                if name in send_list:
+                    pack_header+="f" if type(value)==int or type(value)==float else str(len(value))+"s"
+                    args.append(value if type(value)!=str else bytes(value.encode('utf-8')))
+            byte_message_list.append(struct.pack(pack_header,*args))
+        return byte_message_list
     def add_to_gamemain(self, instruction):
         pass
 
@@ -45,6 +60,6 @@ class MainServer(asyncore.dispatcher):
             handler = IOHandler(pair[0])
             self.conn_list.append(handler)
 
-    def send_to_player(self, info):
+    def send_to_player(self, obj_list, ai_id):
         # Put info into corresponding conn's queue
-        pass
+        self.conn_list[ai_id].info_queue.put(obj_list)
