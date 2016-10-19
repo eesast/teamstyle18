@@ -4,24 +4,24 @@
 #include<vector>
 using std::string;
 using std::vector;
-extern int team_id = -1; //¶ÓÎéid
+extern int team_id = -1; //é˜Ÿä¼id
 
 //type_name
 enum UnitType
 {
-	BASE,	     //Ö÷»ùµØ
-	INFANTRY,		 //²½±ø
-	VEHICLE,		 //Ì¹¿Ë
-	AIRCRAFT,		 //·É»ú
-	BUILDING   	 //½¨Öş
+	BASE,	     //ä¸»åŸºåœ°
+	INFANTRY,		 //æ­¥å…µ
+	VEHICLE,		 //å¦å…‹
+	AIRCRAFT,		 //é£æœº
+	BUILDING   	 //å»ºç­‘
 };
 enum BuffType
 {
-	HEALTH,	            //×î´óÉúÃüÖµbuff
-	ATTACK,		            //¹¥»÷buff
-	SPEED,		            //ËÙ¶Èbuff
-	DEFENSE,		        //·ÀÓùbuff
-	SHOT_RANGE 		//Éä³Ìbuff
+	HEALTH,	            //æœ€å¤§ç”Ÿå‘½å€¼buff
+	ATTACK,		            //æ”»å‡»buff
+	SPEED,		            //é€Ÿåº¦buff
+	DEFENSE,		        //é˜²å¾¡buff
+	SHOT_RANGE 		//å°„ç¨‹buff
 };
 
 enum TypeName
@@ -93,45 +93,45 @@ const int origin_attribute[Type_num][attribute_num] =
 };
 
 
-class Unit
+struct Unit
 {
 public:
-	int unit_id = 0;				// µ¥Î»id
-	string name = "";				// µ¥Î»Ãû×Ö£¬¸øÑ¡ÊÖÈüÍ§Ò»·¬
-	Position position;				// µ¥Î»Î»ÖÃ£¬Ä¿²âÊÇÒ»¸öpointÖ®ÀàµÄ¶«Î÷
-	int flag = -1;					// ËùÊôÕóÓª	
-	int motor_type;					// ÒÆ¶¯·½Ê½£¬·ÖµØÃæºÍ¿ÕÖĞ£¬¾«Ó¢²½±øµÄ¼¼ÄÜ»áÓÃµ½
+	int unit_id = 0;				// å•ä½id
+	string name = "";				// å•ä½åå­—ï¼Œç»™é€‰æ‰‹èµ›è‰‡ä¸€ç•ª
+	Position position;				// å•ä½ä½ç½®ï¼Œç›®æµ‹æ˜¯ä¸€ä¸ªpointä¹‹ç±»çš„ä¸œè¥¿
+	int flag = -1;					// æ‰€å±é˜µè¥	
+	int motor_type;					// ç§»åŠ¨æ–¹å¼ï¼Œåˆ†åœ°é¢å’Œç©ºä¸­ï¼Œç²¾è‹±æ­¥å…µçš„æŠ€èƒ½ä¼šç”¨åˆ°
 
 	UnitType unit_type;
 	TypeName type_name;
 
-	int max_health_now;				// µ±Ç°HPÉÏÏŞ
-	int health_now;					// µ±Ç°ÉúÃüÖµ
-	int max_speed_now;				// µ±Ç°×î´óËÙ¶È
-	int shot_range_now;				// µ±Ç°Éä³Ì(ÏÖ½×¶ÎÃ²ËÆÃ»ÓĞÌáÉıÉä³ÌµÄ¼¼ÄÜ£¬²»¹ıÏÈ±£Áô)
-	int defense_now;				// µ±Ç°·ÀÓù
-	int attack_now;					// µ±Ç°¹¥»÷
-	double healing_rate = 0;		// ÖÎÁÆ / Î¬ĞŞËÙÂÊ
-	int hacked_point;				// ±»ºÚµÄµãÊı
-	bool is_disable = false;		// ÊÇ·ñ±»Ì±»¾
-	int disable_since;				// ±»Ì±»¾µÄÊ±¼äµã£¬ÓÃÓÚÅĞ¶ÏÌ±»¾Ê±¼ä
-	int skill_last_release_time1;	// ÉÏ´Î¼¼ÄÜ1ÊÍ·ÅÊ±¼ä
-	int skill_last_release_time2;	// ÉÏ´Î¼¼ÄÜ2ÊÍ·ÅÊ±¼ä
-	int attack_mode;				// ¹¥»÷Ä£Ê½£¬ÀıÈç¿É¶Ô¿Õ£¬¿É¶ÔÌ¹¿Ë£¬¿É¶Ô²½±øÖ®ÀàµÄ
+	int max_health_now;				// å½“å‰HPä¸Šé™
+	int health_now;					// å½“å‰ç”Ÿå‘½å€¼
+	int max_speed_now;				// å½“å‰æœ€å¤§é€Ÿåº¦
+	int shot_range_now;				// å½“å‰å°„ç¨‹(ç°é˜¶æ®µè²Œä¼¼æ²¡æœ‰æå‡å°„ç¨‹çš„æŠ€èƒ½ï¼Œä¸è¿‡å…ˆä¿ç•™)
+	int defense_now;				// å½“å‰é˜²å¾¡
+	int attack_now;					// å½“å‰æ”»å‡»
+	double healing_rate = 0;		// æ²»ç–— / ç»´ä¿®é€Ÿç‡
+	int hacked_point;				// è¢«é»‘çš„ç‚¹æ•°
+	bool is_disable = false;		// æ˜¯å¦è¢«ç˜«ç—ª
+	int disable_since;				// è¢«ç˜«ç—ªçš„æ—¶é—´ç‚¹ï¼Œç”¨äºåˆ¤æ–­ç˜«ç—ªæ—¶é—´
+	int skill_last_release_time1;	// ä¸Šæ¬¡æŠ€èƒ½1é‡Šæ”¾æ—¶é—´
+	int skill_last_release_time2;	// ä¸Šæ¬¡æŠ€èƒ½2é‡Šæ”¾æ—¶é—´
+	int attack_mode;				// æ”»å‡»æ¨¡å¼ï¼Œä¾‹å¦‚å¯å¯¹ç©ºï¼Œå¯å¯¹å¦å…‹ï¼Œå¯å¯¹æ­¥å…µä¹‹ç±»çš„
 
 	Unit(int unit_id, int flag, TypeName type_name, Position pos);
 };
 
 
-std::ostream& operator <<(std::ostream &os, const Unit&u)//ÕâÒ²ÊÇÓÃÀ´²âÊÔµÄ
+std::ostream& operator <<(std::ostream &os, const Unit&u)//è¿™ä¹Ÿæ˜¯ç”¨æ¥æµ‹è¯•çš„
 {
 
-	os << "id:" << u.unit_id << "ÕóÓª:" << u.flag << "Î»ÖÃ:" << " (" << u.position.x << "," << u.position.y << ") " << "ÀàĞÍ:" << u.unit_type << "±øÖÖ:" << u.type_name << "×Ô¶¨Ãû³Æ:" << u.name <<
-		"HP:" << u.health_now << "MAXHP:" << u.max_health_now << "ËÙ¶È:" << u.max_speed_now << "Éä³Ì:" << u.shot_range_now << "·ÀÓù:" << u.defense_now << "¹¥»÷:" << u.attack_now <<
-		"×î´óÊıÁ¿:" << origin_attribute[u.type_name][MAX_ACCOUNT] <<
-		"ÈË¿Ú:" << origin_attribute[u.type_name][PEOPLE_COST] <<
-		"½ğÇ®ÏûºÄ:" << origin_attribute[u.type_name][MONEY_COST] <<
-		"¿Æ¼¼ÏûºÄ:" << origin_attribute[u.type_name][TECH_COST] <<
+	os << "id:" << u.unit_id << "é˜µè¥:" << u.flag << "ä½ç½®:" << " (" << u.position.x << "," << u.position.y << ") " << "ç±»å‹:" << u.unit_type << "å…µç§:" << u.type_name << "è‡ªå®šåç§°:" << u.name <<
+		"HP:" << u.health_now << "MAXHP:" << u.max_health_now << "é€Ÿåº¦:" << u.max_speed_now << "å°„ç¨‹:" << u.shot_range_now << "é˜²å¾¡:" << u.defense_now << "æ”»å‡»:" << u.attack_now <<
+		"æœ€å¤§æ•°é‡:" << origin_attribute[u.type_name][MAX_ACCOUNT] <<
+		"äººå£:" << origin_attribute[u.type_name][PEOPLE_COST] <<
+		"é‡‘é’±æ¶ˆè€—:" << origin_attribute[u.type_name][MONEY_COST] <<
+		"ç§‘æŠ€æ¶ˆè€—:" << origin_attribute[u.type_name][TECH_COST] <<
 		std::endl;
 	return os;
 }
