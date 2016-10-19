@@ -343,6 +343,7 @@ class GameMain:
             distance = Get_distance(my_information.position, attack_range)
             if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_2'] and distance <= origin_attribute['nuke_tank'][
                 'origin_shot_range']):
+                print(self.units)
                 for k in self.units:
                     enemy_position = self.units[k].position
                     if (Get_distance(enemy_position, attack_range) < 2):
