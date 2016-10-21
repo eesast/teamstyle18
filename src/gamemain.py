@@ -15,7 +15,7 @@ class GameMain:
     phase_num = 0  # 回合阶段指示
     skill_instr_0 = []  # ai0的当前回合指令
     skill_instr_1 = []  # ai1的当前回合制令
-    produce_instr_0 = []    #指令格式为[[building_id,name]]
+    produce_instr_0 = []    #指令格式为[[building_id,name],[building_id,name],[]]
     produce_instr_1 = []
     move_instr_0 = []  # 指令格式[[unit_id,position_x,position_y],[unit_id,position_x,position_y]]
     move_instr_1 = []
@@ -80,12 +80,13 @@ class GameMain:
         self.units[self.total_id] = bank1
         self.total_id += 1
         # random银行和教学楼并中心对称
-        # 除去出生地附近 教学楼和银行总数为8或7（一半地图） 各自数目不定
+        # 除去出生地附近 教学楼和银行总数为12或11（一半地图） 各自数目不定
         bank_and_teach = 12
         position_now = 0
         #box_x = 0
         #box_y = 0
-
+        resource_building1 = [re_10,re_11,re_12,re_13,re_14,re_15,re_16,re_17,re_18,re_19,re_110,re111]
+        resource_building2 = [re_20,re_21,re_22,re_23,re_24,re_25,re_26,re_27,re_28,re_29,re_210,re211]
         while (bank_and_teach > 0):
             position_now += random.randint(1, int((50 - position_now) / bank_and_teach))
             box_x = position_now % 10
@@ -99,26 +100,26 @@ class GameMain:
                 tech_y = (box_y - 1) * 10 + random.randint(1, 5)
                 tech_1_x = 100 - tech_x
                 tech_1_y = 100 - tech_y
-                tech0 = unit.UnitObject(self.total_id, None, 'teach_building', (tech_x, tech_y))
-                self.units[self.total_id] = tech0
-                self.buildings.append(tech0)
+                resource_building1[bank_and_teach] = unit.UnitObject(self.total_id, None, 'teach_building', (tech_x, tech_y))
+                self.units[self.total_id] = resource_building1[bank_and_teach]
+                self.buildings.append(resource_building1[bank_and_teach])
                 self.total_id += 1
-                tech1 = unit.UnitObject(self.total_id, None, 'teach_building', (tech_1_x, tech_1_y))
-                self.units[self.total_id] = tech1
-                self.buildings.append(tech1)
+                resource_building2[bank_and_teach] = unit.UnitObject(self.total_id, None, 'teach_building', (tech_1_x, tech_1_y))
+                self.units[self.total_id] = resource_building2[bank_and_teach]
+                self.buildings.append(resource_building2[bank_and_teach])
                 self.total_id += 1
             if type_rand == 1:
                 bank_x = (box_x - 1) * 10 + random.randint(1, 9)
                 bank_y = (box_y - 1) * 10 + random.randint(1, 5)
                 bank_1_x = 100 - bank_x
                 bank_1_y = 100 - bank_y
-                bank0 = unit.UnitObject(self.total_id, None, 'teach_building', (bank_x, bank_y))
-                self.units[self.total_id] = bank0
-                self.buildings.append(bank0)
+                resource_building1[bank_and_teach] = unit.UnitObject(self.total_id, None, 'teach_building', (bank_x, bank_y))
+                self.units[self.total_id] = resource_building1[bank_and_teach]
+                self.buildings.append(resource_building1[bank_and_teach])
                 self.total_id += 1
-                bank1 = unit.UnitObject(self.total_id, None, 'teach_building', (bank_1_x, bank_1_y))
-                self.buildings.append(bank1)
-                self.units[self.total_id] = bank1
+                resource_building2[bank_and_teach] = unit.UnitObject(self.total_id, None, 'teach_building', (bank_1_x, bank_1_y))
+                self.buildings.append(resource_building2[bank_and_teach])
+                self.units[self.total_id] = resource_building2[bank_and_teach]
                 self.total_id += 1
             bank_and_teach -= 1
         #生成11个具有特定技能的建筑 不进行building_id编号和占有方编号
