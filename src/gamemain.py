@@ -43,49 +43,49 @@ class GameMain:
     resource = {} #双方金钱、科技、剩余人口容量记录
 
     def __init__(self):
-        """地图生成模块
-        id_collection = list(self.units)  # 寻找传入ai_id对应的value
-        ai_id0 = id_collection[0]
-        ai_id1 = id_collection[1]
+        '''#地图生成模块
+        ai_id0 = 0
+        ai_id1 = 1
+        #地图生成模块
         #初始化self.resource
         self.resource = {ai_id0: {"tech": 1000, "money": 1000, "remain_people": 1000000},
                          ai_id1: {"tech": 1000, "money": 1000, "remain_people": 1000000}}
         # 在一定范围内random出一个基地并中心对称 并伴随生成bank 和teaching building 各一个
         box_base0_x = random.randint(1, 10)
         box_base0_y = random.randint(1, 5)
-        box_base1_x = 10 - box_base0_x
-        box_base1_y = 5 - box_base0_y
+        #box_base1_x = 10 - box_base0_x
+        #box_base1_y = 5 - box_base0_y
         player0_x = (box_base0_x - 1) * 10 + random.randint(1, 9)
         player0_y = (box_base0_y - 1) * 10 + random.randint(1, 5)
         player1_x = 100 - player0_x
         player1_y = 100 - player0_y
         base0 = unit.UnitObject(self.total_id, ai_id0, 'base', (player0_x, player0_y))
-        self.units[ai_id0] = self.total_id
-        self.hqs.append(self.total_id)
+        self.units[self.total_id]=base0
+        self.hqs.append(base0)
         self.total_id += 1
         base1 = unit.UnitObject(self.total_id, ai_id1, 'base', (player1_x, player1_y))
-        self.units[ai_id1] = self.total_id
-        self.hqs.append(self.total_id)
+        self.units[self.total_id] = base1
+        self.hqs.append(base1)
         self.total_id += 1
-        self.hqs = [(player0_x, player0_y), (player1_x, player1_y)]
         tech0 = unit.UnitObject(self.total_id, ai_id0, 'teach_building', (player0_x, player0_y + 2))
-        self.units[ai_id0] = self.total_id
+        self.units[self.total_id] = tech0
         self.total_id += 1
         tech1 = unit.UnitObject(self.total_id, ai_id0, 'teach_building', (100 - player0_x, 98 - player0_y))
-        self.units[ai_id0] = self.total_id
+        self.units[self.total_id] = tech1
         self.total_id += 1
         bank0 = unit.UnitObject(self.total_id, ai_id1, 'bank', (player0_x, player0_y - 2))
-        self.units[ai_id1] = self.total_id
+        self.units[self.total_id] = bank0
         self.total_id += 1
         bank1 = unit.UnitObject(self.total_id, ai_id1, 'bank', (100 - player0_x, 102 - player0_y))
-        self.units[ai_id1] = self.total_id
+        self.units[self.total_id] = bank1
         self.total_id += 1
         # random银行和教学楼并中心对称
         # 除去出生地附近 教学楼和银行总数为8或7（一半地图） 各自数目不定
         bank_and_teach = 12
         position_now = 0
-        box_x = 0
-        box_y = 0
+        #box_x = 0
+        #box_y = 0
+
         while (bank_and_teach > 0):
             position_now += random.randint(1, int((50 - position_now) / bank_and_teach))
             box_x = position_now % 10
@@ -100,10 +100,12 @@ class GameMain:
                 tech_1_x = 100 - tech_x
                 tech_1_y = 100 - tech_y
                 tech0 = unit.UnitObject(self.total_id, None, 'teach_building', (tech_x, tech_y))
-                self.buildings.append(self.total_id)
+                self.units[self.total_id] = tech0
+                self.buildings.append(tech0)
                 self.total_id += 1
                 tech1 = unit.UnitObject(self.total_id, None, 'teach_building', (tech_1_x, tech_1_y))
-                self.buildings.append(self.total_id)
+                self.units[self.total_id] = tech1
+                self.buildings.append(tech1)
                 self.total_id += 1
             if type_rand == 1:
                 bank_x = (box_x - 1) * 10 + random.randint(1, 9)
@@ -111,10 +113,12 @@ class GameMain:
                 bank_1_x = 100 - bank_x
                 bank_1_y = 100 - bank_y
                 bank0 = unit.UnitObject(self.total_id, None, 'teach_building', (bank_x, bank_y))
-                self.buildings.append(self.total_id)
+                self.units[self.total_id] = bank0
+                self.buildings.append(bank0)
                 self.total_id += 1
                 bank1 = unit.UnitObject(self.total_id, None, 'teach_building', (bank_1_x, bank_1_y))
-                self.buildings.append(self.total_id)
+                self.buildings.append(bank1)
+                self.units[self.total_id] = bank1
                 self.total_id += 1
             bank_and_teach -= 1
         #生成11个具有特定技能的建筑 不进行building_id编号和占有方编号
@@ -129,84 +133,84 @@ class GameMain:
             building_y = (box_y - 1) * 10 + random.randint(7, 9)
             building_type = choice(building_list)
             if building_type == 1:
-                building0 = unit.UnitObject(self.total_id, None, 'hack_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                hack_lab0 = unit.UnitObject(self.total_id, None, 'hack_lab', (building_x, building_y))
+                self.buildings.append(hack_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'hack_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                hack_lab1 = unit.UnitObject(self.total_id, None, 'hack_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(hack_lab1)
                 self.total_id += 1
             if building_type == 2:
-                building0 = unit.UnitObject(self.total_id, None, 'bid_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                bid_lab0 = unit.UnitObject(self.total_id, None, 'bid_lab', (building_x, building_y))
+                self.buildings.append(bid_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'bid_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                bid_lab1 = unit.UnitObject(self.total_id, None, 'bid_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(bid_lab1)
                 self.total_id += 1
             if building_type == 3:
-                building0 = unit.UnitObject(self.total_id, None, 'car_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                car_lab0 = unit.UnitObject(self.total_id, None, 'car_lab', (building_x, building_y))
+                self.buildings.append(car_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'car_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                car_lab1 = unit.UnitObject(self.total_id, None, 'car_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(car_lab1)
                 self.total_id += 1
             if building_type == 4:
-                building0 = unit.UnitObject(self.total_id, None, 'elec_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                elec_lab0 = unit.UnitObject(self.total_id, None, 'elec_lab', (building_x, building_y))
+                self.buildings.append(elec_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'elec_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                elec_lab1 = unit.UnitObject(self.total_id, None, 'elec_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(elec_lab1)
                 self.total_id += 1
             if building_type == 5:
-                building0 = unit.UnitObject(self.total_id, None, 'radiation_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                radiation_lab0 = unit.UnitObject(self.total_id, None, 'radiation_lab', (building_x, building_y))
+                self.buildings.append(radiation_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'radiation_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                radiation_lab1 = unit.UnitObject(self.total_id, None, 'radiation_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(radiation_lab1)
                 self.total_id += 1
             if building_type == 6:
-                building0 = unit.UnitObject(self.total_id, None, 'uav_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                uav_lab0 = unit.UnitObject(self.total_id, None, 'uav_lab', (building_x, building_y))
+                self.buildings.append(uav_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'uav_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                uav_lab1 = unit.UnitObject(self.total_id, None, 'uav_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(uav_lab1)
                 self.total_id += 1
             if building_type == 7:
-                building0 = unit.UnitObject(self.total_id, None, 'aircraft_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                aircraft_lab0 = unit.UnitObject(self.total_id, None, 'aircraft_lab', (building_x, building_y))
+                self.buildings.append(aircraft_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'aircraft_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                aircraft_lab1 = unit.UnitObject(self.total_id, None, 'aircraft_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(aircraft_lab1)
                 self.total_id += 1
             if building_type == 8:
-                building0 = unit.UnitObject(self.total_id, None, 'build_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                build_lab0 = unit.UnitObject(self.total_id, None, 'build_lab', (building_x, building_y))
+                self.buildings.append(build_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'build_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                build_lab1 = unit.UnitObject(self.total_id, None, 'build_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(build_lab1)
                 self.total_id += 1
             if building_type == 9:
-                building0 = unit.UnitObject(self.total_id, None, 'finance_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                finance_lab0 = unit.UnitObject(self.total_id, None, 'finance_lab', (building_x, building_y))
+                self.buildings.append(finance_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'finance_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                finance_lab1 = unit.UnitObject(self.total_id, None, 'finance_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(finance_lab1)
                 self.total_id += 1
             if building_type == 10:
-                building0 = unit.UnitObject(self.total_id, None, 'material_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                material_lab0 = unit.UnitObject(self.total_id, None, 'material_lab', (building_x, building_y))
+                self.buildings.append(material_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'material_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                material_lab1 = unit.UnitObject(self.total_id, None, 'material_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(material_lab1)
                 self.total_id += 1
             if building_type == 11:
-                building0 = unit.UnitObject(self.total_id, None, 'nano_lab', (building_x, building_y))
-                self.buildings.append(self.total_id)
+                nano_lab0 = unit.UnitObject(self.total_id, None, 'nano_lab', (building_x, building_y))
+                self.buildings.append(nano_lab0)
                 self.total_id += 1
-                building1 = unit.UnitObject(self.total_id, None, 'nano_lab', (100 - building_x, 100 - building_y))
-                self.buildings.append(self.total_id)
+                nano_lab1 = unit.UnitObject(self.total_id, None, 'nano_lab', (100 - building_x, 100 - building_y))
+                self.buildings.append(nano_lab1)
                 self.total_id += 1
             building_list.remove(building_type)
-            total_building -= 1"""
+            total_building -= 1'''
         pass
 
     def win_determine(self):
@@ -293,40 +297,40 @@ class GameMain:
 
     def cleanup_phase(self):
         # 单位死亡判定
-        id_collection = list(self.units)  # 寻找传入ai_id对应的value
-        for ai_id in id_collection:
-            unit_obj=list(self.units.get(ai_id))
-            for things in unit_obj:
-                if things.health_now <= 0:
-                    self.units[ai_id].remove(things)  # 从字典的value列表中把死亡单位删除
-                    if things.__type_name == 'hacker':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['hack_lab']['remain_people']
-                    if things.__type_name == 'superman':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['bid_lab']['remain_people']
-                    if things.__type_name == 'battle_tank':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['car_lab']['remain_people']
-                    if things.__type_name == 'bolt_tank':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['elec_lab']['remain_people']
-                    if things.__type_name == 'nuke_tank':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['radiation_lab']['remain_people']
-                    if things.__type_name == 'uav':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['uav_lab']['remain_people']
-                    if things.__type_name == 'eagle':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['aircraft_lab']['remain_people']
-                    if things.__type_name == 'meat':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['base']['remain_people']
-                if things.hacked_point >= things.max_health_now >= 0:
-                    self.units[ai_id].remove(things)  # 从字典里删除被黑了的单位
-                    if things.__type_name == 'battle_tank':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['car_lab']['remain_people']
-                    if things.__type_name == 'bolt_tank':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['elec_lab']['remain_people']
-                    if things.__type_name == 'nuke_tank':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['radiation_lab']['remain_people']
-                    if things.__type_name == 'uav':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['uav_lab']['remain_people']
-                    if things.__type_name == 'eagle':
-                        self.resource[ai_id]['remain_people'] += unit.origin_attribute['aircraft_lab']['remain_people']
+        # id_collection = [0,1]  # 寻找传入ai_id对应的value
+        # for ai_id in id_collection:
+        for unit_id in self.units.keys():
+            things = self.units[unit_id]
+            if self.units[unit_id].health_now <= 0:
+                del self.units[unit_id]  # 从字典的value列表中把死亡单位删除
+                if things.__type_name == 'hacker':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['hack_lab']['remain_people']
+                if things.__type_name == 'superman':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['bid_lab']['remain_people']
+                if things.__type_name == 'battle_tank':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['car_lab']['remain_people']
+                if things.__type_name == 'bolt_tank':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['elec_lab']['remain_people']
+                if things.__type_name == 'nuke_tank':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['radiation_lab']['remain_people']
+                if things.__type_name == 'uav':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['uav_lab']['remain_people']
+                if things.__type_name == 'eagle':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['aircraft_lab']['remain_people']
+                if things.__type_name == 'meat':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['base']['remain_people']
+            if things.hacked_point >= things.max_health_now >= 0:
+                del self.units[unit_id]  # 从字典里删除被黑了的单位
+                if things.__type_name == 'battle_tank':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['car_lab']['remain_people']
+                if things.__type_name == 'bolt_tank':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['elec_lab']['remain_people']
+                if things.__type_name == 'nuke_tank':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['radiation_lab']['remain_people']
+                if things.__type_name == 'uav':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['uav_lab']['remain_people']
+                if things.__type_name == 'eagle':
+                    self.resource[things.flag]['remain_people'] += origin_attribute['aircraft_lab']['remain_people']
         pass
 
     def skill_phase(self,order):
@@ -547,8 +551,7 @@ class GameMain:
         pass
 
     def produce_phase(self):
-        id_collection = list(self.units)  # 寻找传入ai_id对应的value
-        ai_id = id_collection[0]
+        ai_id = 0
         for building_id in self.produce_instr_0:
             if building_id.__type_name == 'hack_lab':
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['hack_lab']['people_cost'] or \
@@ -625,7 +628,7 @@ class GameMain:
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['base']['tech_cost']
         self.units[ai_id].append(self.total_id)
         self.total_id += 1
-        ai_id = id_collection[1]
+        ai_id = 1
         for building_id in self.produce_instr_1:
             if building_id.__type_name == 'hack_lab':
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['hack_lab']['people_cost'] or \
@@ -673,7 +676,6 @@ class GameMain:
                 self.resource[ai_id]['money'] -= unit.origin_attribute['radiation_lab']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['radiation_lab']['tech_cost']
             if building_id.__type_name == 'uav_lab':
-                people_type = 7
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['uav_lab']['people_cost'] or \
                                 self.resource[ai_id]['money'] < unit.origin_attribute['uav_lab']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['uav_lab']['tech_cost']:
@@ -700,25 +702,18 @@ class GameMain:
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['base_lab']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['base']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['base']['tech_cost']
-        self.units[ai_id].append(self.total_id)
+        self.units[self.total_id] = person
         self.total_id += 1
         # 兵种获取指令结算
         pass
 
     def resource_phase(self):
         #资源结算阶段
-        bank_count = 0
-        teaching_building_count = 0
-        id_collection = list(self.units)  # 寻找传入ai_id对应的value
-        for ai_id in id_collection:
-            unit_obj = list(self.units.get(ai_id))
-            for things in unit_obj:
-                if things.__type_name == "bank":
-                    bank_count += 1
-                if things.__type_name == "teach_building":
-                    teaching_building_count += 1
-            self.resource[ai_id]["money"] += 500 * bank_count
-            self.resource[ai_id]["tech"] += 50 * teaching_building_count
+        for unit_id in self.units.values():
+            if unit_id.__type_name == 'bank':
+                self.resource[unit_id.flag]['money'] += 500
+            if unit_id.__type_name == 'teach_building':
+                self.resource[unit_id.flag]['tech'] += 50
         pass
 
     def capture_phase(self):
