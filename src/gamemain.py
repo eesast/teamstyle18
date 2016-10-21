@@ -43,7 +43,7 @@ class GameMain:
     resource = {} #双方金钱、科技、剩余人口容量记录
 
     def __init__(self):
-        '''#地图生成模块
+        #地图生成模块
         ai_id0 = 0
         ai_id1 = 1
         #地图生成模块
@@ -85,8 +85,8 @@ class GameMain:
         position_now = 0
         #box_x = 0
         #box_y = 0
-        resource_building1 = [re_10,re_11,re_12,re_13,re_14,re_15,re_16,re_17,re_18,re_19,re_110,re111]
-        resource_building2 = [re_20,re_21,re_22,re_23,re_24,re_25,re_26,re_27,re_28,re_29,re_210,re211]
+        resource_building1 = ['re_10','re_11','re_12','re_13','re_14','re_15','re_16','re_17','re_18','re_19','re_110','re111']
+        resource_building2 = ['re_20','re_21','re_22','re_23','re_24','re_25','re_26','re_27','re_28','re_29','re_210','re211']
         while (bank_and_teach > 0):
             position_now += random.randint(1, int((50 - position_now) / bank_and_teach))
             box_x = position_now % 10
@@ -100,26 +100,26 @@ class GameMain:
                 tech_y = (box_y - 1) * 10 + random.randint(1, 5)
                 tech_1_x = 100 - tech_x
                 tech_1_y = 100 - tech_y
-                resource_building1[bank_and_teach] = unit.UnitObject(self.total_id, None, 'teach_building', (tech_x, tech_y))
-                self.units[self.total_id] = resource_building1[bank_and_teach]
-                self.buildings.append(resource_building1[bank_and_teach])
+                resource_building1[bank_and_teach-1] = unit.UnitObject(self.total_id, None, 'teach_building', (tech_x, tech_y))
+                self.units[self.total_id] = resource_building1[bank_and_teach-1]
+                self.buildings.append(resource_building1[bank_and_teach-1])
                 self.total_id += 1
-                resource_building2[bank_and_teach] = unit.UnitObject(self.total_id, None, 'teach_building', (tech_1_x, tech_1_y))
-                self.units[self.total_id] = resource_building2[bank_and_teach]
-                self.buildings.append(resource_building2[bank_and_teach])
+                resource_building2[bank_and_teach-1] = unit.UnitObject(self.total_id, None, 'teach_building', (tech_1_x, tech_1_y))
+                self.units[self.total_id] = resource_building2[bank_and_teach-1]
+                self.buildings.append(resource_building2[bank_and_teach-1])
                 self.total_id += 1
             if type_rand == 1:
                 bank_x = (box_x - 1) * 10 + random.randint(1, 9)
                 bank_y = (box_y - 1) * 10 + random.randint(1, 5)
                 bank_1_x = 100 - bank_x
                 bank_1_y = 100 - bank_y
-                resource_building1[bank_and_teach] = unit.UnitObject(self.total_id, None, 'teach_building', (bank_x, bank_y))
-                self.units[self.total_id] = resource_building1[bank_and_teach]
-                self.buildings.append(resource_building1[bank_and_teach])
+                resource_building1[bank_and_teach-1] = unit.UnitObject(self.total_id, None, 'teach_building', (bank_x, bank_y))
+                self.units[self.total_id] = resource_building1[bank_and_teach-1]
+                self.buildings.append(resource_building1[bank_and_teach-1])
                 self.total_id += 1
-                resource_building2[bank_and_teach] = unit.UnitObject(self.total_id, None, 'teach_building', (bank_1_x, bank_1_y))
-                self.buildings.append(resource_building2[bank_and_teach])
-                self.units[self.total_id] = resource_building2[bank_and_teach]
+                resource_building2[bank_and_teach-1] = unit.UnitObject(self.total_id, None, 'teach_building', (bank_1_x, bank_1_y))
+                self.buildings.append(resource_building2[bank_and_teach-1])
+                self.units[self.total_id] = resource_building2[bank_and_teach-1]
                 self.total_id += 1
             bank_and_teach -= 1
         #生成11个具有特定技能的建筑 不进行building_id编号和占有方编号
@@ -211,7 +211,7 @@ class GameMain:
                 self.buildings.append(nano_lab1)
                 self.total_id += 1
             building_list.remove(building_type)
-            total_building -= 1'''
+            total_building -= 1
         pass
 
     def win_determine(self):
@@ -560,7 +560,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['hacker']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['hacker']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'hacker', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'hacker', building_id.position, self.buff)
                 self.resource[ai_id]['money'] -= unit.origin_attribute['hacker']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['hacker']['tech_cost']
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['hacker']['remain_people']
@@ -569,7 +569,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['superman']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['superman']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'superman', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'superman', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['superman']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['superman']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['superman']['tech_cost']
@@ -578,7 +578,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['battle_tank']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['battle_tank']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'battle_tank', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'battle_tank', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['battle_tank']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['battle_tank']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['battle_tank']['tech_cost']
@@ -587,7 +587,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['bolt_tank']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['bolt_tank']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'bolt_tank', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'bolt_tank', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['bolt_tank']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['bolt_tank']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['bolt_tank']['tech_cost']
@@ -596,7 +596,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['nuke_tank']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['nuke_tank']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'nuke_tank', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'nuke_tank', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['nuke_tank']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['nuke_tank']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['nuke_tank']['tech_cost']
@@ -606,7 +606,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['uav']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['uav']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'uav', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'uav', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['uav']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['uav']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['uav']['tech_cost']
@@ -615,7 +615,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['eagle']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['eagle']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'eagle', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'eagle', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['eagle']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['eagle']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['eagle']['tech_cost']
@@ -624,7 +624,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['meat']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['meat']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'meat', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'meat', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['meat']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['meat']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['meat']['tech_cost']
@@ -638,7 +638,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['hacker']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['hacker']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'hacker', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'hacker', building_id.position, self.buff)
                 self.resource[ai_id]['money'] -= unit.origin_attribute['hacker']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['hacker']['tech_cost']
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['hacker']['remain_people']
@@ -647,7 +647,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['superman']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['superman']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'superman', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'superman', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['superman']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['superman']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['superman']['tech_cost']
@@ -656,7 +656,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['battle_tank']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['battle_tank']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'battle_tank', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'battle_tank', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['battle_tank']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['battle_tank']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['battle_tank']['tech_cost']
@@ -665,7 +665,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['bolt_tank']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['bolt_tank']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'bolt_tank', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'bolt_tank', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['bolt_tank']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['bolt_tank']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['bolt_tank']['tech_cost']
@@ -674,7 +674,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['nuke_tank']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['nuke_tank']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'nuke_tank', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'nuke_tank', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['nuke_tank']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['nuke_tank']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['nuke_tank']['tech_cost']
@@ -683,7 +683,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['uav']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['uav']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'uav', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'uav', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['uav']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['uav']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['uav']['tech_cost']
@@ -692,7 +692,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['eagle']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['eagle']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'eagle', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'eagle', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['eagle']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['eagle']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['eagle']['tech_cost']
@@ -701,7 +701,7 @@ class GameMain:
                                 self.resource[ai_id]['money'] < unit.origin_attribute['meat']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['meat']['tech_cost']:
                     return
-                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'hacker', building_id.position)
+                instruct[1] = unit.UnitObject(self.total_id, ai_id, 'hacker', building_id.position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['meat']['remain_people']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['meat']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['meat']['tech_cost']
