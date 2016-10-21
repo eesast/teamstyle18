@@ -81,7 +81,7 @@ class UnitObject(object):
     skill_last_release_time2 = None #上次技能2释放时间
     attack_mode = None #攻击模式，例如可对空，可对坦克，可对步兵之类的
 
-    def __init__(self, unit_id, flag, type_name, position, buff):
+    def __init__(self, unit_id, flag, type_name, position,buff=None):
         self.unit_id = unit_id
         self.flag = flag
         self.position = position
@@ -90,13 +90,20 @@ class UnitObject(object):
 
         self.skill_last_release_time1 = -1000
         self.skill_last_release_time2 = -1000
-
-        self.health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])   #单位生成时默认为最大血量，以下同理
-        self.max_health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])
-        self.max_speed_now = origin_attribute[type_name]['origin_max_speed'] * (1+buff[flag][self.__unit_type]['speed_buff'])
-        self.shot_range_now = origin_attribute[type_name]['origin_shot_range'] * (1+buff[flag][self.__unit_type]['shot_range_buff'])
-        self.defense_now = origin_attribute[type_name]['origin_defense'] * (1+buff[flag][self.__unit_type]['defense_buff'])
-        self.attack_now = origin_attribute[type_name]['origin_attack'] * (1+buff[flag][self.__unit_type]['attack_buff'])
+        if (self.__unit_type!=BASE and self.__unit_type!=BUILDING):
+            self.health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])   #单位生成时默认为最大血量，以下同理
+            self.max_health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])
+            self.max_speed_now = origin_attribute[type_name]['origin_max_speed'] * (1+buff[flag][self.__unit_type]['speed_buff'])
+            self.shot_range_now = origin_attribute[type_name]['origin_shot_range'] * (1+buff[flag][self.__unit_type]['shot_range_buff'])
+            self.defense_now = origin_attribute[type_name]['origin_defense'] * (1+buff[flag][self.__unit_type]['defense_buff'])
+            self.attack_now = origin_attribute[type_name]['origin_attack'] * (1+buff[flag][self.__unit_type]['attack_buff'])
+        else:
+            self.health_now = origin_attribute[type_name]['origin_max_health']    #单位生成时默认为最大血量，以下同理
+            self.max_health_now = origin_attribute[type_name]['origin_max_health']
+            self.max_speed_now = origin_attribute[type_name]['origin_max_speed']
+            self.shot_range_now = origin_attribute[type_name]['origin_shot_range']
+            self.defense_now = origin_attribute[type_name]['origin_defense']
+            self.attack_now = origin_attribute[type_name]['origin_attack']
 
         self.__skill_1_cd = origin_attribute[type_name]['skill_cd_1']
         self.__skill_2_cd = origin_attribute[type_name]['skill_cd_2']
@@ -119,7 +126,7 @@ class UnitObject(object):
         return self.__type_name
 
     #写了一个接口虽然不觉得有什么卵用
-    def reset_attribute(self, buff, **kwargs):
+    def reset_attribute(self, buff=None, **kwargs):
         if 'health' in kwargs:
             self.health_now = kwargs['health']
         if 'max_health' in kwargs:
@@ -143,11 +150,12 @@ class UnitObject(object):
         if 'skill_last_release_time2' in kwargs:
             self.skill_last_release_time2 = kwargs['skill_last_release_time2']
 
-        self.max_health_now = origin_attribute[self.__type_name]['origin_max_health'] * (1 + buff[self.flag][self.__unit_type]['health_buff'])
-        self.max_speed_now = origin_attribute[self.__type_name]['origin_max_speed'] * (1 + buff[self.flag][self.__unit_type]['speed_buff'])
-        self.shot_range_now = origin_attribute[self.__type_name]['origin_shot_range'] * (1 + buff[self.flag][self.__unit_type]['shot_range_buff'])
-        self.defense_now = origin_attribute[self.__type_name]['origin_defense'] * (1 + buff[self.flag][self.__unit_type]['defense_buff'])
-        self.attack_now = origin_attribute[self.__type_name]['origin_attack'] * (1 + buff[self.flag][self.__unit_type]['attack_buff'])
+        if (self.__unit_type!=BASE and self.__unit_type!=BUILDING):
+            self.max_health_now = origin_attribute[self.__type_name]['origin_max_health'] * (1 + buff[self.flag][self.__unit_type]['health_buff'])
+            self.max_speed_now = origin_attribute[self.__type_name]['origin_max_speed'] * (1 + buff[self.flag][self.__unit_type]['speed_buff'])
+            self.shot_range_now = origin_attribute[self.__type_name]['origin_shot_range'] * (1 + buff[self.flag][self.__unit_type]['shot_range_buff'])
+            self.defense_now = origin_attribute[self.__type_name]['origin_defense'] * (1 + buff[self.flag][self.__unit_type]['defense_buff'])
+            self.attack_now = origin_attribute[self.__type_name]['origin_attack'] * (1 + buff[self.flag][self.__unit_type]['attack_buff'])
 
         #虽然我这里留下了接口，但讲道理以下这几个东西最好直接访问来改变......如果需要其他的话在以下自行添加
         if 'position' in kwargs:
@@ -179,7 +187,9 @@ test_buff = {
 
 
 #-------------实例化-------------
-"""tank = UnitObject(1, 1, 'nuke_tank', (22, 33), test_buff)
+'''
+tank = UnitObject(1, 1, 'nuke_tank', (22, 33), test_buff)
 tank.print_info()
 tank.reset_attribute(test_buff, speed=15, health=6666)
-tank.print_info()"""
+tank.print_info()
+'''
