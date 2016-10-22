@@ -20,24 +20,42 @@ class IOHandler(asyncore.dispatcher):
 
     def handle_write(self):
         obj_list=self.info_queue.get()
-        byte_message_list=self.serializer(obj_list)
-        for byte_message in byte_message_list:
-            self.send(byte_message)
+        byte_message=self.serializer(obj_list)
+        self.send(byte_message)
 
     def writable(self):
         return not self.info_queue.empty()
 
-    def serializer(self, object_list):
-        byte_message_list=[]
+    def object_serializer(self, object_list):
+        byte_message=b""
+        byte_message+=(struct.pack('i',len(object_list)))
+        pack_header="!"
+        args=[]
         for obj in object_list:
-            args=[]
-            pack_header=""
-            for name, value in vars(obj).items():
-                if name in send_list:
-                    pack_header+="f" if type(value)==int or type(value)==float else str(len(value))+"s"
-                    args.append(value if type(value)!=str else bytes(value.encode('utf-8')))
-            byte_message_list.append(struct.pack(pack_header,*args))
-        return byte_message_list
+            for name, value in sorted(vars(obj).items(), key=lambda t: t[0]):
+                if value is None:
+                    pack_header+="4s"
+                    args.append("none".encode('utf-8'))
+                    continue
+                if type(value)==tuple or type(value)==list:
+                    for sub in value:
+                        pack_header+= "i" if type(sub)==int else ((str(len(sub))+"s") if type(sub)==str else 'f')
+                        args.append(sub if type(sub)!=str else sub.encode('utf-8'))
+                    continue
+                pack_header+="i" if type(value)==int else ((str(len(value))+"s") if type(value)==str else 'f')
+                args.append(value if type(value)!=str else value.encode('utf-8'))
+            print (pack_header,args)
+            byte_message+=(struct.pack(pack_header,*args))
+        return byte_message
+
+    def dict_serializer(self,object_dict):
+        header=""
+        arg=[]
+        for value in dict.values():
+            header+="i" if type(value)==int else ((str(len(value))+"s") if type(value)==str else 'f')
+            args.append(value if type(value)!=str else value.encode('utf-8'))
+        return struct.pack(header,*arg)
+
     def add_to_gamemain(self, instruction):
         pass
 
