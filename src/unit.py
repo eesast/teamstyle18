@@ -90,8 +90,8 @@ class UnitObject(object):
 
         self.skill_last_release_time1 = -1000
         self.skill_last_release_time2 = -1000
-
-        if (self.__unit_type != BASE):
+        # 增加了对建筑的判断
+        if (self.__unit_type != BASE)and(self.__unit_type != BUILDING):
             self.health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])   #单位生成时默认为最大血量，以下同理
             self.max_health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])
             self.max_speed_now = origin_attribute[type_name]['origin_max_speed'] * (1+buff[flag][self.__unit_type]['speed_buff'])
@@ -154,8 +154,8 @@ class UnitObject(object):
             self.attack_now = kwargs['position']
         if 'attack_mode' in kwargs:
             self.attack_now = kwargs['attack_mode']
-
-        if(self.__unit_type != BASE):
+        #增加了对建筑的判断
+        if(self.__unit_type != BASE )and(self.__unit_type != BUILDING):
             self.max_health_now *= (1 + buff[self.flag][self.__unit_type]['health_buff'])
             self.max_speed_now *= (1 + buff[self.flag][self.__unit_type]['speed_buff'])
             self.shot_range_now *= (1 + buff[self.flag][self.__unit_type]['shot_range_buff'])
