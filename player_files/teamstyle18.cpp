@@ -10,7 +10,7 @@ Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 {
 
 	unit_id = _unit_id;
-    flag = _flag;
+	flag = _flag;
 	position = pos;
 	type_name = _type_name;
 	unit_type = UnitType(origin_attribute[type_name][UNIT_TYPE]);

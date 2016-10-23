@@ -26,18 +26,18 @@ enum BuffType
 
 enum TypeName
 {
-	  __BASE, 
-
-	  MEAT, HACKER, SUPERMAN,
-
-	  BATTLE_TANK, BOLT_TANK, NUKE_TANK, 
-
-	  UAV, EAGLE, 
-
-	  HACK_LAB, BID_LAB, CAR_LAB, ELEC_LAB, RADIATION_LAB, 
-	  UAV_LAB, AIRCRAFT_LAB, BUILD_LAB, FINANCE_LAB, MATERIAL_LAB,
-	  NANO_LAB, TEACH_BUILDING, BANK,
-	  Type_num
+	__BASE, 
+	
+	MEAT, HACKER, SUPERMAN,
+	
+	BATTLE_TANK, BOLT_TANK, NUKE_TANK, 
+	
+	UAV, EAGLE, 
+	
+	HACK_LAB, BID_LAB, CAR_LAB, ELEC_LAB, RADIATION_LAB, 
+	UAV_LAB, AIRCRAFT_LAB, BUILD_LAB, FINANCE_LAB, MATERIAL_LAB,
+	NANO_LAB, TEACH_BUILDING, BANK,
+	Type_num
 };
 
 enum attribute
@@ -127,11 +127,11 @@ std::ostream& operator <<(std::ostream &os, const Unit&u)//这也是用来测试
 {
 
 	os << "id:" << u.unit_id << "阵营:" << u.flag << "位置:" << " (" << u.position.x << "," << u.position.y << ") " << "类型:" << u.unit_type << "兵种:" << u.type_name << "自定名称:" << u.name <<
-		"HP:" << u.health_now << "MAXHP:" << u.max_health_now << "速度:" << u.max_speed_now << "射程:" << u.shot_range_now << "防御:" << u.defense_now << "攻击:" << u.attack_now <<
-		"最大数量:" << origin_attribute[u.type_name][MAX_ACCOUNT] <<
-		"人口:" << origin_attribute[u.type_name][PEOPLE_COST] <<
-		"金钱消耗:" << origin_attribute[u.type_name][MONEY_COST] <<
-		"科技消耗:" << origin_attribute[u.type_name][TECH_COST] <<
-		std::endl;
+	"HP:" << u.health_now << "MAXHP:" << u.max_health_now << "速度:" << u.max_speed_now << "射程:" << u.shot_range_now << "防御:" << u.defense_now << "攻击:" << u.attack_now <<
+	"最大数量:" << origin_attribute[u.type_name][MAX_ACCOUNT] <<
+	"人口:" << origin_attribute[u.type_name][PEOPLE_COST] <<
+	"金钱消耗:" << origin_attribute[u.type_name][MONEY_COST] <<
+	"科技消耗:" << origin_attribute[u.type_name][TECH_COST] <<
+	std::endl;
 	return os;
 }
