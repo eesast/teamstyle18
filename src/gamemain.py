@@ -344,13 +344,13 @@ class GameMain:
             y = my_position[1] - enemy_position[1]
             return (x * x + y * y) ** 0.5
 
-        # 电子对抗坦克技能1
+        # 电子对抗坦克技能1 修改计算公式
         def bolt_tank_skill1(id, attack_id):
             my_information = Get_id_information(id)
             enemy_information = Get_id_information(attack_id)
             skill_cd = self.turn_num - my_information.skill_last_release_time1
             distance = Get_distance(my_information.position, enemy_information.position)
-            if (skill_cd >= origin_attribute['bolt_tank']['skill_cd_1'] and distance <= origin_attribute['blot_tank']['origin_shot_range']):
+            if (skill_cd >= origin_attribute['bolt_tank']['skill_cd_1'] and distance <= origin_attribute['bolt_tank']['origin_shot_range']):
                 if (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 3):
                     enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1-enemy_information.defense_now/1000))
                     my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
