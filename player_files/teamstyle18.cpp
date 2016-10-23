@@ -1,20 +1,20 @@
 #pragma once
 #include "teamstyle18.h"
 
-vector<Unit>units;      // µ¥Î»List
-int turn_num = 0;   //»ØºÏÊı
-extern double buff[2][4][5] = { 0.0 }; //buffÈ«¾Ö±äÁ¿ [ÕóÓª][µ¥Î»ÀàĞÍ][buffÀàĞÍ]
+vector<Unit>units;      // å•ä½List
+int turn_num = 0;   //å›åˆæ•°
+extern double buff[2][4][5] = { 0.0 }; //buffå…¨å±€å˜é‡ [é˜µè¥][å•ä½ç±»å‹][buffç±»å‹]
 
 
 Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 {
 
 	unit_id = _unit_id;
-    flag = _flag;
+    	flag = _flag;
 	position = pos;
 	type_name = _type_name;
 	unit_type = UnitType(origin_attribute[type_name][UNIT_TYPE]);
-	health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[flag][unit_type][HEALTH]);		  //µ¥Î»Éú³ÉÊ±Ä¬ÈÏÎª×î´óÑªÁ¿£¬ÒÔÏÂÍ¬Àí
+	health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[flag][unit_type][HEALTH]);		  //å•ä½ç”Ÿæˆæ—¶é»˜è®¤ä¸ºæœ€å¤§è¡€é‡ï¼Œä»¥ä¸‹åŒç†
 	max_health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[flag][unit_type][HEALTH]);
 	max_speed_now = origin_attribute[type_name][ORIGIN_MAX_SPEED] * (1 + buff[flag][unit_type][SPEED]);
 	shot_range_now = origin_attribute[type_name][ORIGIN_SHOT_RANGE] * (1 + buff[flag][unit_type][SHOT_RANGE]);
@@ -24,10 +24,10 @@ Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 }
 
 void Move(int unit_id, Position pos);
-void skill_1(int unit_id, ...);//²ÎÊı²¢Ã»ÓĞÏëºÃÔõÃ´Ğ´
+void skill_1(int unit_id, ...);//å‚æ•°å¹¶æ²¡æœ‰æƒ³å¥½æ€ä¹ˆå†™
 void skill_2(int unit_id, ...);
 
-int main()//ÕâÊÇÓÃÀ´²âÊÔµÄ
+int main()//è¿™æ˜¯ç”¨æ¥æµ‹è¯•çš„
 {
 	Unit tank(1, 1, NUKE_TANK, { 22,33 });
 	std::cout<<tank;
