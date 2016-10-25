@@ -88,6 +88,15 @@ class UnitObject(object):
         self.__type_name = type_name
         self.__unit_type = origin_attribute[type_name]['unit_type']
 
+        self.__producing_building = -1
+        self.healing_rate = 0  # 治疗/维修速率
+        self.hacked_point = 0  # 被黑的点数
+        self.is_disable = False  # 是否被瘫痪
+        self.disable_since = 0  # 被瘫痪的时间点，用于判断瘫痪时间
+        self.skill_last_release_time1 = 0  # 上次技能1释放时间
+        self.skill_last_release_time2 = 0  # 上次技能2释放时间
+        self.attack_mode = 0  # 攻击模式，例如可对空，可对坦克，可对步兵之类的
+
         self.skill_last_release_time1 = -1000
         self.skill_last_release_time2 = -1000
         # 增加了对建筑的判断
