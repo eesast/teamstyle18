@@ -65,7 +65,10 @@ class Skill_phaseTest(unittest.TestCase):
 
     def testHackerSkill(self):
         self.testOrders.clear()
-        self.testOrders.append(self.orders[1])
+        self.testOrders.append(self.orders[3])
+        self.game.units[2].position = (3, 4)
+        self.game.skill_phase(self.testOrders)
+        pass   #not completed
 
     def testUAV(self):
         self.testOrders.clear()
@@ -155,11 +158,6 @@ class Skill_phaseTest(unittest.TestCase):
         self.game.units[12].health_now = 300
         self.game.units[13].health_now = 500
 
-    def testEagleSkill2(self):
-        self.game.units[20] = unit.UnitObject(20, 0, "eagle", (100, 100), self.game.buff)
-        #self.game.units[21] = unit.UnitObject(  not completed!
-        pass
-
     def testSupermanSkill1(self):
         self.game.units[25] = unit.UnitObject(25, 0, "superman", (100, 100), self.game.buff)
         self.game.units[26] = unit.UnitObject(26, 1, "bolt_tank", (101, 100), self.game.buff)
@@ -167,7 +165,4 @@ class Skill_phaseTest(unittest.TestCase):
         self.testOrders.clear()
         self.testOrders.append(order)
         ehn = 500 - calculateInjure(15, 100)
-        self.assertEqual(self.game.units[26].health_now, ehn) #superman attack bolt tank through skill1
-
-    def testSupermanSkills(self):
-        pazh
+        self.assertEqual(self.game.units[26].health_now, ehn)  # superman attack bolt tank through skill1
