@@ -18,7 +18,7 @@ class GameMain:
     phase_num = 0  # 回合阶段指示
     skill_instr_0 = []  # ai0的当前回合指令
     skill_instr_1 = []  # ai1的当前回合制令
-    produce_instr_0 = []  # 指令格式为[[building_id,name],[building_id,name],[]]
+    produce_instr_0 = []  # 指令格式为[building_id,building_id,]
     produce_instr_1 = []
     move_instr_0 = []  # 指令格式[[unit_id,position_x,position_y],[unit_id,position_x,position_y]]
     move_instr_1 = []
@@ -55,15 +55,15 @@ class GameMain:
         ai_id1 = 1
         # 地图生成模块
         # 初始化self.resource
-        self.resource = {ai_id0: {"tech": 100000, "money": 100000, "remain_people": 1000000},
-                         ai_id1: {"tech": 100000, "money": 100000, "remain_people": 1000000}}
+        self.resource = {ai_id0: {"tech": 100000, "money": 100000, "remain_people": 100000},
+                         ai_id1: {"tech": 100000, "money": 100000, "remain_people": 100000}}
         # 在一定范围内random出一个基地并中心对称 并伴随生成bank 和teaching building 各一个
-        box_base0_x = random.randint(1, 10)
-        box_base0_y = random.randint(1, 5)
+        box_base0_x = random.randint(4, 7)
+        box_base0_y = random.randint(2, 3)
         # box_base1_x = 10 - box_base0_x
         # box_base1_y = 5 - box_base0_y
-        player0_x = (box_base0_x - 1) * 10 + random.randint(1, 9)
-        player0_y = (box_base0_y - 1) * 10 + random.randint(1, 5)
+        player0_x = (box_base0_x - 1) * 10 + random.randint(1, 8)
+        player0_y = (box_base0_y - 1) * 10 + random.randint(1, 8)
         player1_x = 100 - player0_x
         player1_y = 100 - player0_y
         base0 = unit.UnitObject(self.total_id, ai_id0, 'base', (player0_x, player0_y), self.buff)
@@ -621,8 +621,7 @@ class GameMain:
     def produce_phase(self):
         ai_id = 0
         tempcorrection=self.produce_instr_0.copy()
-        for instruct in tempcorrection:
-            building_id = instruct[0]
+        for building_id in tempcorrection:
             del self.produce_instr_0[0]
             if self.units[building_id].Get_type_name() == 'hack_lab':
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['hacker']['people_cost'] or \
@@ -720,8 +719,7 @@ class GameMain:
                 self.total_id += 1
         ai_id = 1
         tempcorrection=self.produce_instr_1.copy()
-        for instruct in tempcorrection:
-            building_id = instruct[0]
+        for building_id in tempcorrection:
             del self.produce_instr_1[0]
             if self.units[building_id].Get_type_name() == 'hack_lab':
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['hacker']['people_cost'] or \
