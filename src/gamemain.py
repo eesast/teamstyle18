@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from src import unit
-from src.unit import origin_attribute
+import unit
+from unit import origin_attribute
 import random
 from random import choice
 

@@ -17,7 +17,7 @@ class IOHandler(asyncore.dispatcher):
         asyncore.dispatcher.__init__(self, sock)
         self.info_queue = queue.Queue()
         self.ai_id=ai_id
-        self.send(ai_id)
+        self.send(struct.pack('i',ai_id))
         self.skill_instr=[]
         self.produce_instr=[]
         self.move_instr=[]
@@ -86,6 +86,7 @@ class IOHandler(asyncore.dispatcher):
         num=len(instruction)/(20)
         for i in range(0,num):
             itype,uid,bid,pos1x,pos1y,po2x,pos2y=(struct.unpack('iiiiiii',instruction[20*i:20*i+19]))
+            print (itype,uid,bid,pos1x,pos1y,po2x,pos2y)
             if itype is 1 or itype is 2:
                 if bid is -1:
                     self.skill_instr.append([itype,uid,pos1x,pos1y])
@@ -116,6 +117,7 @@ class MainServer(asyncore.dispatcher):
         self.set_reuse_addr()
         self.bind(host_addr)
         self.listen(5)
+        self.gamestart=False
         print('Server initialized')
 
     def handle_accept(self):
@@ -126,6 +128,9 @@ class MainServer(asyncore.dispatcher):
             handler = IOHandler(pair[0], ai_id)
             ai_id+=1
             self.conn_list.append(handler)
+        if ai_id is 1:
+            print ("Both ai connected")
+            self.gamestart=True
 
     def send_to_player(self, data):
         # Put info into corresponding conn's queue
