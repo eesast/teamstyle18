@@ -12,63 +12,62 @@ import struct
 '''
 
 class IOHandler(asyncore.dispatcher):
-    send_list=[]    #Things to send
     def __init__(self, sock, ai_id):
         asyncore.dispatcher.__init__(self, sock)
         self.info_queue = queue.Queue()
         self.ai_id=ai_id
-        self.send(struct.pack('i',ai_id))
+        self.send(struct.pack('i',self.ai_id))
         self.skill_instr=[]
         self.produce_instr=[]
         self.move_instr=[]
         self.capture_instr=[]
 
     def handle_read(self):
-        instruction = str(self.recv(8192))
+        instruction = self.recv(8192)
         if instruction:
             self.unpack_instrs(instruction)
 
     def handle_write(self):
         data=self.info_queue.get()
-        if type(data)==list:
+        if type(data)is list:
             byte_message=self.unit_serializer(data)
-        elif type(data)==dict and type(data[0])==dict:
+        elif type(data)is dict and 1 in data[0]:
             byte_message=self.buff_serializer(data)
         else:
             byte_message=self.resource_serializer(data)
         self.send(byte_message)
 
     def writable(self):
-        return not self.info_queue.empty()
+        return True
 
     def unit_serializer(self, object_list):
-        byte_message=b""
-        byte_message+=(struct.pack('ii',0,len(object_list)))
-        pack_header=""
-        args=[]
+        pack_header="ii"
+        args=[0,len(object_list)]
         for obj in object_list:
             for name, value in sorted(vars(obj).items(), key=lambda t: t[0]):
+                if (name[0]=='_') and name!='_UnitObject__unit_type' and name!='_UnitObject__type_name':
+                    continue
+                elif (name=='_UnitObject__unit_type' or name == '_UnitObject__type_name'):
+                    name=name[-9:]
                 if value is None:
                     pack_header+="i"
                     args.append(0)
                     continue
                 if type(value)==tuple or type(value)==list:
                     for sub in value:
-                        pack_header+= "i" if type(sub)==int else ((str(len(sub))+"s") if type(sub)==str else 'f')
-                        args.append(sub if type(sub)!=str else sub.encode('utf-8'))
+                        pack_header+= "i" if type(sub)==int else (("15s") if type(sub)==str else 'f')
+                        args.append(sub if type(sub)!=str else (sub+str((15-len(sub))*' ').encode('utf-8')))
                     continue
-                pack_header+="i" if type(value)==int else ((str(len(value))+"s") if type(value)==str else 'f')
+                pack_header+="i" if type(value)==int or type(value)==bool else (str(len(value))+("s") if type(value)==str else 'f')
                 args.append(value if type(value)!=str else value.encode('utf-8'))
-            print (pack_header,args)
-            byte_message+=(struct.pack(pack_header,*args))
-        return byte_message
+        return struct.pack(pack_header,*args)
 
     def resource_serializer(self,object_dict):
         header="i"
         args=[2]
         for name, value in sorted(object_dict.items(),key=lambda t:t[0]):
             for name, value in sorted(value.items(),key=lambda t:t[0]):
-                header+="i" if type(value)==int else ((str(len(value))+"s") if type(value)==str else 'f')
+                header+="i"
                 args.append(value if type(value)!=str else value.encode('utf-8'))
         return struct.pack(header,*args)
 
@@ -83,10 +82,9 @@ class IOHandler(asyncore.dispatcher):
         return struct.pack(header,*args)
 
     def unpack_instrs(self, instruction):
-        num=len(instruction)/(20)
+        num=int(len(instruction)/(28))
         for i in range(0,num):
-            itype,uid,bid,pos1x,pos1y,po2x,pos2y=(struct.unpack('iiiiiii',instruction[20*i:20*i+19]))
-            print (itype,uid,bid,pos1x,pos1y,po2x,pos2y)
+            itype,uid,bid,pos1x,pos1y,po2x,pos2y=(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
             if itype is 1 or itype is 2:
                 if bid is -1:
                     self.skill_instr.append([itype,uid,pos1x,pos1y])
@@ -121,18 +119,16 @@ class MainServer(asyncore.dispatcher):
         print('Server initialized')
 
     def handle_accept(self):
-        pair = self.accept()
+        conn,cli = self.accept()
         ai_id=0
         print("Accept")
-        if pair is not None:
-            handler = IOHandler(pair[0], ai_id)
+        if conn is not None:
+            self.conn_list.append(IOHandler(conn, ai_id))
             ai_id+=1
-            self.conn_list.append(handler)
-        if ai_id is 1:
+        if len(self.conn_list) is 2:
             print ("Both ai connected")
             self.gamestart=True
 
     def send_to_player(self, data):
-        # Put info into corresponding conn's queue
-        self.conn_list[0].info_queue.put(data)
-        self.conn_list[1].info_queue.put(data)
+        for conn in self.conn_list:
+            conn.info_queue.put(data)
