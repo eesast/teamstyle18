@@ -91,7 +91,7 @@ class IOHandler(asyncore.dispatcher):
                 else:
                     self.skill_instr.append([itype,uid,bid])
             elif itype is 3:
-                self.produce_instr.append([bid,''])
+                self.produce_instr.append(bid)
             elif itype is 4:
                 self.move_instr.append([uid,pos1x,pos1y])
             elif itype is 5:
