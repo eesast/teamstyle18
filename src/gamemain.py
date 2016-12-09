@@ -621,8 +621,7 @@ class GameMain:
     def produce_phase(self):
         ai_id = 0
         tempcorrection=self.produce_instr_0.copy()
-        for instruct in tempcorrection:
-            building_id = instruct[0]
+        for building_id in tempcorrection:
             del self.produce_instr_0[0]
             if self.units[building_id].Get_type_name() == 'hack_lab':
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['hacker']['people_cost'] and \
@@ -712,8 +711,7 @@ class GameMain:
                     self.total_id += 1
         ai_id = 1
         tempcorrection=self.produce_instr_1.copy()
-        for instruct in tempcorrection:
-            building_id = instruct[0]
+        for building_id in tempcorrection:
             del self.produce_instr_1[0]
             if self.units[building_id].Get_type_name() == 'hack_lab':
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['hacker']['people_cost'] and \
