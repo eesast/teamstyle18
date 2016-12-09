@@ -630,7 +630,7 @@ class GameMain:
                     weapon = unit.UnitObject(self.total_id, ai_id, 'hacker', self.units[building_id].position, self.buff)
                     self.resource[ai_id]['money'] -= unit.origin_attribute['hacker']['money_cost']
                     self.resource[ai_id]['tech'] -= unit.origin_attribute['hacker']['tech_cost']
-                    self.resource[ai_id]['remain_people'] -= unit.origin_attribute['hacker']['remain_people']
+                    self.resource[ai_id]['remain_people'] -= unit.origin_attribute['hacker']['people_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
             if self.units[building_id].Get_type_name() == 'bid_lab':
@@ -720,7 +720,7 @@ class GameMain:
                     weapon = unit.UnitObject(self.total_id, ai_id, 'hacker', self.units[building_id].position, self.buff)
                     self.resource[ai_id]['money'] -= unit.origin_attribute['hacker']['money_cost']
                     self.resource[ai_id]['tech'] -= unit.origin_attribute['hacker']['tech_cost']
-                    self.resource[ai_id]['remain_people'] -= unit.origin_attribute['hacker']['remain_people']
+                    self.resource[ai_id]['remain_people'] -= unit.origin_attribute['hacker']['people_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
             if self.units[building_id].Get_type_name() == 'bid_lab':
