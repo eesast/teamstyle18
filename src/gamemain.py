@@ -44,6 +44,7 @@ class GameMain:
     }
     total_id = 0  # 总共的项目的id编号 不包括建筑物
     building_id = 0 #所有建筑物的id编号
+    base_id = 0 #基地编号
     resource = {}  # 双方金钱、科技、剩余人口容量记录
     amount_limit = {
         0: {'eagle': False, 'nuke_tank': False, 'superman': False},
@@ -67,9 +68,11 @@ class GameMain:
         player0_y = (box_base0_y - 1) * 10 + random.randint(1, 8)
         player1_x = 100 - player0_x
         player1_y = 100 - player0_y
-        base0 = unit.UnitObject(self.building_id, ai_id0, 'base', (player0_x, player0_y), self.buff)
+        self.base_id = 0
+        base0 = unit.UnitObject(self.base_id, ai_id0, 'base', (player0_x, player0_y), self.buff)
         self.hqs.append(base0)
-        base1 = unit.UnitObject(self.building_id, ai_id1, 'base', (player1_x, player1_y), self.buff)
+        self.base_id = 1
+        base1 = unit.UnitObject(self.base_id, ai_id1, 'base', (player1_x, player1_y), self.buff)
         self.hqs.append(base1)
         tech0 = unit.UnitObject(self.building_id, ai_id0, 'teach_building', (player0_x, player0_y + 2), self.buff)
         self.buildings.append(tech0)
