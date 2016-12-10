@@ -149,90 +149,112 @@ class GameMain:
             if building_type == 1:
                 hack_lab0 = unit.UnitObject(self.total_id, -1, 'hack_lab', (building_x, building_y), self.buff)
                 self.buildings.append(hack_lab0)
+                self.units[self.total_id] = hack_lab0
                 self.total_id += 1
                 hack_lab1 = unit.UnitObject(self.total_id, -1, 'hack_lab', (100 - building_x, 100 - building_y),
                                             self.buff)
+                self.units[self.total_id] = hack_lab1
                 self.buildings.append(hack_lab1)
                 self.total_id += 1
             if building_type == 2:
                 bid_lab0 = unit.UnitObject(self.total_id, -1, 'bid_lab', (building_x, building_y), self.buff)
                 self.buildings.append(bid_lab0)
+                self.units[self.total_id] = bid_lab0
                 self.total_id += 1
                 bid_lab1 = unit.UnitObject(self.total_id, -1, 'bid_lab', (100 - building_x, 100 - building_y),
                                            self.buff)
                 self.buildings.append(bid_lab1)
+                self.units[self.total_id] =bid_lab1
                 self.total_id += 1
             if building_type == 3:
                 car_lab0 = unit.UnitObject(self.total_id, -1, 'car_lab', (building_x, building_y), self.buff)
                 self.buildings.append(car_lab0)
+                self.units[self.total_id] = car_lab0
                 self.total_id += 1
                 car_lab1 = unit.UnitObject(self.total_id, -1, 'car_lab', (100 - building_x, 100 - building_y),
                                            self.buff)
+                self.units[self.total_id] = car_lab1
                 self.buildings.append(car_lab1)
                 self.total_id += 1
             if building_type == 4:
                 elec_lab0 = unit.UnitObject(self.total_id, -1, 'elec_lab', (building_x, building_y), self.buff)
                 self.buildings.append(elec_lab0)
+                self.units[self.total_id] = elec_lab0
                 self.total_id += 1
                 elec_lab1 = unit.UnitObject(self.total_id, -1, 'elec_lab', (100 - building_x, 100 - building_y),
                                             self.buff)
                 self.buildings.append(elec_lab1)
+                self.units[self.total_id] =elec_lab1
                 self.total_id += 1
             if building_type == 5:
                 radiation_lab0 = unit.UnitObject(self.total_id, -1, 'radiation_lab', (building_x, building_y),
                                                  self.buff)
                 self.buildings.append(radiation_lab0)
+                self.units[self.total_id] =radiation_lab0
                 self.total_id += 1
                 radiation_lab1 = unit.UnitObject(self.total_id, -1, 'radiation_lab',
                                                  (100 - building_x, 100 - building_y), self.buff)
                 self.buildings.append(radiation_lab1)
+                self.units[self.total_id] =radiation_lab1
                 self.total_id += 1
             if building_type == 6:
                 uav_lab0 = unit.UnitObject(self.total_id, -1, 'uav_lab', (building_x, building_y), self.buff)
                 self.buildings.append(uav_lab0)
+                self.units[self.total_id] =uav_lab0
                 self.total_id += 1
                 uav_lab1 = unit.UnitObject(self.total_id, -1, 'uav_lab', (100 - building_x, 100 - building_y),
                                            self.buff)
                 self.buildings.append(uav_lab1)
+                self.units[self.total_id] = uav_lab1
                 self.total_id += 1
             if building_type == 7:
                 aircraft_lab0 = unit.UnitObject(self.total_id, -1, 'aircraft_lab', (building_x, building_y), self.buff)
                 self.buildings.append(aircraft_lab0)
+                self.units[self.total_id] = aircraft_lab0
                 self.total_id += 1
                 aircraft_lab1 = unit.UnitObject(self.total_id, -1, 'aircraft_lab', (100 - building_x, 100 - building_y),
                                                 self.buff)
+                self.units[self.total_id] =aircraft_lab1
                 self.buildings.append(aircraft_lab1)
                 self.total_id += 1
             if building_type == 8:
                 build_lab0 = unit.UnitObject(self.total_id, -1, 'build_lab', (building_x, building_y), self.buff)
                 self.buildings.append(build_lab0)
+                self.units[self.total_id] =build_lab0
                 self.total_id += 1
                 build_lab1 = unit.UnitObject(self.total_id, -1, 'build_lab', (100 - building_x, 100 - building_y),
                                              self.buff)
+                self.units[self.total_id] =build_lab1
                 self.buildings.append(build_lab1)
                 self.total_id += 1
             if building_type == 9:
                 finance_lab0 = unit.UnitObject(self.total_id, -1, 'finance_lab', (building_x, building_y), self.buff)
                 self.buildings.append(finance_lab0)
+                self.units[self.total_id] =finance_lab0
                 self.total_id += 1
                 finance_lab1 = unit.UnitObject(self.total_id, -1, 'finance_lab', (100 - building_x, 100 - building_y),
                                                self.buff)
+                self.units[self.total_id] =finance_lab1
                 self.buildings.append(finance_lab1)
                 self.total_id += 1
             if building_type == 10:
                 material_lab0 = unit.UnitObject(self.total_id, -1, 'material_lab', (building_x, building_y), self.buff)
                 self.buildings.append(material_lab0)
+                self.units[self.total_id] =material_lab0
                 self.total_id += 1
                 material_lab1 = unit.UnitObject(self.total_id, -1, 'material_lab', (100 - building_x, 100 - building_y),
                                                 self.buff)
+                self.units[self.total_id] =material_lab1
                 self.buildings.append(material_lab1)
                 self.total_id += 1
             if building_type == 11:
                 nano_lab0 = unit.UnitObject(self.total_id, -1, 'nano_lab', (building_x, building_y), self.buff)
                 self.buildings.append(nano_lab0)
+                self.units[self.total_id] =nano_lab0
                 self.total_id += 1
                 nano_lab1 = unit.UnitObject(self.total_id, -1, 'nano_lab', (100 - building_x, 100 - building_y),
                                             self.buff)
+                self.units[self.total_id] =nano_lab1
                 self.buildings.append(nano_lab1)
                 self.total_id += 1
             building_list.remove(building_type)
