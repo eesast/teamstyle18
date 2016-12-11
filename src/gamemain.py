@@ -6,6 +6,10 @@ from unit import origin_attribute
 import random
 from random import choice
 
+name_list ={'base':0,'meat':1,'hacker':2,'superman':3,'battle_tank':4,'bolt_tank':5,'nuke_tank':6,'uav':7,'eagle':8,
+            'hack_lab':9,'bid_lab':10,'car_lab':11,'elec_lab':12,'radiation_lab':13,'uav_lab':14,'aircraft_lab':15,
+           'build_lab':16,'finance_lab':17,'material_lab':18,'nano_lab':19,'teach_building':20,'bank':21}
+
 MAXROUND = 1000
 
 
@@ -31,6 +35,8 @@ class GameMain:
             unit.VEHICLE: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
                            'shot_range_buff': 0.0, 'produce_buff': 0.0},
             unit.AIRCRAFT: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                            'shot_range_buff': 0.0, 'produce_buff': 0.0},
+            unit.BUILDING: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
                             'shot_range_buff': 0.0, 'produce_buff': 0.0}
         },
         unit.FLAG_1: {
@@ -39,6 +45,8 @@ class GameMain:
             unit.VEHICLE: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
                            'shot_range_buff': 0.0, 'produce_buff': 0.0},
             unit.AIRCRAFT: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                            'shot_range_buff': 0.0, 'produce_buff': 0.0},
+            unit.BUILDING: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
                             'shot_range_buff': 0.0, 'produce_buff': 0.0}
         }
     }
@@ -643,11 +651,12 @@ class GameMain:
     def produce_phase(self):
         ai_id = 0
         tempcorrection = self.produce_instr_0.copy()
+        print (tempcorrection)
         for building_id in tempcorrection:
             del self.produce_instr_0[0]
             if self.units[building_id].flag != 0:
                 continue
-            if self.units[building_id].Get_type_name() == 'hack_lab':
+            if self.units[building_id].Get_type_name() == name_list['hack_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['hacker']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['hacker']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['hacker']['tech_cost']:
@@ -658,7 +667,7 @@ class GameMain:
                     self.resource[ai_id]['remain_people'] -= unit.origin_attribute['hacker']['people_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'bid_lab':
+            if self.units[building_id].Get_type_name() == name_list['bid_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['superman']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['superman']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['superman']['tech_cost'] and \
@@ -671,7 +680,7 @@ class GameMain:
                     self.amount_limit[ai_id]['superman'] = True
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'car_lab':
+            if self.units[building_id].Get_type_name() == name_list['car_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['battle_tank']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['battle_tank']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['battle_tank']['tech_cost']:
@@ -682,7 +691,7 @@ class GameMain:
                     self.resource[ai_id]['tech'] -= unit.origin_attribute['battle_tank']['tech_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'elec_lab':
+            if self.units[building_id].Get_type_name() == name_list['elec_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['bolt_tank']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['bolt_tank']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['bolt_tank']['tech_cost']:
@@ -693,7 +702,7 @@ class GameMain:
                     self.resource[ai_id]['tech'] -= unit.origin_attribute['bolt_tank']['tech_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'radiation_lab':
+            if self.units[building_id].Get_type_name() == name_list['radiation_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['nuke_tank']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['nuke_tank']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['nuke_tank']['tech_cost'] and \
@@ -706,7 +715,7 @@ class GameMain:
                     self.amount_limit[ai_id]['nuke_tank'] = True
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'uav_lab':
+            if self.units[building_id].Get_type_name() == name_list['uav_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['uav']['people_cost'] or \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['uav']['money_cost'] or \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['uav']['tech_cost']:
@@ -716,7 +725,7 @@ class GameMain:
                     self.resource[ai_id]['tech'] -= unit.origin_attribute['uav']['tech_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'aircraft_lab':
+            if self.units[building_id].Get_type_name() == name_list['aircraft_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['eagle']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['eagle']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['eagle']['tech_cost'] and \
@@ -728,7 +737,7 @@ class GameMain:
                     self.amount_limit[ai_id]['eagle'] = True
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'base':
+            if self.units[building_id].Get_type_name() == name_list['base']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['meat']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['meat']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['meat']['tech_cost']:
@@ -744,7 +753,7 @@ class GameMain:
             del self.produce_instr_1[0]
             if self.units[building_id].flag != 1:
                 continue
-            if self.units[building_id].Get_type_name() == 'hack_lab':
+            if self.units[building_id].Get_type_name() == name_list['hack_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['hacker']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['hacker']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['hacker']['tech_cost']:
@@ -755,7 +764,7 @@ class GameMain:
                     self.resource[ai_id]['remain_people'] -= unit.origin_attribute['hacker']['people_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'bid_lab':
+            if self.units[building_id].Get_type_name() == name_list['bid_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['superman']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['superman']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['superman']['tech_cost'] and \
@@ -768,7 +777,7 @@ class GameMain:
                     self.amount_limit[ai_id]['superman'] = True
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'car_lab':
+            if self.units[building_id].Get_type_name() == name_list['car_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['battle_tank']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['battle_tank']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['battle_tank']['tech_cost']:
@@ -779,7 +788,7 @@ class GameMain:
                     self.resource[ai_id]['tech'] -= unit.origin_attribute['battle_tank']['tech_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'elec_lab':
+            if self.units[building_id].Get_type_name() == name_list['elec_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['bolt_tank']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['bolt_tank']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['bolt_tank']['tech_cost']:
@@ -790,7 +799,7 @@ class GameMain:
                     self.resource[ai_id]['tech'] -= unit.origin_attribute['bolt_tank']['tech_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'radiation_lab':
+            if self.units[building_id].Get_type_name() == name_list['radiation_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['nuke_tank']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['nuke_tank']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['nuke_tank']['tech_cost'] and \
@@ -803,7 +812,7 @@ class GameMain:
                     self.amount_limit[ai_id]['nuke_tank'] = True
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'uav_lab':
+            if self.units[building_id].Get_type_name() == name_list['uav_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['uav']['people_cost'] or \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['uav']['money_cost'] or \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['uav']['tech_cost']:
@@ -813,7 +822,7 @@ class GameMain:
                     self.resource[ai_id]['tech'] -= unit.origin_attribute['uav']['tech_cost']
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'aircraft_lab':
+            if self.units[building_id].Get_type_name() == name_list['aircraft_lab']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['eagle']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['eagle']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['eagle']['tech_cost'] and \
@@ -825,7 +834,7 @@ class GameMain:
                     self.amount_limit[ai_id]['eagle'] = True
                     self.units[self.total_id] = weapon
                     self.total_id += 1
-            if self.units[building_id].Get_type_name() == 'base':
+            if self.units[building_id].Get_type_name() == name_list['base']:
                 if self.resource[ai_id]['remain_people'] >= unit.origin_attribute['meat']['people_cost'] and \
                                 self.resource[ai_id]['money'] >= unit.origin_attribute['meat']['money_cost'] and \
                                 self.resource[ai_id]['tech'] >= unit.origin_attribute['meat']['tech_cost']:
@@ -1033,7 +1042,7 @@ class GameMain:
 
 
 # 测试
-
+'''
 A = GameMain()
 tank = unit.UnitObject(1, 1, 'nuke_tank', (22, 33), A.buff)
 fuck = unit.UnitObject(2, 0, 'battle_tank', (22, 32), A.buff)
@@ -1059,3 +1068,4 @@ A.units[1].print_info()
 A.units[2].print_info()
 A.units[3].print_info()
 A.hqs[0].print_info()
+'''

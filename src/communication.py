@@ -30,6 +30,7 @@ class IOHandler(asyncore.dispatcher):
         print ('received instruction')
         if instruction:
             self.unpack_instrs(instruction)
+        #print (self.produce_instr)
 
     def handle_write(self):
         data=self.info_queue.get()
