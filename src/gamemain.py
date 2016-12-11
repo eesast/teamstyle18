@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from src import unit
-from src.unit import origin_attribute
+import unit
+from unit import origin_attribute
 import random
 from random import choice
 
@@ -1014,13 +1014,14 @@ class GameMain:
 
     def next_tick(self):
         # 获取指令，指令检测合法与去重，回合演算
-        self.check_legal()
-        self.skill_phase()
+        #self.check_legal()
+        self.skill_phase(self.skill_instr_0)
+        self.skill_phase(self.skill_instr_1)
         self.cleanup_phase()
         self.win_determine()
         self.move_phase()
         self.produce_phase()
-        self.capture_phase()
+        #self.capture_phase()
         self.timeup_determine()
         pass
 
