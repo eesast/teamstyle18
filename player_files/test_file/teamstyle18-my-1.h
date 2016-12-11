@@ -3,11 +3,25 @@
 #include<string>
 #include<iostream>
 #include<vector>
-
+#include <mutex>
+#include <queue>
 #include "communicate.h"
-
+using namespace std;
 using std::string;
 using std::vector;
+using std::mutex;
+
+template <typename Data> 
+class safeQueue
+{
+private:
+	std::queue<Data> squeue ;  
+	mutex mtx;
+public:
+	void safePush(Data value);
+	void safePop(void);
+	Data safeFront(void);
+};
 
 //若干枚举型变量
 //type_name
@@ -95,9 +109,13 @@ const int origin_attribute[Type_num][attribute_num] =
 //resourse
 struct resourse
 {
-	int tech;
-	int money;
-	int remain_people;
+	//int round;
+	int tech_1;
+	int money_1;
+	int remain_people_1;
+	int tech_2;
+	int money_2;
+	int remain_people_2;
 };
 struct Position
 {
@@ -134,6 +152,7 @@ struct Unit
 	int unit_id;				// 单位id
 	Unit();						//new 时需要空的构造函数
 	Unit(int unit_id, int flag, TypeName type_name, Position pos);    //(这是用来干什么的，有些完全不需要的信息怎么处理，没辙了？得用一个for循环，把接到的数据在再进去，不能直接用它？)
+	void Print();
 };
 
 
@@ -165,7 +184,6 @@ void capture(int unit_id, int building_id);
 Unit * getUnit(void);
 int getUnitSize(void);
 double * getBuff(void);
-resourse getResourse_1(void);
-resourse getResourse_2(void);
+resourse getResourse(void);
 bool getTeamId(void);
 void NewData(void);

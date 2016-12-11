@@ -16,7 +16,7 @@ while True:
     game.next_tick()
     comm_server.send_to_player(game.resource)
     comm_server.send_to_player(game.buff)
-    comm_server.send_to_player(list(game.units.values()))
+    #comm_server.send_to_player(list(game.units.values()))
     game.produce_instr_0=comm_server.conn_list[0].produce_instr
     print (len(game.units))
     sleep(0.5)

@@ -17,9 +17,9 @@ FLAG_1 = 1
 
 #物体名称
 
-#name_list ={'base':0,'meat':1,'hacker':2,'superman':3,'battle_tank':4,'bolt_tank':5,'nuke_tank':6,'uav':7,'eagle':8,
-#            'hack_lab':9,'bid_lab':10,'car_lab':11,'elec_lab':12,'radiation_lab':13,'uav_lab':14,'aircraft_lab':15,
-#           'build_lab':16,'finance_lab':17,'material_lab':18,'nano_lab':19}
+name_list ={'base':0,'meat':1,'hacker':2,'superman':3,'battle_tank':4,'bolt_tank':5,'nuke_tank':6,'uav':7,'eagle':8,
+            'hack_lab':9,'bid_lab':10,'car_lab':11,'elec_lab':12,'radiation_lab':13,'uav_lab':14,'aircraft_lab':15,
+           'build_lab':16,'finance_lab':17,'material_lab':18,'nano_lab':19,'teach_building':20,'bank':21}
 
 #dic内数据依次为【单位大类】【原始HP上限】，【原始最大速度】，【原始射程】，【原始防御】，【原始攻击】，【技能1CD】，【技能2CD】，【最大数量】，【人口占用】，【金钱消耗】，【科技消耗】
 #建筑的最大数量，人口占用，金钱消耗，科技消耗均为0
@@ -85,7 +85,7 @@ class UnitObject(object):
         self.unit_id = unit_id
         self.flag = flag
         self.position = position
-        self.__type_name = type_name
+        self.__type_name = name_list[type_name]
         self.__unit_type = origin_attribute[type_name]['unit_type']
 
         self.__producing_building = -1

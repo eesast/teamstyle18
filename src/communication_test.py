@@ -46,11 +46,13 @@ def action():
     while True:
         u_list.append(tank)
         a.send_to_player(u_list)
-        a.send_to_player(resource)
-        a.send_to_player(test_buff)
+        #a.send_to_player(resource)
+        #a.send_to_player(test_buff)
         sleep(0.5)
 
 t=threading.Thread(target=asyncore.loop)
 t.start()
+while not a.gamestart:
+    sleep(1)
 action()
 

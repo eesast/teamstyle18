@@ -12,7 +12,7 @@ import struct
 '''
 
 class IOHandler(asyncore.dispatcher):
-    def __init__(self, sock, ai_id):
+    def __init__(self, sock, ai_id, main_server, is_unity=False):
         asyncore.dispatcher.__init__(self, sock)
         self.info_queue = queue.Queue()
         self.ai_id=ai_id
@@ -21,9 +21,13 @@ class IOHandler(asyncore.dispatcher):
         self.produce_instr=[]
         self.move_instr=[]
         self.capture_instr=[]
+        self.last_units=[]
+        self.is_unity=is_unity
+        self.main_server=main_server
 
     def handle_read(self):
         instruction = self.recv(8192)
+        print ('received instruction')
         if instruction:
             self.unpack_instrs(instruction)
 
@@ -31,6 +35,9 @@ class IOHandler(asyncore.dispatcher):
         data=self.info_queue.get()
         if type(data)is list:
             byte_message=self.unit_serializer(data)
+            if self.is_unity:                                   #Also send dead unit list to unity side
+                dead=[unit for unit in self.last_units if unit not in data]
+                self.send(bytes(3)+self.unit_serializer(dead))
         elif type(data)is dict and 1 in data[0]:
             byte_message=self.buff_serializer(data)
         else:
@@ -38,6 +45,9 @@ class IOHandler(asyncore.dispatcher):
         self.send(byte_message)
 
     def writable(self):
+        return True
+
+    def readable(self):
         return True
 
     def unit_serializer(self, object_list):
@@ -121,12 +131,11 @@ class MainServer(asyncore.dispatcher):
     def handle_accept(self):
         conn,cli = self.accept()
         ai_id=0
-        print("Accept")
         if conn is not None:
-            self.conn_list.append(IOHandler(conn, ai_id))
+            self.conn_list.append(IOHandler(conn, ai_id, self, ai_id is 2))
             ai_id+=1
-        if len(self.conn_list) is 2:
-            print ("Both ai connected")
+        if len(self.conn_list) is 1:
+            print ("Both ai and unity connected")
             self.gamestart=True
 
     def send_to_player(self, data):

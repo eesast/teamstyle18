@@ -6,19 +6,21 @@ void player_main(void)				//²ÎÊıÒÔ¼°·µ»ØÖµ´ı¶¨       voidĞèÒª±»Ò»¸öÊı×é£¨¶ÓÁĞ£©È
 	using namespace std;
 	produce(0);
 	//skill_1(007,110,Position(3,3),Position(4,4)) ;
-	Unit * myunit=getUnit();
+	Unit * myunit=getUnit();								//Ã»ÓĞ·¢¹ı£¬¿ÉÄÜ»á³öbug
 	int myUnitSize=getUnitSize();
 	double * myBuff=getBuff();
-	resourse myResourse_1=getResourse_1();
-	resourse myResourse_2=getResourse_2();
+	resourse myResourse=getResourse();
 	cout<<myUnitSize<<endl;
 	for (int i=0;i<myUnitSize;i++)
 	{
-	//	cout<<myunit[i].attack_mode<<endl;
-	//	cout<<myunit[i].flag<<endl;
+		//cout<<myunit[i].attack_mode<<endl;
+		//cout<<myunit[i].flag<<endl;
 	}
 	//cout<<endl;
-	cout<<myResourse_1.money<<'\t'<<myResourse_1.remain_people<<'\t'<<myResourse_1.tech<<endl;
+	cout<<myResourse.money_1<<'\t'<<myResourse.remain_people_1<<'\t'<<myResourse.tech_1<<endl;
+	cout << myBuff[0] << myBuff[1];
+	if (myUnitSize > 0)
+		myunit[myUnitSize-1].Print();
 	//cout<<myResourse_2.money<<'\t'<<myResourse_2.remain_people<<'\t'<<myResourse_2.tech<<endl;
 }
 

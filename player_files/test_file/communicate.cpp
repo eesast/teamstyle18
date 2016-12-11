@@ -1,59 +1,58 @@
-#include "communicate.h"
-#include "head_for_main.h"				//ÎªÁË¸Ä±äflag,Ò²ÎªÁËÖªµÀÓÎÏ·ÊÇ·ñ½áÊøÁË
+ï»¿#include "communicate.h"
+#include "head_for_main.h"				//ä¸ºäº†æ”¹å˜flag,ä¹Ÿä¸ºäº†çŸ¥é“æ¸¸æˆæ˜¯å¦ç»“æŸäº†
 #include <queue>
 #define _WINSOCK_DEPRECATED_NO_WARNINGS 1
 
 using namespace std;
 extern bool team_id ;
 extern bool flag_of_round;	
-extern resourse resourse_of_1;
-extern resourse resourse_of_2;
-extern double buff[40]; //buffÈ«¾Ö±äÁ¿ ÕóÓª1[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
-extern Unit * all_unit;			  //ËùÓĞµÄunit
-extern int all_unit_size;				//¼ÇÂ¼ËùÓĞunitµÄ¸öÊı
+extern resourse allResourse;
+extern double buff[40]; //buffå…¨å±€å˜é‡ é˜µè¥1[å•ä½ç±»å‹][buffç±»å‹]
+extern Unit * all_unit;			  //æ‰€æœ‰çš„unit
+extern int all_unit_size;				//è®°å½•æ‰€æœ‰unitçš„ä¸ªæ•°
 /*
-//extern double buff1[4][5]; //buffÈ«¾Ö±äÁ¿ ÕóÓª1[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
-//extern double buff2[4][5]; //buffÈ«¾Ö±äÁ¿ ÕóÓª2[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
-extern double buff_1[20]; //buffÈ«¾Ö±äÁ¿ ÕóÓª1[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
-extern double buff_2[20]; //buffÈ«¾Ö±äÁ¿ ÕóÓª2[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
-extern Unit * all_unit_1;			  //ÕóÓª1£¬¿ÉÒÔÖªµÀµÄËùÓĞµÄunit
-extern int all_unit_size_1;				//¼ÇÂ¼ÕóÓª1ËùÓĞunitµÄ¸öÊı
-extern Unit * all_unit_2;			  //ÕóÓª2£¬¿ÉÒÔÖªµÀµÄËùÓĞµÄunit
-extern int all_unit_size_2;				//¼ÇÂ¼ÕóÓª1ËùÓĞunitµÄ¸öÊı
+//extern double buff1[4][5]; //buffå…¨å±€å˜é‡ é˜µè¥1[å•ä½ç±»å‹][buffç±»å‹]
+//extern double buff2[4][5]; //buffå…¨å±€å˜é‡ é˜µè¥2[å•ä½ç±»å‹][buffç±»å‹]
+extern double buff_1[20]; //buffå…¨å±€å˜é‡ é˜µè¥1[å•ä½ç±»å‹][buffç±»å‹]
+extern double buff_2[20]; //buffå…¨å±€å˜é‡ é˜µè¥2[å•ä½ç±»å‹][buffç±»å‹]
+extern Unit * all_unit_1;			  //é˜µè¥1ï¼Œå¯ä»¥çŸ¥é“çš„æ‰€æœ‰çš„unit
+extern int all_unit_size_1;				//è®°å½•é˜µè¥1æ‰€æœ‰unitçš„ä¸ªæ•°
+extern Unit * all_unit_2;			  //é˜µè¥2ï¼Œå¯ä»¥çŸ¥é“çš„æ‰€æœ‰çš„unit
+extern int all_unit_size_2;				//è®°å½•é˜µè¥1æ‰€æœ‰unitçš„ä¸ªæ•°
 */
 extern queue <Instr>  q_instruction;
 
 void recv_send_socket::create_recv_socket(void)  
 {  
-	//½¨Á¢Í¨ĞÅµÄ¶Ë¿ÚµÄÒ»Ğ©×¼±¸
-    wVersionRequested = MAKEWORD( 1, 1 );//µÚÒ»¸ö²ÎÊıÎªµÍÎ»×Ö½Ú£»µÚ¶ş¸ö²ÎÊıÎª¸ßÎ»×Ö½Ú  
+	//å»ºç«‹é€šä¿¡çš„ç«¯å£çš„ä¸€äº›å‡†å¤‡
+    wVersionRequested = MAKEWORD( 1, 1 );//ç¬¬ä¸€ä¸ªå‚æ•°ä¸ºä½ä½å­—èŠ‚ï¼›ç¬¬äºŒä¸ªå‚æ•°ä¸ºé«˜ä½å­—èŠ‚  
   
-    err = WSAStartup( wVersionRequested, &wsaData );//¶Ôwinsock DLL£¨¶¯Ì¬Á´½Ó¿âÎÄ¼ş£©½øĞĞ³õÊ¼»¯£¬Ğ­ÉÌWinsockµÄ°æ±¾Ö§³Ö£¬²¢·ÖÅä±ØÒªµÄ×ÊÔ´¡£  
+    err = WSAStartup( wVersionRequested, &wsaData );//å¯¹winsock DLLï¼ˆåŠ¨æ€é“¾æ¥åº“æ–‡ä»¶ï¼‰è¿›è¡Œåˆå§‹åŒ–ï¼Œåå•†Winsockçš„ç‰ˆæœ¬æ”¯æŒï¼Œå¹¶åˆ†é…å¿…è¦çš„èµ„æºã€‚  
     if ( err != 0 )  
     {  
         return;  
     }  
   
-    if ( LOBYTE( wsaData.wVersion ) != 1 ||HIBYTE( wsaData.wVersion ) != 1 )//LOBYTE£¨£©È¡µÃ16½øÖÆÊı×îµÍÎ»£»HIBYTE£¨£©È¡µÃ16½øÖÆÊı×î¸ß£¨×î×ó±ß£©ÄÇ¸ö×Ö½ÚµÄÄÚÈİ        
+    if ( LOBYTE( wsaData.wVersion ) != 1 ||HIBYTE( wsaData.wVersion ) != 1 )//LOBYTEï¼ˆï¼‰å–å¾—16è¿›åˆ¶æ•°æœ€ä½ä½ï¼›HIBYTEï¼ˆï¼‰å–å¾—16è¿›åˆ¶æ•°æœ€é«˜ï¼ˆæœ€å·¦è¾¹ï¼‰é‚£ä¸ªå­—èŠ‚çš„å†…å®¹        
     {  
         WSACleanup( );  
         return;  
     }  
   
 }  
-void recv_send_socket::InitialSocketClient(void)				//Óëpython¶Ë½¨Á¢Á¬½Ó¡¢¿ªÊ¼ÓÎÏ·
+void recv_send_socket::InitialSocketClient(void)				//ä¸pythonç«¯å»ºç«‹è¿æ¥ã€å¼€å§‹æ¸¸æˆ
 {
 	sockClient=socket(AF_INET,SOCK_STREAM,0);  
   
-        SOCKADDR_IN addrClt;//ĞèÒª°üº¬·şÎñ¶ËIPĞÅÏ¢  
-        addrClt.sin_addr.S_un.S_addr=inet_addr("127.0.0.1");// inet_addr½«IPµØÖ·´ÓµãÊı¸ñÊ½×ª»»³ÉÍøÂç×Ö½Ú¸ñÊ½ÕûĞÍ¡£		//ÎªÊ²Ã´ÊÇÕâ¸öµØÖ·£¿£¿
+        SOCKADDR_IN addrClt;//éœ€è¦åŒ…å«æœåŠ¡ç«¯IPä¿¡æ¯  
+        addrClt.sin_addr.S_un.S_addr=inet_addr("127.0.0.1");// inet_addrå°†IPåœ°å€ä»ç‚¹æ•°æ ¼å¼è½¬æ¢æˆç½‘ç»œå­—èŠ‚æ ¼å¼æ•´å‹ã€‚		//ä¸ºä»€ä¹ˆæ˜¯è¿™ä¸ªåœ°å€ï¼Ÿï¼Ÿ
         addrClt.sin_family=AF_INET;   
         addrClt.sin_port=htons(18223);  
   
-        connect(sockClient,(SOCKADDR*)&addrClt,sizeof(SOCKADDR));//¿Í»§»úÏò·şÎñÆ÷·¢³öÁ¬½ÓÇëÇó 
+        connect(sockClient,(SOCKADDR*)&addrClt,sizeof(SOCKADDR));//å®¢æˆ·æœºå‘æœåŠ¡å™¨å‘å‡ºè¿æ¥è¯·æ±‚ 
 		int team_id_temp;
 		recv(sockClient,(char*)&team_id_temp,sizeof(int),0);
-		cout << team_id_temp;
+		cout << "i have receive the team_id"<<team_id_temp<<endl;
 		team_id=bool(team_id_temp);
 }
 unsigned __stdcall recv_send_socket::static_recv_data(void * pThis)  
@@ -63,83 +62,98 @@ unsigned __stdcall recv_send_socket::static_recv_data(void * pThis)
 	pthX->recv_data();           // now call the true entry-point-function 
 	return 1;                           // the thread exit code  
 }  
-
+void wrapper_recv_data(SOCKET s,char* buf,int len,int flags)
+{
+	int remain = len;
+	while (remain!=0)
+	{
+		int cur=recv(s,buf,len,flags);
+		if (cur==-1)
+		{
+			cout<<"receive error"<<endl;
+			continue;
+		}
+		buf+=cur;
+		remain-=cur;
+	}
+	
+}
 void recv_send_socket::recv_data(void)
 {
 	while (game_not_end())						//
 	{
-		//ÎÒÖ»½«0¡¢1¡¢2½ÓÊÕ3´Î
-		int recvType=0;				//µÈÏÂ»á½ÓÊÕÈıÖÖÀàĞÍµÄÊı¾İ
+		//æˆ‘åªå°†0ã€1ã€2æ¥æ”¶3æ¬¡
+		int recvType=10;				//ç­‰ä¸‹ä¼šæ¥æ”¶ä¸‰ç§ç±»å‹çš„æ•°æ®
 		recv(sockClient,(char*)&recvType,sizeof(int),0);
 		bool Team=0;
 		cout << "Received" << recvType <<endl;
 		switch (recvType)
 		{
-		case 2:						//×ÊÔ´
+		case 2:						//èµ„æº
 			//recv(sockClient,(char*)&Team,sizeof(bool),0);
-			recv(sockClient,(char*)&resourse_of_1,sizeof(resourse),0);
-			recv(sockClient,(char*)&resourse_of_2,sizeof(resourse),0);
+			recv(sockClient,(char*)&allResourse,sizeof(resourse),0);
 			break;
-		case 1:						//ËÄ¸ö±øÖÖµÄbuff
+		case 1:						//å››ä¸ªå…µç§çš„buff
 			//recv(sockClient,(char*)&Team,sizeof(bool),0);
 			//if (Team==false)
 				recv(sockClient,(char*)&buff,2*3*5*sizeof(double),0);
 			//else
 			//	recv(sockClient,(char*)&buff_2,4*5*sizeof(double),0);
 			break;
-		case 0:						//Ë«·½¸÷×Ô¿ÉÒÔ»ñµÃµÄµØÍ¼ÉÏµÄunitµÄĞÅÏ¢
+		case 0:						//åŒæ–¹å„è‡ªå¯ä»¥è·å¾—çš„åœ°å›¾ä¸Šçš„unitçš„ä¿¡æ¯
 			/*recv(sockClient,(char*)&Team,sizeof(bool),0);
 			if (Team==false)
 			{
 				recv(sockClient,(char*)&all_unit_size_1,sizeof(int),0);
-				delete [] all_unit_1;							//½«Ö®Ç°µÄĞÅÏ¢È«²¿É¾µô
+				delete [] all_unit_1;							//å°†ä¹‹å‰çš„ä¿¡æ¯å…¨éƒ¨åˆ æ‰
 				all_unit_1 = new Unit[all_unit_size_1];
 				recv(sockClient,(char*)&all_unit_1,all_unit_size_1*sizeof(Unit),0);
 			}
 			else
 			{
 				recv(sockClient,(char*)&all_unit_size_2,sizeof(int),0);
-				delete [] all_unit_2;							//½«Ö®Ç°µÄĞÅÏ¢È«²¿É¾µô
+				delete [] all_unit_2;							//å°†ä¹‹å‰çš„ä¿¡æ¯å…¨éƒ¨åˆ æ‰
 				all_unit_1 = new Unit[all_unit_size_2];
 				recv(sockClient,(char*)&all_unit_2,all_unit_size_2*sizeof(Unit),0);
 			}*/
 			recv(sockClient,(char*)&all_unit_size,sizeof(int),0);
-			delete [] all_unit;							//½«Ö®Ç°µÄĞÅÏ¢È«²¿É¾µô
+			delete [] all_unit;							//å°†ä¹‹å‰çš„ä¿¡æ¯å…¨éƒ¨åˆ æ‰
 			all_unit = new Unit[all_unit_size];
 			cout << all_unit_size;
-			recv(sockClient,(char*)&all_unit,all_unit_size*sizeof(Unit),0);
+			for (int i=0;i<all_unit_size;i++)
+				recv(sockClient,(char*)(all_unit+i),sizeof(Unit),0);
+			all_unit[0].Print();
 			break;
 		default:
 			break;
 		}
 		/*
-		//¾ßÌå½ÓÊÜµÄ¸ñÊ½ ´ı¸Ä
-		int num;										//½ÓÊÕ
+		//å…·ä½“æ¥å—çš„æ ¼å¼ å¾…æ”¹
+		int num;										//æ¥æ”¶
 		//unit U;
 		recv(sockClient,(char*)&num,sizeof(int),0);
 		//recv(sockClient,(char*)&U,sizeof(unit),0);
 		closesocket(sockClient);  */
 
 		flag_of_round=true;	
-		//Ñ¡ÊÖËãµÄÌ«ÂıµÈÏ¸½Ú£¬Í³Í³»¹Ã»ÓĞ¿¼ÂÇ
-        Sleep(20);						//Õâ¸öµØ·½  Í¬²½»¹ÓĞ´ıÉÌÈ¶    //ÎªÊ²Ã´ÒªsleepÕâÃ´³¤Ê±¼ä£¿£¿£¿//Ñ¹¸ù²»ĞèÒªsleep????????
+		//é€‰æ‰‹ç®—çš„å¤ªæ…¢ç­‰ç»†èŠ‚ï¼Œç»Ÿç»Ÿè¿˜æ²¡æœ‰è€ƒè™‘
+        Sleep(20);						//è¿™ä¸ªåœ°æ–¹  åŒæ­¥è¿˜æœ‰å¾…å•†æ¦·    //ä¸ºä»€ä¹ˆè¦sleepè¿™ä¹ˆé•¿æ—¶é—´ï¼Ÿï¼Ÿï¼Ÿ//å‹æ ¹ä¸éœ€è¦sleep????????
 	}
-	
 }
 void recv_send_socket::send_data(void)
 {
 	int sizeQueue;
 	sizeQueue=q_instruction.size();
-	Instr * allInstr = new Instr[sizeQueue];
+	Instr * allInstr = new Instr[sizeQueue];			//ä¸º0æ˜¯ä¼šæœ‰é—®é¢˜
 	for (int i=0;i<sizeQueue;i++)
 	{
-		allInstr[i]=q_instruction.front();
-		q_instruction.pop();
+		//allInstr[i]=q_instruction.front();
+		//q_instruction.pop();
 	}
-	//send(sockClient,(char*)team_id,sizeof(bool),0);					//¸æÖªÊÇÄÄ¸ö¶ÓÎéµÄÖ¸Áî
+	//send(sockClient,(char*)team_id,sizeof(bool),0);					//å‘ŠçŸ¥æ˜¯å“ªä¸ªé˜Ÿä¼çš„æŒ‡ä»¤
 	cout << q_instruction.size();
-	if (sizeQueue!=0)
-		send(sockClient,(char*)allInstr,sizeQueue*sizeof(Instr),0);		//½«Ö¸ÁîÈ«²¿·¢ËÍ¹ıÈ¥
+	if (sizeQueue!=0)										//è¿™å¥è¯åº”è¯¥æåˆ°å‰é¢å»
+		send(sockClient,(char*)allInstr,sizeQueue*sizeof(Instr),0);		//å°†æŒ‡ä»¤å…¨éƒ¨å‘é€è¿‡å»
 	delete [] allInstr;
 }
 

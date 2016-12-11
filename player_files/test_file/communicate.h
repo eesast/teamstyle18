@@ -1,27 +1,28 @@
-#pragma once
+ï»¿#pragma once
 #include <stdio.h>  
 #include <Winsock2.h>  
 #pragma comment( lib, "ws2_32.lib" )  
 
 #include "teamstyle18-my-1.h"
-class recv_send_socket							//¾õµÃÖ»ÓĞÕâÑù²ÅÄÜ¹»ÔÚmainº¯ÊıÖĞÊµÏÖ
+class recv_send_socket							//è§‰å¾—åªæœ‰è¿™æ ·æ‰èƒ½å¤Ÿåœ¨mainå‡½æ•°ä¸­å®ç°
 {
 public:
-	//recv_send_socket(bool team);				//false±íÊ¾µÚÒ»ÕóÓª£¬true±íÊ¾µÚ¶şÕóÓª
+	//recv_send_socket(bool team);				//falseè¡¨ç¤ºç¬¬ä¸€é˜µè¥ï¼Œtrueè¡¨ç¤ºç¬¬äºŒé˜µè¥
 	void create_recv_socket(void);
 	void InitialSocketClient(void);
 	static unsigned __stdcall static_recv_data(void * pThis);
 	void recv_data(void);
 	void send_data(void);
 	void close_recv_socket(void);
+	
 private:
 	WORD wVersionRequested;  
     WSADATA wsaData;  
     int err;  
-	SOCKET sockClient;					//ÇëÇó¶ËµÄsocket
+	SOCKET sockClient;					//è¯·æ±‚ç«¯çš„socket
 };
 
-
+void wrapper_recv_data(SOCKET s,char* buf,int len,int flags);
 
 
 //SkillInstr * p_all_1 = new SkillInstr[10000];

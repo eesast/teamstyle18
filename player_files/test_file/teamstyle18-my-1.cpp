@@ -5,12 +5,28 @@
 using namespace std;
  //怎么办？？？
 extern queue <Instr>  q_instruction;
-extern resourse resourse_of_1;
-extern resourse resourse_of_2;
+extern resourse allResourse;
 extern double buff[40]; //buff全局变量 阵营1[单位类型][buff类型]
 extern Unit * all_unit;			  //所有的unit
 extern int all_unit_size;				//记录所有unit的个数
 extern bool team_id;
+template <typename Data> 
+void safeQueue<Data>::safePush(Data value)
+{
+	mtx.lock();
+	squeue.push();
+	mtx.unlock();
+}
+template <typename Data> 
+void safeQueue<Data>::safePop(void)
+{
+	;
+}
+template <typename Data> 
+Data safeQueue<Data>::safeFront(void)
+{
+	;
+}
 /*
 //extern double buff1[4][5]; //buff全局变量 阵营1[单位类型][buff类型]
 //extern double buff2[4][5]; //buff全局变量 阵营2[单位类型][buff类型]
@@ -40,6 +56,29 @@ Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 	attack_now = origin_attribute[type_name][ORIGIN_ATTACK] * (1 + buff[20*flag+5*unit_type+ATTACK]);
 
 }
+void Unit::Print()
+{
+	cout<<"what i get"<<endl;
+	cout<<type_name<<endl;
+	cout<<unit_type<<endl;
+	cout<<attack_mode<<endl;			// 攻击模式，例如可对空，可对坦克，可对步兵之类的
+	cout<<attack_now<<endl;					// 当前攻击
+	cout<<defense_now<<endl;				// 当前防御
+	cout<<disable_since<<endl ;			// 被瘫痪的时间点，用于判断瘫痪时间
+	cout<<flag <<endl;					// 所属阵营
+	cout<<hacked_point<<endl;				// 被黑的点数
+	cout<<healing_rate <<endl;		// 治疗 / 维修速率	
+	cout<<health_now<<endl;					// 当前生命值		
+	cout<<is_disable<<endl;		// 是否被瘫痪
+	cout<<max_health_now<<endl;				// 当前HP上限
+	cout<<max_speed_now<<endl;				// 当前最大速度
+	cout<<position.x<<endl;				// 单位位置，目测是一个point之类的东西
+	cout<<position.y<<endl;	
+	cout<<shot_range_now<<endl;				// 当前射程(现阶段貌似没有提升射程的技能，不过先保留)
+	cout<<skill_last_release_time1<<endl;// 上次技能1释放时间
+	cout<<skill_last_release_time2<<endl;// 上次技能2释放时间
+	cout<<unit_id<<endl;				// 单位id
+}
 Instr::Instr(int instru_type,int u_id,int tar_build_id,Position tpos1,Position tpos2):instruction_type(instru_type),the_unit_id(u_id),target_id_building_id(tar_build_id),pos1(tpos1),pos2(tpos2){};
 
 
@@ -57,8 +96,12 @@ void skill_2(int unit_id,int target_id,Position tpos1,Position tpos2)
 }
 void produce(int building_id)
 {
+	using namespace std;
+	
 	Instr Isttemp(3,-1,building_id);
-	q_instruction.push(Isttemp);
+	cout<<"in produce 1 "<<q_instruction.size()<<endl;
+	//q_instruction.push(Isttemp);
+	cout<<"in produce 2 "<<q_instruction.size()<<endl;
 }
 void Move(int unit_id, Position pos)
 {
@@ -82,13 +125,9 @@ double * getBuff(void)
 {
 	return buff;
 }
-resourse getResourse_1(void)
+resourse getResourse(void)
 {
-	return resourse_of_1;
-}
-resourse getResourse_2(void)
-{
-	return resourse_of_2;
+	return allResourse;
 }
 bool getTeamId(void)
 {

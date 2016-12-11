@@ -7,7 +7,7 @@
 #include <stdio.h>					//为了开启多线程 而 include 一些头文件
 #include <process.h>   
 
-#include <queue>
+
  
 #include "communicate.h"
 #include "head_for_main.h"				//main函数 需要调用的一些函数
@@ -18,18 +18,20 @@
 using namespace std;
 //这个地方应该怎么分配双方的信息？
 bool team_id = false; //队伍id    //也可能是true 要跟杨应人商量
+//用来标识那块地址给选手用，那块地址存入新的数据
+bool flag_info;						//false 时选手取用第一块地址，新的数据放入第二块地址，true时反之
 //标志游戏回合、总的是否结束的量
 bool flag_of_round;	
 bool flag_of_gameOver;
+
 
 //传指令的量
 queue <Instr> q_instruction;
 
 //收数据的量
-resourse resourse_of_1;
-resourse resourse_of_2;
+resourse allResourse;
 //二维数组不好返回，用以为数组
-double buff[40] = { 0.0 }; //buff全局变量 前20个 阵营1[单位类型][buff类型] 后20个 阵营2[单位类型][buff类型]
+double buff[40] = { 0.0 }; //buff全局变量 前20个 阵营1[单位类型][buff类型] 后20个 阵营2[单位类型][buff类型]  2*5*5?
 
 Unit * all_unit= new Unit[1];	 //变成 所有的unit (信息对双方都是透明的)
 int all_unit_size=0;	
