@@ -50,13 +50,9 @@ class RunLogger(threading.Thread):
                     pr[name] = value
             unit_obj.append(pr)
 
-        message = json.dumps([GameMain_obj.turn_num, unit_obj, GameMain_obj.resource])
+        message = json.dumps([GameMain_obj.turn_num, unit_obj, GameMain_obj.resource,
+                              GameMain_obj.skill_instr_0, GameMain_obj.skill_instr_1])
         self.sig.put(message)
-
-    # def test_write(self):
-    #     message = json.dumps([self.turn_num, [1,2,3,4,5], [1,2], [1,2,3], [1,2,3]])
-    #     self.turn_num += 1
-    #     self.sig.put(message)
 
     def exit(self):
         self.sig.put(0)
@@ -65,7 +61,7 @@ class RepManager:
     def __init__(self, filename):
         if filename:
             self._filename = filename
-            self.fp = gzip.open(self._filename, 'rt', encoding = 'utf-8')
+            self.fp = gzip.open(self._filename, 'rt', encoding='utf-8')
         self.sig = queue.Queue()
 
     def get_message(self, turn_num):
@@ -91,30 +87,30 @@ class RepManager:
 
 # test
 
-A = gamemain.GameMain()
-B = RunLogger('test.rpy')
-B.start()
-
-tank = unit.UnitObject(1, 1, 'nuke_tank', (22, 33), A.buff)
-fuck = unit.UnitObject(2, 0, 'battle_tank', (22, 32), A.buff)
-eagle = unit.UnitObject(3, 1, 'eagle', (22, 33), A.buff)
-base = unit.UnitObject(4, 0, 'base', (21, 32), A.buff)
-A.hqs.append(base)
-
-A.units[1] = tank
-A.units[2] = fuck
-A.units[3] = eagle
-
-B.write(A)
+# A = gamemain.GameMain()
+# B = RunLogger('test.rpy')
+# B.start()
+#
+# tank = unit.UnitObject(1, 1, 'nuke_tank', (22, 33), A.buff)
+# fuck = unit.UnitObject(2, 0, 'battle_tank', (22, 32), A.buff)
+# eagle = unit.UnitObject(3, 1, 'eagle', (22, 33), A.buff)
+# base = unit.UnitObject(4, 0, 'base', (21, 32), A.buff)
+# A.hqs.append(base)
+#
+# A.units[1] = tank
+# A.units[2] = fuck
+# A.units[3] = eagle
+#
+# B.write(A)
 # B.write()
 # B.write()
-B.exit()
-
-time.sleep(1)
-
-C = RepManager('test.rpy')
-message = C.get_message(0)
-print(message)
+# B.exit()
+#
+# time.sleep(1)
+#
+# C = RepManager('test.rpy')
+# message = C.get_message(0)
+# print(message)
 # message = C.get_message(1)
 # print(message)
 # message = C.get_message(0)
