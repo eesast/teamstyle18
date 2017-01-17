@@ -17,7 +17,7 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS 1
 using namespace std;
 //这个地方应该怎么分配双方的信息？
-bool team_id = false; //队伍id    //也可能是true 要跟杨应人商量
+int team_id = 0; //队伍id    //也可能是true 要跟杨应人商量
 //用来标识那块地址给选手用，那块地址存入新的数据
 bool flag_info;						//false 时选手取用第一块地址，新的数据放入第二块地址，true时反之
 //标志游戏回合、总的是否结束的量
@@ -33,7 +33,7 @@ resourse allResourse;
 //二维数组不好返回，用以为数组
 double buff[40] = { 0.0 }; //buff全局变量 前20个 阵营1[单位类型][buff类型] 后20个 阵营2[单位类型][buff类型]  2*5*5?
 
-Unit * all_unit= new Unit[1];	 //变成 所有的unit (信息对双方都是透明的)
+Unit all_unit[300];	 //变成 所有的unit (信息对双方都是透明的)
 int all_unit_size=0;	
 /*
 Unit * all_unit_1= new Unit[1];			  //可以知道的所有的阵营1的unit      //变成 所有的unit (信息对双方都是透明的)
