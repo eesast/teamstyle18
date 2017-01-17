@@ -110,12 +110,14 @@ const int origin_attribute[Type_num][attribute_num] =
 struct resourse
 {
 	//int round;
-	int tech_1;
+	
 	int money_1;
 	int remain_people_1;
-	int tech_2;
+	int tech_1;
+	
 	int money_2;
 	int remain_people_2;
+	int tech_2;
 };
 struct Position
 {

@@ -48,10 +48,11 @@ unsigned int __stdcall start_player(void* arg)					//启动选手1的线程
 	{
 		player_main();
 		flag_of_round=false;									//等到下一回合flag再释放
-		//wait_till_next_round();								//等到下一回合时，flag会变为true
+		wait_till_next_round();								//等到下一回合时，flag会变为true
 		//告诉杨应人我会把队伍编号先发送
-		p_sock_receive_send->send_data();						//将所有的指令发送出去				//这句话应该摆在哪里好？？？  在这里肯定是不对的是不是要再开一个线程？
-		Sleep(20);
+		p_sock_receive_send->send_data();						//将所有的指令发送出去
+																//这句话应该摆在哪里好？？？  在这里肯定是不对的是不是要再开一个线程？
+		//Sleep(5);
 	}
 	
 	return 0;
@@ -65,6 +66,6 @@ void wait_till_next_round()					//之后加一段时间的间隔  避免空转
 		if (flag_of_round==true)					//可以进入下一次调用函数
 			return;
 		else                                        //否则等待   直到逻辑端告诉我下一回合开始了
-			;//Sleep(1000*time_round/100);				//暂时休息1/100回合免得空转			//不知道对线程会不会有很大影响？
+			Sleep(1000*time_round/1000);	//			//暂时休息1/100回合免得空转			//不知道对线程会不会有很大影响？
 	}
 }

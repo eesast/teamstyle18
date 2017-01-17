@@ -1,14 +1,14 @@
-﻿#include "communicate.h"
+﻿#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include "communicate.h"
 #include "head_for_main.h"				//为了改变flag,也为了知道游戏是否结束了
 #include <queue>
-#define _WINSOCK_DEPRECATED_NO_WARNINGS 1
 
 using namespace std;
-extern bool team_id ;
+extern int team_id;
 extern bool flag_of_round;	
 extern resourse allResourse;
 extern double buff[40]; //buff全局变量 阵营1[单位类型][buff类型]
-extern Unit * all_unit;			  //所有的unit
+extern Unit all_unit[300];			  //所有的unit
 extern int all_unit_size;				//记录所有unit的个数
 /*
 //extern double buff1[4][5]; //buff全局变量 阵营1[单位类型][buff类型]
@@ -50,10 +50,10 @@ void recv_send_socket::InitialSocketClient(void)				//与python端建立连接�
         addrClt.sin_port=htons(18223);  
   
         connect(sockClient,(SOCKADDR*)&addrClt,sizeof(SOCKADDR));//客户机向服务器发出连接请求 
-		int team_id_temp;
-		recv(sockClient,(char*)&team_id_temp,sizeof(int),0);
-		cout << "i have receive the team_id"<<team_id_temp<<endl;
-		team_id=bool(team_id_temp);
+
+		recv(sockClient,(char*)&team_id,sizeof(int),0);
+		cout << "i have receive the team_id: "<<team_id<<endl;
+
 }
 unsigned __stdcall recv_send_socket::static_recv_data(void * pThis)  
 {  
@@ -84,19 +84,22 @@ void recv_send_socket::recv_data(void)
 	{
 		//我只将0、1、2接收3次
 		int recvType=10;				//等下会接收三种类型的数据
-		recv(sockClient,(char*)&recvType,sizeof(int),0);
+		int data = 0;
+		data = recv(sockClient,(char*)&recvType,sizeof(int),0);
 		bool Team=0;
-		cout << "Received" << recvType <<endl;
+		//cout << "Received" << recvType <<endl;
+
+		//cout << "data:" << data << endl;
 		switch (recvType)
 		{
 		case 2:						//资源
 			//recv(sockClient,(char*)&Team,sizeof(bool),0);
-			recv(sockClient,(char*)&allResourse,sizeof(resourse),0);
+			data = recv(sockClient,(char*)&allResourse,sizeof(resourse),0);
 			break;
 		case 1:						//四个兵种的buff
 			//recv(sockClient,(char*)&Team,sizeof(bool),0);
 			//if (Team==false)
-				recv(sockClient,(char*)&buff,2*3*5*sizeof(double),0);
+			data = recv(sockClient,(char*)&buff,2*3*5*sizeof(double),0);
 			//else
 			//	recv(sockClient,(char*)&buff_2,4*5*sizeof(double),0);
 			break;
@@ -117,9 +120,8 @@ void recv_send_socket::recv_data(void)
 				recv(sockClient,(char*)&all_unit_2,all_unit_size_2*sizeof(Unit),0);
 			}*/
 			recv(sockClient,(char*)&all_unit_size,sizeof(int),0);
-			delete [] all_unit;							//将之前的信息全部删掉
-			all_unit = new Unit[all_unit_size];
-			cout << all_unit_size;
+			//delete [] all_unit;							//将之前的信息全部删掉
+			cout << "all_unit_size:"<<all_unit_size<<endl;
 			for (int i=0;i<all_unit_size;i++)
 				recv(sockClient,(char*)(all_unit+i),sizeof(Unit),0);
 			all_unit[0].Print();
@@ -137,21 +139,21 @@ void recv_send_socket::recv_data(void)
 
 		flag_of_round=true;	
 		//选手算的太慢等细节，统统还没有考虑
-        Sleep(20);						//这个地方  同步还有待商榷    //为什么要sleep这么长时间？？？//压根不需要sleep????????
+        //Sleep(20);						//这个地方  同步还有待商榷    //为什么要sleep这么长时间？？？//压根不需要sleep????????
 	}
 }
 void recv_send_socket::send_data(void)
 {
-	int sizeQueue;
-	sizeQueue=q_instruction.size();
+	int sizeQueue=q_instruction.size();
+	cout << "instr num:" << sizeQueue << endl;
 	Instr * allInstr = new Instr[sizeQueue];			//为0是会有问题
 	for (int i=0;i<sizeQueue;i++)
 	{
-		//allInstr[i]=q_instruction.front();
-		//q_instruction.pop();
+		allInstr[i]=q_instruction.front();
+		q_instruction.pop();
 	}
 	//send(sockClient,(char*)team_id,sizeof(bool),0);					//告知是哪个队伍的指令
-	cout << q_instruction.size();
+	
 	if (sizeQueue!=0)										//这句话应该提到前面去
 		send(sockClient,(char*)allInstr,sizeQueue*sizeof(Instr),0);		//将指令全部发送过去
 	delete [] allInstr;
