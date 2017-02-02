@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import threading
-import gzip
 import queue
 import time
-import json
+import pickle
 from src import gamemain
 from src import unit
 
@@ -23,7 +22,7 @@ class RunLogger(threading.Thread):
         if not filename:
             filename = 'ts18_' + time.strftime('%m%d%H%M%S') + '.rpy'
         self._filename = filename
-        self._fp = gzip.open(self._filename, 'wt', encoding='utf-8')
+        self._fp = open(self._filename, 'wb')
         self.sig = queue.Queue()
 
         # self.turn_num = 0
@@ -31,11 +30,10 @@ class RunLogger(threading.Thread):
     def run(self):
         while 1:
             q = self.sig.get(block=True)
-            if q == 0:
+            if q == -1:
                 self._fp.close()
                 break
-            self._fp.write(q)
-            self._fp.write('\n')
+            pickle.dump(q, self._fp, 4)
 
     def write(self, GameMain_obj):
         if not isinstance(GameMain_obj, gamemain.GameMain):
@@ -43,77 +41,67 @@ class RunLogger(threading.Thread):
 
         unit_obj = []
         for i in GameMain_obj.units:
-            pr = {}
-            for name in dir(GameMain_obj.units[i]):
-                value = getattr(GameMain_obj.units[i], name)
-                if not name.startswith('__') and not callable(value):
-                    pr[name] = value
-            unit_obj.append(pr)
+            unit_obj.append(GameMain_obj.units[i])
 
-        message = json.dumps([GameMain_obj.turn_num, unit_obj, GameMain_obj.resource,
-                              GameMain_obj.skill_instr_0, GameMain_obj.skill_instr_1])
+        message = [GameMain_obj.turn_num, unit_obj, GameMain_obj.resource,
+                              GameMain_obj.skill_instr_0, GameMain_obj.skill_instr_1]
         self.sig.put(message)
 
     def exit(self):
-        self.sig.put(0)
+        self.sig.put(-1)
 
 class RepManager:
     def __init__(self, filename):
         if filename:
             self._filename = filename
-            self.fp = gzip.open(self._filename, 'rt', encoding='utf-8')
+            self._fp = open(self._filename, 'rb')
         self.sig = queue.Queue()
 
     def get_message(self, turn_num):
-        _get = self.fp.readline()
-        message = json.loads(_get)
+        message = pickle.load(self._fp)
         if not message:
             return 0
 
         if message[0] > turn_num:
-            self.fp.seek(0)
-            _get = self.fp.readline()
-            if not _get:
+            self._fp.seek(0)
+            message = pickle.load(self._fp)
+            if not message:
                 return 0
-            message = json.loads(_get)
 
         while message[0] < turn_num:
-            _get = self.fp.readline()
-            if not _get:
+            _message = pickle.load(self._fp)
+            if not message:
                 return 0
-            message = json.loads(_get)
 
         return message
 
 # test
 
-# A = gamemain.GameMain()
-# B = RunLogger('test.rpy')
-# B.start()
-#
-# tank = unit.UnitObject(1, 1, 'nuke_tank', (22, 33), A.buff)
-# fuck = unit.UnitObject(2, 0, 'battle_tank', (22, 32), A.buff)
-# eagle = unit.UnitObject(3, 1, 'eagle', (22, 33), A.buff)
-# base = unit.UnitObject(4, 0, 'base', (21, 32), A.buff)
-# A.hqs.append(base)
-#
-# A.units[1] = tank
-# A.units[2] = fuck
-# A.units[3] = eagle
-#
-# B.write(A)
-# B.write()
-# B.write()
-# B.exit()
-#
-# time.sleep(1)
-#
-# C = RepManager('test.rpy')
-# message = C.get_message(0)
-# print(message)
-# message = C.get_message(1)
-# print(message)
-# message = C.get_message(0)
-# print(message)
-# message = C.get_message(4)
-# print(message)
+A = gamemain.GameMain()
+B = RunLogger('test.rpy')
+B.start()
+
+tank = unit.UnitObject(1, 1, 'nuke_tank', (22, 33), A.buff)
+fuck = unit.UnitObject(2, 0, 'battle_tank', (22, 32), A.buff)
+eagle = unit.UnitObject(3, 1, 'eagle', (22, 33), A.buff)
+base = unit.UnitObject(4, 0, 'base', (21, 32), A.buff)
+A.hqs.append(base)
+
+A.units[1] = tank
+A.units[2] = fuck
+A.units[3] = eagle
+order = [['nuke_tank_skill2', 1, (22, 31)], ['nuke_tank_skill1', 1, 2], ['eagle_skill1', 3, (21, 32)],
+         ['eagle_skill2', 3, (21, 32), (22, 32)]]
+
+A.skill_phase(order)
+
+B.write(A)
+
+B.exit()
+
+time.sleep(1)
+
+C = RepManager('test.rpy')
+message = C.get_message(0)
+print(message)
+print(message[1][4].health_now)
