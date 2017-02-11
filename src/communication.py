@@ -33,17 +33,18 @@ class IOHandler(asyncore.dispatcher):
 
 
     def handle_write(self):
-        data=self.info_queue.get()
-        if type(data)is list:
-            byte_message=self.unit_serializer(data)
-            if self.is_unity:                                   #Also send dead unit list to unity side
-                dead=[unit for unit in self.last_units if unit not in data]
-                self.send(bytes(3)+self.unit_serializer(dead))
-        elif type(data)is dict and 1 in data[0]:
-            byte_message=self.buff_serializer(data)
-        else:
-            byte_message=self.resource_serializer(data)
-        self.send(byte_message)
+        if not self.info_queue.empty():
+            data=self.info_queue.get(block=False)
+            if type(data)is list:
+                byte_message=self.unit_serializer(data)
+                if self.is_unity:                                   #Also send dead unit list to unity side
+                    dead=[unit for unit in self.last_units if unit not in data]
+                    self.send(bytes(3)+self.unit_serializer(dead))
+            elif type(data)is dict and 1 in data[0]:
+                byte_message=self.buff_serializer(data)
+            else:
+                byte_message=self.resource_serializer(data)
+            self.send(byte_message)
 
     def writable(self):
         return True
