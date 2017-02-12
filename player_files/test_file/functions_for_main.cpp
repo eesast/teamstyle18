@@ -7,30 +7,33 @@
 extern bool flag_of_round;	
 extern bool flag_of_gameOver;
 extern recv_send_socket  * p_sock_receive_send;
-void player_main(void);				//Ñ¡ÊÖµÄÏß³ÌÒªµ÷ÓÃ     Ð´ÔÚplayerMain.cppÖÐ
+extern int all_received;
+extern bool receiveable = true;
+extern bool runAI = false;
+void player_main(void);				//é€‰æ‰‹çš„çº¿ç¨‹è¦è°ƒç”¨     å†™åœ¨playerMain.cppä¸­
 
 
-void init_global_vars()					//ÄÚÈÝ´ý¶¨£¬µÈµ½½Óµ½ÐÅÏ¢Ê±ÔÙ×ªÎªtrue
+void init_global_vars()					//å†…å®¹å¾…å®šï¼Œç­‰åˆ°æŽ¥åˆ°ä¿¡æ¯æ—¶å†è½¬ä¸ºtrue
 {
 	flag_of_round=false;	
-	flag_of_gameOver=false;				//ÓÎÏ·½áÊøÊ±ÔÙÖÃÎªtrue
+	flag_of_gameOver=false;				//æ¸¸æˆç»“æŸæ—¶å†ç½®ä¸ºtrue
 }
 
-void send_client_hello()				//¸æËßÂß¼­¶Ë£¬ Ñ¡ÊÖÕâ±ß×¼±¸ºÃÁË
+void send_client_hello()				//å‘Šè¯‰é€»è¾‘ç«¯ï¼Œ é€‰æ‰‹è¿™è¾¹å‡†å¤‡å¥½äº†
 {
-	p_sock_receive_send->InitialSocketClient();					//³õÊ¼»¯socket£¬²¢Ïò Âß¼­¶Ë·¢³ö³õÊ¼»¯µÄÇëÇó
+	p_sock_receive_send->InitialSocketClient();					//åˆå§‹åŒ–socketï¼Œå¹¶å‘ é€»è¾‘ç«¯å‘å‡ºåˆå§‹åŒ–çš„è¯·æ±‚
 	
 }
-//ÔÝÊ±Ô¼¶¨²»ÊÕhelloÖ±½Ó¿ªÊ¼°É
-/*void recv_server_hello()				//´ÓÂß¼­¶Ë½ÓÊÕÒ»Ð©¿ÉÄÜ³õÊ¼±ØÒªµÄÊý¾Ý£¨Õâ¸öº¯Êý¿ÉÄÜÊÇ²»ÐèÒªµÄ£©				
+//æš‚æ—¶çº¦å®šä¸æ”¶helloç›´æŽ¥å¼€å§‹å§
+/*void recv_server_hello()				//ä»Žé€»è¾‘ç«¯æŽ¥æ”¶ä¸€äº›å¯èƒ½åˆå§‹å¿…è¦çš„æ•°æ®ï¼ˆè¿™ä¸ªå‡½æ•°å¯èƒ½æ˜¯ä¸éœ€è¦çš„ï¼‰				
 {
-	;									//½ÓÊÕÐÅÏ¢
+	;									//æŽ¥æ”¶ä¿¡æ¯
 	flag1_of_round=true;
-	flag2_of_round=true;				//»ØºÏ¿ªÊ¼£¿£¿£¿£¿
+	flag2_of_round=true;				//å›žåˆå¼€å§‹ï¼Ÿï¼Ÿï¼Ÿï¼Ÿ
 }*/
-//´ýÍêÉÆ
-//ÆäÊµÍêÈ«Ã»ÓÐ±ØÒªÓÃÕâ¸öº¯Êý£¬¿ÉÒÔ¿¼ÂÇÉ¾È¥
-bool game_not_end()						//µÃ´ÓÂß¼­¶Ë»ñÈ¡ÓÎÏ·ÊÇ·ñ½áÊøµÄÐÅÏ¢
+//å¾…å®Œå–„
+//å…¶å®žå®Œå…¨æ²¡æœ‰å¿…è¦ç”¨è¿™ä¸ªå‡½æ•°ï¼Œå¯ä»¥è€ƒè™‘åˆ åŽ»
+bool game_not_end()						//å¾—ä»Žé€»è¾‘ç«¯èŽ·å–æ¸¸æˆæ˜¯å¦ç»“æŸçš„ä¿¡æ¯
 {
 	if (flag_of_gameOver==true)
 		return false;
@@ -42,29 +45,38 @@ bool game_not_end()						//µÃ´ÓÂß¼­¶Ë»ñÈ¡ÓÎÏ·ÊÇ·ñ½áÊøµÄÐÅÏ¢
 #endif
 }
 
-unsigned int __stdcall start_player(void* arg)					//Æô¶¯Ñ¡ÊÖ1µÄÏß³Ì
+unsigned int __stdcall start_player(void* arg)					//å¯åŠ¨é€‰æ‰‹1çš„çº¿ç¨‹
 {
 	while (game_not_end())
 	{
+		if (runAI)
+		{
+			
 		player_main();
-		flag_of_round=false;									//µÈµ½ÏÂÒ»»ØºÏflagÔÙÊÍ·Å
-		//wait_till_next_round();								//µÈµ½ÏÂÒ»»ØºÏÊ±£¬flag»á±äÎªtrue
-		//¸æËßÑîÓ¦ÈËÎÒ»á°Ñ¶ÓÎé±àºÅÏÈ·¢ËÍ
-		p_sock_receive_send->send_data();						//½«ËùÓÐµÄÖ¸Áî·¢ËÍ³öÈ¥				//Õâ¾ä»°Ó¦¸Ã°ÚÔÚÄÄÀïºÃ£¿£¿£¿  ÔÚÕâÀï¿Ï¶¨ÊÇ²»¶ÔµÄÊÇ²»ÊÇÒªÔÙ¿ªÒ»¸öÏß³Ì£¿
-		Sleep(20);
+		p_sock_receive_send->send_data();
+							//å°†æ‰€æœ‰çš„æŒ‡ä»¤å‘é€å‡ºåŽ»
+		}				                                  
 	}
 	
 	return 0;
 }
 
 
-void wait_till_next_round()					//Ö®ºó¼ÓÒ»¶ÎÊ±¼äµÄ¼ä¸ô  ±ÜÃâ¿Õ×ª
+void wait_till_next_round()					//ä¹‹åŽåŠ ä¸€æ®µæ—¶é—´çš„é—´éš”  é¿å…ç©ºè½¬
 {
 	while (true)
 	{
-		if (flag_of_round==true)					//¿ÉÒÔ½øÈëÏÂÒ»´Îµ÷ÓÃº¯Êý
+		if (flag_of_round == true)					//å¯ä»¥è¿›å…¥ä¸‹ä¸€æ¬¡è°ƒç”¨å‡½æ•°
 			return;
-		else                                        //·ñÔòµÈ´ý   Ö±µ½Âß¼­¶Ë¸æËßÎÒÏÂÒ»»ØºÏ¿ªÊ¼ÁË
-			;//Sleep(1000*time_round/100);				//ÔÝÊ±ÐÝÏ¢1/100»ØºÏÃâµÃ¿Õ×ª			//²»ÖªµÀ¶ÔÏß³Ì»á²»»áÓÐºÜ´óÓ°Ïì£¿
+		else if (all_received >= 3)
+		{
+			flag_of_round = true;
+			return;
+		}
+		else 
+		{
+			//Sleep(1000*time_round/100);
+		}//å¦åˆ™ç­‰å¾…   ç›´åˆ°é€»è¾‘ç«¯å‘Šè¯‰æˆ‘ä¸‹ä¸€å›žåˆå¼€å§‹äº†
+				//			//æš‚æ—¶ä¼‘æ¯1/100å›žåˆå…å¾—ç©ºè½¬			//ä¸çŸ¥é“å¯¹çº¿ç¨‹ä¼šä¸ä¼šæœ‰å¾ˆå¤§å½±å“ï¼Ÿ
 	}
 }

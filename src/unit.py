@@ -65,7 +65,7 @@ class UnitObject(object):
     unit_id = 0
     name = 'Teamstyle'  # 单位名字，给选手闹着玩的
     flag = -1 #所属阵营
-    position = (-1,-1) #单位位置，目测是一个point之类的东西
+    position = [-1,-1] #单位位置，目测是一个point之类的东西
     motor_type = -1  # 移动方式，分地面和空中，精英步兵的技能会用到
     max_health_now = -1 #当前HP上限
     health_now = -1  # 当前生命值
@@ -108,12 +108,12 @@ class UnitObject(object):
             self.defense_now = origin_attribute[type_name]['origin_defense'] * (1+buff[flag][self.__unit_type]['defense_buff'])
             self.attack_now = origin_attribute[type_name]['origin_attack'] * (1+buff[flag][self.__unit_type]['attack_buff'])
         else:
-            self.health_now = origin_attribute[type_name]['origin_max_health']
-            self.max_health_now = origin_attribute[type_name]['origin_max_health']
-            self.max_speed_now = origin_attribute[type_name]['origin_max_speed']
-            self.shot_range_now = origin_attribute[type_name]['origin_shot_range']
-            self.defense_now = origin_attribute[type_name]['origin_defense']
-            self.attack_now = origin_attribute[type_name]['origin_attack']
+            self.health_now = origin_attribute[type_name]['origin_max_health']*1.0
+            self.max_health_now = origin_attribute[type_name]['origin_max_health']*1.0
+            self.max_speed_now = origin_attribute[type_name]['origin_max_speed']*1.0
+            self.shot_range_now = origin_attribute[type_name]['origin_shot_range']*1.0
+            self.defense_now = origin_attribute[type_name]['origin_defense']*1.0
+            self.attack_now = origin_attribute[type_name]['origin_attack']*1.0
 
         self.__skill_1_cd = origin_attribute[type_name]['skill_cd_1']
         self.__skill_2_cd = origin_attribute[type_name]['skill_cd_2']

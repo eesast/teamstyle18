@@ -23,24 +23,24 @@ public:
 	Data safeFront(void);
 };
 
-//Èô¸ÉÃ¶¾ÙĞÍ±äÁ¿
+//è‹¥å¹²æšä¸¾å‹å˜é‡
 //type_name
 enum UnitType
 {
-	AIRCRAFT,	 //·É»ú
-	BASE,	     //Ö÷»ùµØ
-	BUILDING,   	 //½¨Öş
-	INFANTRY,	 //²½±ø
-	VEHICLE	 //Ì¹¿Ë
+	AIRCRAFT,	 //é£æœº
+	BASE,	     //ä¸»åŸºåœ°
+	BUILDING,   	 //å»ºç­‘
+	INFANTRY,	 //æ­¥å…µ
+	VEHICLE	 //å¦å…‹
 };
 
 enum BuffType
 {
-	ATTACK,		 //¹¥»÷buff
-	DEFENSE,	 //·ÀÓùbuff
-	HEALTH,	     //×î´óÉúÃüÖµbuff
-	SHOT_RANGE, 	 //Éä³Ìbuff
-	SPEED		 //ËÙ¶Èbuff
+	ATTACK,		 //æ”»å‡»buff
+	DEFENSE,	 //é˜²å¾¡buff
+	HEALTH,	     //æœ€å¤§ç”Ÿå‘½å€¼buff
+	SHOT_RANGE, 	 //å°„ç¨‹buff
+	SPEED		 //é€Ÿåº¦buff
 };
 
 enum TypeName
@@ -76,7 +76,7 @@ enum attribute
 	TECH_COST,
 	attribute_num
 };
-//ÓÃÀ´¸øunit³õÊ¼»¯
+//ç”¨æ¥ç»™unitåˆå§‹åŒ–
 const int origin_attribute[Type_num][attribute_num] =
 {
 
@@ -105,17 +105,19 @@ const int origin_attribute[Type_num][attribute_num] =
 
 };
 
-//¶¨ÒåµÄÈô¸É½á¹¹Ìå
+//å®šä¹‰çš„è‹¥å¹²ç»“æ„ä½“
 //resourse
 struct resourse
 {
 	//int round;
-	int tech_1;
+	
 	int money_1;
 	int remain_people_1;
-	int tech_2;
+	int tech_1;
+	
 	int money_2;
 	int remain_people_2;
+	int tech_2;
 };
 struct Position
 {
@@ -127,43 +129,43 @@ const Position none_position = Position(-1,-1);
 
 
 
-//°´ÎÒµÄË³Ğò¸ÄÒ»ÏÂ
-//°´×ÖÄ¸Ë³ĞòÅÅĞò
+//æŒ‰æˆ‘çš„é¡ºåºæ”¹ä¸€ä¸‹
+//æŒ‰å­—æ¯é¡ºåºæ’åº
 
 struct Unit
 {
 	TypeName type_name;
 	UnitType unit_type;
-	int attack_mode;			// ¹¥»÷Ä£Ê½£¬ÀıÈç¿É¶Ô¿Õ£¬¿É¶ÔÌ¹¿Ë£¬¿É¶Ô²½±øÖ®ÀàµÄ
-	float attack_now;					// µ±Ç°¹¥»÷
-	float defense_now;				// µ±Ç°·ÀÓù
-	int disable_since ;			// ±»Ì±»¾µÄÊ±¼äµã£¬ÓÃÓÚÅĞ¶ÏÌ±»¾Ê±¼ä
-	int flag ;					// ËùÊôÕóÓª
-	int hacked_point;				// ±»ºÚµÄµãÊı
-	int healing_rate ;		// ÖÎÁÆ / Î¬ĞŞËÙÂÊ	
-	float health_now;					// µ±Ç°ÉúÃüÖµ		
-	int is_disable;		// ÊÇ·ñ±»Ì±»¾
-	float max_health_now;				// µ±Ç°HPÉÏÏŞ
-	float max_speed_now;				// µ±Ç°×î´óËÙ¶È
-	Position position;				// µ¥Î»Î»ÖÃ£¬Ä¿²âÊÇÒ»¸öpointÖ®ÀàµÄ¶«Î÷
-	float shot_range_now;				// µ±Ç°Éä³Ì(ÏÖ½×¶ÎÃ²ËÆÃ»ÓĞÌáÉıÉä³ÌµÄ¼¼ÄÜ£¬²»¹ıÏÈ±£Áô)
-	int skill_last_release_time1;// ÉÏ´Î¼¼ÄÜ1ÊÍ·ÅÊ±¼ä
-	int skill_last_release_time2;// ÉÏ´Î¼¼ÄÜ2ÊÍ·ÅÊ±¼ä
-	int unit_id;				// µ¥Î»id
-	Unit();						//new Ê±ĞèÒª¿ÕµÄ¹¹Ôìº¯Êı
-	Unit(int unit_id, int flag, TypeName type_name, Position pos);    //(ÕâÊÇÓÃÀ´¸ÉÊ²Ã´µÄ£¬ÓĞĞ©ÍêÈ«²»ĞèÒªµÄĞÅÏ¢ÔõÃ´´¦Àí£¬Ã»ÕŞÁË£¿µÃÓÃÒ»¸öforÑ­»·£¬°Ñ½Óµ½µÄÊı¾İÔÚÔÙ½øÈ¥£¬²»ÄÜÖ±½ÓÓÃËü£¿)
+	int attack_mode;			// æ”»å‡»æ¨¡å¼ï¼Œä¾‹å¦‚å¯å¯¹ç©ºï¼Œå¯å¯¹å¦å…‹ï¼Œå¯å¯¹æ­¥å…µä¹‹ç±»çš„
+	float attack_now;					// å½“å‰æ”»å‡»
+	float defense_now;				// å½“å‰é˜²å¾¡
+	int disable_since ;			// è¢«ç˜«ç—ªçš„æ—¶é—´ç‚¹ï¼Œç”¨äºåˆ¤æ–­ç˜«ç—ªæ—¶é—´
+	int flag ;					// æ‰€å±é˜µè¥
+	int hacked_point;				// è¢«é»‘çš„ç‚¹æ•°
+	int healing_rate ;		// æ²»ç–— / ç»´ä¿®é€Ÿç‡	
+	float health_now;					// å½“å‰ç”Ÿå‘½å€¼		
+	int is_disable;		// æ˜¯å¦è¢«ç˜«ç—ª
+	float max_health_now;				// å½“å‰HPä¸Šé™
+	float max_speed_now;				// å½“å‰æœ€å¤§é€Ÿåº¦
+	Position position;				// å•ä½ä½ç½®ï¼Œç›®æµ‹æ˜¯ä¸€ä¸ªpointä¹‹ç±»çš„ä¸œè¥¿
+	float shot_range_now;				// å½“å‰å°„ç¨‹(ç°é˜¶æ®µè²Œä¼¼æ²¡æœ‰æå‡å°„ç¨‹çš„æŠ€èƒ½ï¼Œä¸è¿‡å…ˆä¿ç•™)
+	int skill_last_release_time1;// ä¸Šæ¬¡æŠ€èƒ½1é‡Šæ”¾æ—¶é—´
+	int skill_last_release_time2;// ä¸Šæ¬¡æŠ€èƒ½2é‡Šæ”¾æ—¶é—´
+	int unit_id;				// å•ä½id
+	Unit();						//new æ—¶éœ€è¦ç©ºçš„æ„é€ å‡½æ•°
+	Unit(int unit_id, int flag, TypeName type_name, Position pos);    //(è¿™æ˜¯ç”¨æ¥å¹²ä»€ä¹ˆçš„ï¼Œæœ‰äº›å®Œå…¨ä¸éœ€è¦çš„ä¿¡æ¯æ€ä¹ˆå¤„ç†ï¼Œæ²¡è¾™äº†ï¼Ÿå¾—ç”¨ä¸€ä¸ªforå¾ªç¯ï¼ŒæŠŠæ¥åˆ°çš„æ•°æ®åœ¨å†è¿›å»ï¼Œä¸èƒ½ç›´æ¥ç”¨å®ƒï¼Ÿ)
 	void Print();
 };
 
 
-//Ä¬ÈÏ²ÎÊıÕâÔõÃ´»ØÊÂ£¿
-class Instr							//°Ñ¼¸ÖÖÖ¸ÁîµÄÊı¾İ¶¼·Åµ½Õâ¸öÀïÃæ
+//é»˜è®¤å‚æ•°è¿™æ€ä¹ˆå›äº‹ï¼Ÿ
+class Instr							//æŠŠå‡ ç§æŒ‡ä»¤çš„æ•°æ®éƒ½æ”¾åˆ°è¿™ä¸ªé‡Œé¢
 {
 public:
-	int instruction_type;				//1±íÊ¾skil1,2±íÊ¾skil2,3±íÊ¾produce,4±íÊ¾Move,5±íÊ¾capture
+	int instruction_type;				//1è¡¨ç¤ºskil1,2è¡¨ç¤ºskil2,3è¡¨ç¤ºproduce,4è¡¨ç¤ºMove,5è¡¨ç¤ºcapture
 	int the_unit_id;
 	int target_id_building_id;
-	Position pos1;					//ÎªÊ²Ã´Òª¼Óstruct?
+	Position pos1;					//ä¸ºä»€ä¹ˆè¦åŠ struct?
 	Position pos2;
 	Instr(int instru_type=-1,int u_id=-1,int tar_build_id=-1,Position tpos1=none_position,Position tpos2=none_position);
 };
@@ -172,7 +174,7 @@ public:
 
 
 
-//Ñ¡ÊÖµ÷ÓÃº¯ÊıµÄÉùÃ÷
+//é€‰æ‰‹è°ƒç”¨å‡½æ•°çš„å£°æ˜
 void skill_1(int unit_id,int target_id=-1,Position tpos1=none_position,Position tpos2=none_position) ;
 void skill_2(int unit_id,int target_id=-1,Position tpos1=none_position,Position tpos2=none_position) ;
 void produce(int building_id);

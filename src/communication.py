@@ -24,25 +24,29 @@ class IOHandler(asyncore.dispatcher):
         self.last_units=[]
         self.is_unity=is_unity
         self.main_server=main_server
+        self.patient=False
 
     def handle_read(self):
         instruction = self.recv(8192)
-        print ('received instruction')
         if instruction:
+            self.patient = True
+            #print ('received instruction，length:',len(instruction))
             self.unpack_instrs(instruction)
 
+
     def handle_write(self):
-        data=self.info_queue.get()
-        if type(data)is list:
-            byte_message=self.unit_serializer(data)
-            if self.is_unity:                                   #Also send dead unit list to unity side
-                dead=[unit for unit in self.last_units if unit not in data]
-                self.send(bytes(3)+self.unit_serializer(dead))
-        elif type(data)is dict and 1 in data[0]:
-            byte_message=self.buff_serializer(data)
-        else:
-            byte_message=self.resource_serializer(data)
-        self.send(byte_message)
+        if not self.info_queue.empty():
+            data=self.info_queue.get(block=False)
+            if type(data)is list:
+                byte_message=self.unit_serializer(data)
+                if self.is_unity:                                   #Also send dead unit list to unity side
+                    dead=[unit for unit in self.last_units if unit not in data]
+                    self.send(bytes(3)+self.unit_serializer(dead))
+            elif type(data)is dict and 1 in data[0]:
+                byte_message=self.buff_serializer(data)
+            else:
+                byte_message=self.resource_serializer(data)
+            self.send(byte_message)
 
     def writable(self):
         return True
@@ -82,6 +86,7 @@ class IOHandler(asyncore.dispatcher):
         return struct.pack(header,*args)
 
     def buff_serializer(self,object_dict):
+        #print('fucker')
         header="i"
         args=[1]
         for name, value in sorted(object_dict.items(),key=lambda t:t[0]):
@@ -95,6 +100,7 @@ class IOHandler(asyncore.dispatcher):
         num=int(len(instruction)/(28))
         for i in range(0,num):
             itype,uid,bid,pos1x,pos1y,po2x,pos2y=(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
+            #print(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
             if itype is 1 or itype is 2:
                 if bid is -1:
                     self.skill_instr.append([itype,uid,pos1x,pos1y])
@@ -106,6 +112,7 @@ class IOHandler(asyncore.dispatcher):
                 self.move_instr.append([uid,pos1x,pos1y])
             elif itype is 5:
                 self.capture_instr.append([uid,bid])
+        #print(len(self.produce_instr))
 
     def dump(self):
         instr_pack=(self.skill_instr,self.produce_instr,self.move_instr,self.capture_instr)
@@ -124,17 +131,18 @@ class MainServer(asyncore.dispatcher):
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_reuse_addr()
         self.bind(host_addr)
-        self.listen(5)
+        self.listen(15)
+        self.ai_id_now = 0
         self.gamestart=False
         print('Server initialized')
 
     def handle_accept(self):
         conn,cli = self.accept()
-        ai_id=0
         if conn is not None:
-            self.conn_list.append(IOHandler(conn, ai_id, self, ai_id is 2))
-            ai_id+=1
-        if len(self.conn_list) is 1:
+            self.conn_list.append(IOHandler(conn, self.ai_id_now, self, self.ai_id_now is 2))
+            self.ai_id_now+=1
+            print("player connected")
+        if len(self.conn_list) is 2:
             print ("Both ai and unity connected")
             self.gamestart=True
 
