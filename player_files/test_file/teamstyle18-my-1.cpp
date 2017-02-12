@@ -87,29 +87,33 @@ Instr::Instr(int instru_type,int u_id,int tar_build_id,Position tpos1,Position t
 void skill_1(int unit_id,int target_id,Position tpos1,Position tpos2) 
 {
 	Instr Isttemp(1,unit_id,target_id,tpos1,tpos2);
+	//cout << "SK1";
 	q_instruction.push(Isttemp);
 }
 void skill_2(int unit_id,int target_id,Position tpos1,Position tpos2) 
 {
 	Instr Isttemp(2,unit_id,target_id,tpos1,tpos2);
+	//cout << "SK2";
 	q_instruction.push(Isttemp);
 }
 void produce(int building_id)
 {
 	Instr Isttemp(3,-1,building_id);
-	
+	//cout << "P";
 	q_instruction.push(Isttemp);
-	cout<<"in produce:"<<q_instruction.size()<<endl;
+	//cout<<"in produce:"<<q_instruction.size()<<endl;
 	//cout<<"in produce 2 "<<q_instruction.size()<<endl;
 }
 void Move(int unit_id, Position pos)
 {
 	Instr Isttemp(4,unit_id,-1,pos);
+	//cout << "M";
 	q_instruction.push(Isttemp);
 }
 void capture(int unit_id, int building_id)
 {
 	Instr Isttemp(5,unit_id,building_id);
+	//cout << "C";
 	q_instruction.push(Isttemp);
 }
 Unit * getUnit(void)

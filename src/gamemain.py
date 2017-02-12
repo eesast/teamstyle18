@@ -606,34 +606,34 @@ class GameMain:
             #print(Get_id_information(order[k][1]).Get_type_name())
             if (Get_id_information(order[k][1]).Get_type_name() == 5):#'bolt_tank'
                 bolt_tank_skill1(order[k][1], order[k][2])
-                print('use skill1')
+                #print('use skill1')
             elif (Get_id_information(order[k][1]).Get_type_name() == 2):#'hacker'
                 hacker_skill1(order[k][1], order[k][2])
-                print('use skill2')
+                #print('use skill2')
             elif (Get_id_information(order[k][1]).Get_type_name() == 7):#'uav'
                 uav(order[k][1], order[k][2])
-                print('use skill3')
+                #print('use skill3')
             elif (Get_id_information(order[k][1]).Get_type_name() == 4):#'battle_tank'
                 battle_tank_skill1(order[k][1], order[k][2])
-                print('use skill4')
+                #print('use skill4')
             elif (Get_id_information(order[k][1]).Get_type_name() == 6 and order[k][0]==1):#'nuke_tank'
                 nuke_tank_skill1(order[k][1], order[k][2])
-                print('use skill5')
+                #print('use skill5')
             elif (Get_id_information(order[k][1]).Get_type_name() == 6 and order[k][0]==2):#'nuke_tank'
                 nuke_tank_skill2(order[k][1], order[k][2])
-                print('use skill6')
+                #print('use skill6')
             elif (Get_id_information(order[k][1]).Get_type_name() == 8and order[k][0]==1):#'eagle'
                 eagle_skill1(order[k][1], order[k][2])
-                print('use skill7')
+                #print('use skill7')
             elif (Get_id_information(order[k][1]).Get_type_name() == 8and order[k][0]==2):#'eagle'
                 eagle_skill2(order[k][1], order[k][2], order[k][3])
-                print('use skill8')
+                #print('use skill8')
             elif (Get_id_information(order[k][1]).Get_type_name() == 3and order[k][0]==1):#'superman'
                 superman_skill1(order[k][1], order[k][2])
-                print('use skill9')
+                #print('use skill9')
             elif (Get_id_information(order[k][1]).Get_type_name() == 3and order[k][0]==2):#'superman'
                 superman_skill2(order[k][1])
-                print('use skill0')
+                #print('use skill0')
         pass
 
     def move_phase(self):
@@ -663,13 +663,13 @@ class GameMain:
         for things in self.move_instr_1:
             for obj in id_collection:
                 if obj.unit_id == things[0]:  # 如果unit_id 相符
-                    if obj.__unit_type == 0 or obj.__unit_type == 4 or obj.flag == 0:
+                    if obj.Get_unit_type() == 0 or obj.Get_unit_type() == 4 or obj.flag == 0:
                         pass
                     else:
                         x = things[1]
                         y = things[2]
-                        x1 = obj.position_x
-                        y1 = obj.position_y
+                        x1 = obj.position[0]
+                        y1 = obj.position[1]
                         if x > 100 or y > 100 or x < 0 or y < 0:
                             return
                         elif abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:
@@ -684,7 +684,7 @@ class GameMain:
         pass
 
     def produce_phase(self):
-        print(self.produce_instr_0)
+        #print(self.produce_instr_0)
         ai_id = 0
         tempcorrection=self.produce_instr_0.copy()
         for building_id in tempcorrection:
@@ -938,7 +938,7 @@ class GameMain:
                         if k.unit_id == orders[1] :
                             if k.Get_unit_type() == 4 and abs(
                                         things.position[0] - k.position[0]) + abs(things.position[1] - k.position[1]) == 1:
-                                current_pointer[k.unit_id] += 1
+                                current_pointer[k.unit_id] -= 1
                     things.health_now=0
         for obj in unit_building:  # 结算建筑都是哪一方的
             if current_pointer[obj.unit_id] > 0:
@@ -1074,20 +1074,34 @@ class GameMain:
 
     def next_tick(self):
         # 获取指令，指令检测合法与去重，回合演算
-        print(self.skill_instr_0)
-        print("before HP0:", self.hqs[0].health_now, "before HP1:", self.hqs[1].health_now)
+        #print(self.skill_instr_0)
+        #print("before HP0:", self.hqs[0].health_now, "before HP1:", self.hqs[1].health_now)
         self.check_legal()
         self.skill_phase(self.skill_instr_0)
-        print("HP0:",self.hqs[0].health_now,"HP1:",self.hqs[1].health_now)
+        self.skill_phase(self.skill_instr_1)
+        #print("HP0:",self.hqs[0].health_now,"HP1:",self.hqs[1].health_now)
         self.cleanup_phase()
         check_winner=self.win_determine()
+        print("produce instr_0:", len(self.produce_instr_0), "move instr_0:", len(self.move_instr_0), "cap instr_0:",len(self.capture_instr_0), "skill instr_0:", len(self.skill_instr_0))
+        print("produce instr_1:", len(self.produce_instr_1), "move instr_1:", len(self.move_instr_1), "cap instr_1:",len(self.capture_instr_1), "skill instr_1:", len(self.skill_instr_1))
         self.move_phase()
         self.produce_phase()
         self.resource_phase()
         self.capture_phase()
         check_timeup =self.timeup_determine()
-        print("produce instr:", len(self.produce_instr_0), "move instr:", len(self.move_instr_0), "cap instr:",len(self.capture_instr_0), "skill instr:", len(self.skill_instr_0))
         print("after HP0:", self.hqs[0].health_now, "after HP1:", self.hqs[1].health_now)
+        ai0 = {}
+        ai1 = {}
+        for x in range(22):
+            ai0[x]=0
+            ai1[x]=0
+        for u in self.units.values():
+            if u.flag==0:
+                ai0[u.Get_type_name()] += 1
+            if u.flag==1:
+                ai1[u.Get_type_name()] += 1
+        print(ai0)
+        print(ai1)
         self.skill_instr_0 = []  # ai0的当前回合指令
         self.skill_instr_1 = []  # ai1的当前回合制令
         self.produce_instr_0 = []  # 指令格式为[building_id,building_id,]

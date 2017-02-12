@@ -59,13 +59,10 @@ int main()
     unsigned  ui_thread_recive_sendID,ui_thread_playerID;	
 	//线程1，用来接收数据
 	hth_receive_send = (HANDLE)_beginthreadex( NULL,0,recv_send_socket::static_recv_data,p_sock_receive_send,CREATE_SUSPENDED,&ui_thread_recive_sendID );			//这个地方可能写的有点问题，我应该把这个线程一直开着就够了
-	//和杨应人商量，发数据之前，一定需要把 是哪一方的数据告诉我        （选手、对手的信息怎么区分？需要有一个对偶的量？）
 	//线程2，用来 控制调用选手1的ai 的线程
 	hth_player = (HANDLE)_beginthreadex( NULL,0,start_player,NULL,CREATE_SUSPENDED,&ui_thread_playerID );
 	
-     
 	//开启三个线程
-	//多加一个   hth_receive1   hth_receive2	
 	ResumeThread(hth_receive_send);					//就把它打开来一直用来接收
 	ResumeThread(hth_player);						//这样实现太复杂了，肯定还是要改的
 	
@@ -74,20 +71,8 @@ int main()
 	
 	CloseHandle(hth_receive_send);
 	CloseHandle(hth_player);
-	
 	p_sock_receive_send->close_recv_socket();
-	
-	//这里逻辑变得好复杂啊						//这个逻辑变到了 在选手的线程里分别实现
-	/*while(game_not_end())		//只要游戏没有结束
-	{
-		player_main();			//不断执行选手的playermain函数
-		wait_till_next_round();		//等执行完playermain之后的下一回合、再进入while循环
-	}*/
 	delete [] all_unit;
-	/*
-	delete [] all_unit_1;					//释放空间
-	delete [] all_unit_2;	
-	*/
 	cout<<"1"<<endl;
 	return 0;
 }  
