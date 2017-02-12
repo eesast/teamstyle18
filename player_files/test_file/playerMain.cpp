@@ -6,7 +6,7 @@
 #include<algorithm>
 #include<ctime>
 const int mapsize = 100;
-
+extern bool runAI;
 using namespace std;
 Unit mybase;
 Unit enemybase;
@@ -66,15 +66,13 @@ void player_main(void)
 	Unit * myunit = getUnit();
 	int myUnitSize = getUnitSize();
 	srand(int(time(0)));
-	if (myUnitSize > 0)
-	{
 	int meat_num = 0;
-	cout << "回合数：" << (turn++) << endl;
+	cout << "回合数：" << (turn++) ;
 	double * myBuff = getBuff();
 	resourse myResourse = getResourse();
 	int myflag = getTeamId();
 	int enemyflag = !myflag;
-	cout << "unit num:" << myUnitSize << endl;
+	cout << "unit num:" << myUnitSize ;
 	vector<Unit>my_units[22];
 	vector<Unit>enemy_units[22];
 	vector<Unit>netural_units[22];
@@ -89,7 +87,7 @@ void player_main(void)
 
 		//bool enemyflag = !myflag;
 
-		cout << "money1:" << myResourse.money_1 << "tech1:" << myResourse.tech_1 << "people1:" << myResourse.remain_people_1 << endl;
+		//cout << "money1:" << myResourse.money_1 << "tech1:" << myResourse.tech_1 << "people1:" << myResourse.remain_people_1;
 		
 		for (int i = 0; i < myUnitSize; i++)
 		{
@@ -105,7 +103,6 @@ void player_main(void)
 			if (myunit[i].flag == myflag)
 			{
 				//cout << i<<"th unit  id is mine: "<< myunit[i] .unit_id<<"type:" << myunit[i].type_name << " my flag:" << myunit[i].flag<<"position:(" << myunit[i].position.x<<" "<< myunit[i].position.y<<")"<<endl;
-
 				my_units[int(myunit[i].type_name)].push_back(myunit[i]);
 			}
 			else
@@ -128,11 +125,11 @@ void player_main(void)
 		mybase = my_units[__BASE][0];
 		enemybase = enemy_units[__BASE][0];
 		meat_num = my_units[MEAT].size();
-		cout << "enemybase HP:" << enemybase.health_now <<"("<< enemybase.position.x<<","<< enemybase.position.y<<")"<< endl;
-		cout << "meat_num:"<< my_units[MEAT].size() << endl;
+		//cout << "enemybase HP:" << enemybase.health_now <<"("<< enemybase.position.x<<","<< enemybase.position.y<<")"<< endl;
+		//cout << "meat_num:"<< my_units[MEAT].size() << endl;
 		for (int i = 0; i < Type_num; i++)
 		{
-			cout << "&" << i << ":" << my_units[i].size() << " ";
+			//cout << "&" << i << ":" << my_units[i].size() << " ";
 		}
 		for (int i = 0; i < my_units[MEAT].size(); i++)
 		{
@@ -155,18 +152,18 @@ void player_main(void)
 			init1 = false;
 		}
 		
-		cout << "目标：";
-		for (int i = 0; i < cap_target.size(); i++)
-		{
-			cout << "(" << cap_target[i].position.x << "," << cap_target[i].position.y << ")";
-		}
+		//cout << "目标：";
+		//for (int i = 0; i < cap_target.size(); i++)
+		//{
+		//	cout << "(" << cap_target[i].position.x << "," << cap_target[i].position.y << ")";
+		//}
 		for (int i = 0; i < min(meats.size(), cap_target.size()); i++)
 		{
 			if (distance(meats[i].position, cap_target[i].position) >= 2)
 			{
 				//cout << "break!!!" << endl;
 				//Move(meats[i].unit_id, { meats[i].position.x + 1,meats[i].position.y + 1 });
-				cout << "*";
+				//cout << "*";
 				Move(meats[i].unit_id, nextPace(meats[i].position,
 				{ cap_target[i].position.x - 1,  cap_target[i].position.y }, meats[i].max_speed_now));
 			}
@@ -202,15 +199,22 @@ void player_main(void)
 			{
 				for (int j = 0; j < my_units[i].size(); j++)
 				{
-					if (distance(my_units[i][j].position, enemybase.position) >= origin_attribute[i][ORIGIN_SHOT_RANGE])
+					if (distance(my_units[i][j].position, enemybase.position) > origin_attribute[i][ORIGIN_SHOT_RANGE])
 					{
-						cout << "move!";
+						//cout << "move!";
 						Move(my_units[i][j].unit_id, nextPace(my_units[i][j].position, { enemybase.position.x - 1,  enemybase.position.y }, my_units[i][j].max_speed_now));
 					}
 					else
 					{
-						cout << "attack!";
-						skill_1(my_units[i][j].unit_id, enemybase.unit_id, enemybase.position, enemybase.position);
+						//cout << "attack!";
+						if (my_units[i][j].type_name == EAGLE)
+						{
+							skill_1(my_units[i][j].unit_id, -1, enemybase.position);
+						}
+						else
+						{
+							skill_1(my_units[i][j].unit_id, enemybase.unit_id, enemybase.position, enemybase.position);
+						}
 					}
 				}
 			}
@@ -244,17 +248,13 @@ void player_main(void)
 					cap_target.push_back(netural_units[z][m]);
 				}
 			}
-
-		}
-		
-
-
 	}
 	cout << endl<<"*************************" << endl;
-	//if (turn % 5 == 4)
-	//{
-	//	system("cls");
-	//}
+	if (turn % 10 == 0)
+	{
+		//system("cls");
+	}
+	runAI = false;
 }
 
 
