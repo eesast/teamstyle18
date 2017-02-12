@@ -60,5 +60,7 @@ target/
 # Game replay
 *.rpy
 
+player_files/test_file/ConsoleApplication1
+
 # PyCharm
 .idea/

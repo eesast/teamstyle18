@@ -15,7 +15,7 @@ def test_serialize_python():
 def test_recv():
     #
     # 建立socket连接python端通信服务器，测试接收是否正常
-    tcp_server = communication.main_tcp_server(host, handler)
+    tcp_server = communication.MainServer(host)
     receive_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     receive_socket.connect((host, port))
     while 1:

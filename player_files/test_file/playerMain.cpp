@@ -1,4 +1,4 @@
-//Ñ¡ÊÖ1Ð´Èëai
+//é€‰æ‰‹1å†™å…¥ai
 #include "teamstyle18-my-1.h"
 #include<vector>
 #include<queue>
@@ -67,7 +67,7 @@ void player_main(void)
 	int myUnitSize = getUnitSize();
 	srand(int(time(0)));
 	int meat_num = 0;
-	cout << "»ØºÏÊý£º" << (turn++) ;
+	cout << "å›žåˆæ•°ï¼š" << (turn++) ;
 	double * myBuff = getBuff();
 	resourse myResourse = getResourse();
 	int myflag = getTeamId();
@@ -152,7 +152,7 @@ void player_main(void)
 			init1 = false;
 		}
 		
-		//cout << "Ä¿±ê£º";
+		//cout << "ç›®æ ‡ï¼š";
 		//for (int i = 0; i < cap_target.size(); i++)
 		//{
 		//	cout << "(" << cap_target[i].position.x << "," << cap_target[i].position.y << ")";
@@ -256,5 +256,3 @@ void player_main(void)
 	}
 	runAI = false;
 }
-
-
