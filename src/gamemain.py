@@ -1122,7 +1122,6 @@ class GameMain:
             print("winner is", check_winner, "!!")
             self.is_end = True
 
-
     def to_string(self):
         # 将当前状态信息返回，用String,Json什么都行，你们自己起名字吧
         pass

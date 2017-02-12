@@ -1,4 +1,4 @@
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
+﻿#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "communicate.h"
 #include "head_for_main.h"				//为了改变flag,也为了知道游戏是否结束了
 #include <queue>

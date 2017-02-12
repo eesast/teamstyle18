@@ -10,30 +10,30 @@ extern recv_send_socket  * p_sock_receive_send;
 extern int all_received;
 extern bool receiveable = true;
 extern bool runAI = false;
-void player_main(void);				//选手的线程要调用     写在playerMain.cpp中
+void player_main(void);				//ѡ�ֵ��߳�Ҫ����     д��playerMain.cpp��
 
 
-void init_global_vars()					//内容待定，等到接到信息时再转为true
+void init_global_vars()					//���ݴ������ȵ��ӵ���Ϣʱ��תΪtrue
 {
 	flag_of_round=false;	
-	flag_of_gameOver=false;				//游戏结束时再置为true
+	flag_of_gameOver=false;				//��Ϸ����ʱ����Ϊtrue
 }
 
-void send_client_hello()				//告诉逻辑端， 选手这边准备好了
+void send_client_hello()				//�����߼��ˣ� ѡ�����׼������
 {
-	p_sock_receive_send->InitialSocketClient();					//初始化socket，并向 逻辑端发出初始化的请求
+	p_sock_receive_send->InitialSocketClient();					//��ʼ��socket������ �߼��˷�����ʼ��������
 	
 }
-//暂时约定不收hello直接开始吧
-/*void recv_server_hello()				//从逻辑端接收一些可能初始必要的数据（这个函数可能是不需要的）				
+//��ʱԼ������helloֱ�ӿ�ʼ��
+/*void recv_server_hello()				//���߼��˽���һЩ���ܳ�ʼ��Ҫ�����ݣ�������������ǲ���Ҫ�ģ�				
 {
-	;									//接收信息
+	;									//������Ϣ
 	flag1_of_round=true;
-	flag2_of_round=true;				//回合开始？？？？
+	flag2_of_round=true;				//�غϿ�ʼ��������
 }*/
-//待完善
-//其实完全没有必要用这个函数，可以考虑删去
-bool game_not_end()						//得从逻辑端获取游戏是否结束的信息
+//������
+//��ʵ��ȫû�б�Ҫ��������������Կ���ɾȥ
+bool game_not_end()						//�ô��߼��˻�ȡ��Ϸ�Ƿ��������Ϣ
 {
 	if (flag_of_gameOver==true)
 		return false;
@@ -45,7 +45,7 @@ bool game_not_end()						//得从逻辑端获取游戏是否结束的信息
 #endif
 }
 
-unsigned int __stdcall start_player(void* arg)					//启动选手1的线程
+unsigned int __stdcall start_player(void* arg)					//����ѡ��1���߳�
 {
 	while (game_not_end())
 	{
@@ -54,7 +54,7 @@ unsigned int __stdcall start_player(void* arg)					//启动选手1的线程
 			
 		player_main();
 		p_sock_receive_send->send_data();
-							//将所有的指令发送出去
+							//�����е�ָ��ͳ�ȥ
 		}				                                  
 	}
 	
@@ -62,11 +62,11 @@ unsigned int __stdcall start_player(void* arg)					//启动选手1的线程
 }
 
 
-void wait_till_next_round()					//之后加一段时间的间隔  避免空转
+void wait_till_next_round()					//֮���һ��ʱ��ļ��  �����ת
 {
 	while (true)
 	{
-		if (flag_of_round == true)					//可以进入下一次调用函数
+		if (flag_of_round == true)					//���Խ�����һ�ε��ú���
 			return;
 		else if (all_received >= 3)
 		{
@@ -76,7 +76,7 @@ void wait_till_next_round()					//之后加一段时间的间隔  避免空转
 		else 
 		{
 			//Sleep(1000*time_round/100);
-		}//否则等待   直到逻辑端告诉我下一回合开始了
-				//			//暂时休息1/100回合免得空转			//不知道对线程会不会有很大影响？
+		}//����ȴ�   ֱ���߼��˸�������һ�غϿ�ʼ��
+				//			//��ʱ��Ϣ1/100�غ���ÿ�ת			//��֪�����̻߳᲻���кܴ�Ӱ�죿
 	}
 }

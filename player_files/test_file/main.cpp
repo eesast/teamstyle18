@@ -1,70 +1,70 @@
-//é—®é¢˜ï¼šæ€ä¹ˆæ§åˆ¶å¤šä¸ªçº¿ç¨‹ï¼Ÿ
+//ÎÊÌâ£ºÔõÃ´¿ØÖÆ¶à¸öÏß³Ì£¿
 
 //#include "pthread.h"
 //#define DEBUG
 
 #include <iostream>
-#include <stdio.h>					//ä¸ºäº†å¼€å¯å¤šçº¿ç¨‹ è€Œ include ä¸€äº›å¤´æ–‡ä»¶
+#include <stdio.h>					//ÎªÁË¿ªÆô¶àÏß³Ì ¶ø include Ò»Ğ©Í·ÎÄ¼ş
 #include <process.h>   
 
 
  
 #include "communicate.h"
-#include "head_for_main.h"				//mainå‡½æ•° éœ€è¦è°ƒç”¨çš„ä¸€äº›å‡½æ•°
+#include "head_for_main.h"				//mainº¯Êı ĞèÒªµ÷ÓÃµÄÒ»Ğ©º¯Êı
 #include "teamstyle18-my-1.h"
 
 #include <windows.h> 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS 1
 using namespace std;
-//è¿™ä¸ªåœ°æ–¹åº”è¯¥æ€ä¹ˆåˆ†é…åŒæ–¹çš„ä¿¡æ¯ï¼Ÿ
-int team_id = 0; //é˜Ÿä¼id    //ä¹Ÿå¯èƒ½æ˜¯true è¦è·Ÿæ¨åº”äººå•†é‡
-//ç”¨æ¥æ ‡è¯†é‚£å—åœ°å€ç»™é€‰æ‰‹ç”¨ï¼Œé‚£å—åœ°å€å­˜å…¥æ–°çš„æ•°æ®
-bool flag_info;						//false æ—¶é€‰æ‰‹å–ç”¨ç¬¬ä¸€å—åœ°å€ï¼Œæ–°çš„æ•°æ®æ”¾å…¥ç¬¬äºŒå—åœ°å€ï¼Œtrueæ—¶åä¹‹
-//æ ‡å¿—æ¸¸æˆå›åˆã€æ€»çš„æ˜¯å¦ç»“æŸçš„é‡
+//Õâ¸öµØ·½Ó¦¸ÃÔõÃ´·ÖÅäË«·½µÄĞÅÏ¢£¿
+int team_id = 0; //¶ÓÎéid    //Ò²¿ÉÄÜÊÇtrue Òª¸úÑîÓ¦ÈËÉÌÁ¿
+//ÓÃÀ´±êÊ¶ÄÇ¿éµØÖ·¸øÑ¡ÊÖÓÃ£¬ÄÇ¿éµØÖ·´æÈëĞÂµÄÊı¾İ
+bool flag_info;						//false Ê±Ñ¡ÊÖÈ¡ÓÃµÚÒ»¿éµØÖ·£¬ĞÂµÄÊı¾İ·ÅÈëµÚ¶ş¿éµØÖ·£¬trueÊ±·´Ö®
+//±êÖ¾ÓÎÏ·»ØºÏ¡¢×ÜµÄÊÇ·ñ½áÊøµÄÁ¿
 bool flag_of_round;	
 bool flag_of_gameOver;
 
 
-//ä¼ æŒ‡ä»¤çš„é‡
+//´«Ö¸ÁîµÄÁ¿
 queue <Instr> q_instruction;
 
-//æ”¶æ•°æ®çš„é‡
+//ÊÕÊı¾İµÄÁ¿
 resourse allResourse;
-//äºŒç»´æ•°ç»„ä¸å¥½è¿”å›ï¼Œç”¨ä»¥ä¸ºæ•°ç»„
-double buff[40] = { 0.0 }; //buffå…¨å±€å˜é‡ å‰20ä¸ª é˜µè¥1[å•ä½ç±»å‹][buffç±»å‹] å20ä¸ª é˜µè¥2[å•ä½ç±»å‹][buffç±»å‹]  2*5*5?
+//¶şÎ¬Êı×é²»ºÃ·µ»Ø£¬ÓÃÒÔÎªÊı×é
+double buff[40] = { 0.0 }; //buffÈ«¾Ö±äÁ¿ Ç°20¸ö ÕóÓª1[µ¥Î»ÀàĞÍ][buffÀàĞÍ] ºó20¸ö ÕóÓª2[µ¥Î»ÀàĞÍ][buffÀàĞÍ]  2*5*5?
 
-Unit all_unit[300];	 //å˜æˆ æ‰€æœ‰çš„unit (ä¿¡æ¯å¯¹åŒæ–¹éƒ½æ˜¯é€æ˜çš„)
+Unit all_unit[300];	 //±ä³É ËùÓĞµÄunit (ĞÅÏ¢¶ÔË«·½¶¼ÊÇÍ¸Ã÷µÄ)
 int all_unit_size=0;	
 /*
-Unit * all_unit_1= new Unit[1];			  //å¯ä»¥çŸ¥é“çš„æ‰€æœ‰çš„é˜µè¥1çš„unit      //å˜æˆ æ‰€æœ‰çš„unit (ä¿¡æ¯å¯¹åŒæ–¹éƒ½æ˜¯é€æ˜çš„)
-int all_unit_size_1=0;				//è®°å½•é˜µè¥1æ‰€æœ‰unitçš„ä¸ªæ•°
-Unit * all_unit_2= new Unit[1];			  //å¯ä»¥çŸ¥é“çš„æ‰€æœ‰çš„é˜µè¥2çš„unit 
-int all_unit_size_2=0;				//è®°å½•é˜µè¥2æ‰€æœ‰unitçš„ä¸ªæ•°
+Unit * all_unit_1= new Unit[1];			  //¿ÉÒÔÖªµÀµÄËùÓĞµÄÕóÓª1µÄunit      //±ä³É ËùÓĞµÄunit (ĞÅÏ¢¶ÔË«·½¶¼ÊÇÍ¸Ã÷µÄ)
+int all_unit_size_1=0;				//¼ÇÂ¼ÕóÓª1ËùÓĞunitµÄ¸öÊı
+Unit * all_unit_2= new Unit[1];			  //¿ÉÒÔÖªµÀµÄËùÓĞµÄÕóÓª2µÄunit 
+int all_unit_size_2=0;				//¼ÇÂ¼ÕóÓª2ËùÓĞunitµÄ¸öÊı
 */
-//å…¶å®åº”è¯¥å¯ä»¥ä¸å®šä¹‰ä¸ºå…¨å±€å˜é‡
-recv_send_socket  * p_sock_receive_send = new recv_send_socket;			//é€šä¿¡çš„socket
+//ÆäÊµÓ¦¸Ã¿ÉÒÔ²»¶¨ÒåÎªÈ«¾Ö±äÁ¿
+recv_send_socket  * p_sock_receive_send = new recv_send_socket;			//Í¨ĞÅµÄsocket
 
 int main()
 {
 	
-	init_global_vars();		//å®šä¹‰æ‰€æœ‰éœ€è¦å®šä¹‰çš„å…¨å±€å˜é‡
-	//å»ºä¸¤ä¸ªsocket
+	init_global_vars();		//¶¨ÒåËùÓĞĞèÒª¶¨ÒåµÄÈ«¾Ö±äÁ¿
+	//½¨Á½¸ösocket
 	
 	p_sock_receive_send->create_recv_socket();
-	send_client_hello();	//å‘Šè¯‰é€»è¾‘ç«¯ä¸¤ä¸ªé€‰æ‰‹å·²ç»å¯åŠ¨äº†æ¸¸æˆ						//è¿™ä¸ªåœ°æ–¹åœ°å€è¦å’Œæ¨åº”äººåå•†ï¼
-	//recv_server_hello();	//è·å–é€»è¾‘ç«¯ç”¨pythoné€šè¿‡socketå‘æ¥çš„æ‰€æœ‰æ•°æ®ï¼ˆå»ºç­‘ã€é‡‘é’±ã€å•ä½ç­‰ï¼‰
+	send_client_hello();	//¸æËßÂß¼­¶ËÁ½¸öÑ¡ÊÖÒÑ¾­Æô¶¯ÁËÓÎÏ·						//Õâ¸öµØ·½µØÖ·ÒªºÍÑîÓ¦ÈËĞ­ÉÌ£¡
+	//recv_server_hello();	//»ñÈ¡Âß¼­¶ËÓÃpythonÍ¨¹ısocket·¢À´µÄËùÓĞÊı¾İ£¨½¨Öş¡¢½ğÇ®¡¢µ¥Î»µÈ£©
 
-	//å¼€å¯å…­ä¸ªçº¿ç¨‹//ä¸å¯¹æ˜¯2ä¸ªï¼Œè°ƒç”¨é€‰æ‰‹aiçš„çº¿ç¨‹é‡Œå®ç°å‘é€æŒ‡ä»¤
+	//¿ªÆôÁù¸öÏß³Ì//²»¶ÔÊÇ2¸ö£¬µ÷ÓÃÑ¡ÊÖaiµÄÏß³ÌÀïÊµÏÖ·¢ËÍÖ¸Áî
 	HANDLE   hth_receive_send,hth_player;				
     unsigned  ui_thread_recive_sendID,ui_thread_playerID;	
-	//çº¿ç¨‹1ï¼Œç”¨æ¥æ¥æ”¶æ•°æ®
-	hth_receive_send = (HANDLE)_beginthreadex( NULL,0,recv_send_socket::static_recv_data,p_sock_receive_send,CREATE_SUSPENDED,&ui_thread_recive_sendID );			//è¿™ä¸ªåœ°æ–¹å¯èƒ½å†™çš„æœ‰ç‚¹é—®é¢˜ï¼Œæˆ‘åº”è¯¥æŠŠè¿™ä¸ªçº¿ç¨‹ä¸€ç›´å¼€ç€å°±å¤Ÿäº†
-	//çº¿ç¨‹2ï¼Œç”¨æ¥ æ§åˆ¶è°ƒç”¨é€‰æ‰‹1çš„ai çš„çº¿ç¨‹
+	//Ïß³Ì1£¬ÓÃÀ´½ÓÊÕÊı¾İ
+	hth_receive_send = (HANDLE)_beginthreadex( NULL,0,recv_send_socket::static_recv_data,p_sock_receive_send,CREATE_SUSPENDED,&ui_thread_recive_sendID );			//Õâ¸öµØ·½¿ÉÄÜĞ´µÄÓĞµãÎÊÌâ£¬ÎÒÓ¦¸Ã°ÑÕâ¸öÏß³ÌÒ»Ö±¿ª×Å¾Í¹»ÁË
+	//Ïß³Ì2£¬ÓÃÀ´ ¿ØÖÆµ÷ÓÃÑ¡ÊÖ1µÄai µÄÏß³Ì
 	hth_player = (HANDLE)_beginthreadex( NULL,0,start_player,NULL,CREATE_SUSPENDED,&ui_thread_playerID );
 	
-	//å¼€å¯ä¸‰ä¸ªçº¿ç¨‹
-	ResumeThread(hth_receive_send);					//å°±æŠŠå®ƒæ‰“å¼€æ¥ä¸€ç›´ç”¨æ¥æ¥æ”¶
-	ResumeThread(hth_player);						//è¿™æ ·å®ç°å¤ªå¤æ‚äº†ï¼Œè‚¯å®šè¿˜æ˜¯è¦æ”¹çš„
+	//¿ªÆôÈı¸öÏß³Ì
+	ResumeThread(hth_receive_send);					//¾Í°ÑËü´ò¿ªÀ´Ò»Ö±ÓÃÀ´½ÓÊÕ
+	ResumeThread(hth_player);						//ÕâÑùÊµÏÖÌ«¸´ÔÓÁË£¬¿Ï¶¨»¹ÊÇÒª¸ÄµÄ
 	
 	WaitForSingleObject(hth_receive_send,INFINITE);
 	WaitForSingleObject(hth_player,INFINITE);
