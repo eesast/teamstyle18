@@ -41,6 +41,7 @@ while (game.is_end==False):
     game.skill_instr_1 = comm_server.conn_list[1].skill_instr
     comm_server.conn_list[1].dump()
     print (len(game.units.values()),"turns:", game.turn_num,game.resource)
+    comm_server.send_to_unity(set(comm_server.conn_list[0].instruction+comm_server.conn_list[1].instruction))
     game.next_tick()
     comm_server.conn_list[0].patient = False
     comm_server.conn_list[1].patient = False

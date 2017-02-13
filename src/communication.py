@@ -42,11 +42,23 @@ class IOHandler(asyncore.dispatcher):
                 if self.is_unity:                                   #Also send dead unit list to unity side
                     dead=[unit for unit in self.last_units if unit not in data]
                     self.send(bytes(3)+self.unit_serializer(dead))
+            elif type(data) is set:
+                byte_message=self.instr_serializer(data)
+
             elif type(data)is dict and 1 in data[0]:
                 byte_message=self.buff_serializer(data)
             else:
                 byte_message=self.resource_serializer(data)
             self.send(byte_message)
+
+    def instr_serializer(self, object_list):
+        pack_header="ii"
+        args=[4,len(object_list)]
+        for instr in object_list:
+            for value in instr:
+                pack_header+="i"
+                args.append(value)
+        return struct.pack(pack_header,*args)
 
     def writable(self):
         return True
@@ -99,9 +111,11 @@ class IOHandler(asyncore.dispatcher):
 
     def unpack_instrs(self, instruction):
         num=int(len(instruction)/(28))
+        temp_instruction=[]
         for i in range(0,num):
             itype,uid,bid,pos1x,pos1y,po2x,pos2y=(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
             #print(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
+            self.instruction.append((itype,uid,bid,pos1x,pos1y,po2x,pos2y))
             if itype is 1 or itype is 2:
                 if bid is -1:
                     self.skill_instr.append([itype,uid,pos1x,pos1y])
@@ -113,6 +127,7 @@ class IOHandler(asyncore.dispatcher):
                 self.move_instr.append([uid,pos1x,pos1y])
             elif itype is 5:
                 self.capture_instr.append([uid,bid])
+        self.instruction=temp_instruction
         #print(len(self.produce_instr))
 
     def dump(self):
@@ -146,6 +161,10 @@ class MainServer(asyncore.dispatcher):
         if len(self.conn_list) is 2:
             print ("Both ai and unity connected")
             self.gamestart=True
+
+    def send_to_unity(self,data):
+        if len(self.conn_list)>=2:
+            self.conn_list[2].info_queue.put(data)
 
     def send_to_player(self, data):
         for conn in self.conn_list:
