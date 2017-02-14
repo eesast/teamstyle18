@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+﻿#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 import threading
 import socket
@@ -119,6 +119,7 @@ class IOHandler(asyncore.dispatcher):
 
     def unpack_instrs(self, instruction):
         num=int(len(instruction)/(28))
+        temp_instruction=[]
         for i in range(0, num):
             itype, uid, bid, pos1x, pos1y, po2x, pos2y = (struct.unpack('iiiiiii', instruction[28 * i:28 * i + 28]))
             #print(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
@@ -133,6 +134,7 @@ class IOHandler(asyncore.dispatcher):
                 self.move_instr.append([uid,pos1x,pos1y])
             elif itype is 5:
                 self.capture_instr.append([uid,bid])
+        self.instruction = temp_instruction
         self.patient = True
         return 0
         #print(len(self.produce_instr))
