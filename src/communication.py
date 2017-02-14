@@ -1,4 +1,4 @@
-﻿#! /usr/bin/env python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 import threading
 import socket
@@ -25,13 +25,15 @@ class IOHandler(asyncore.dispatcher):
         self.is_unity=is_unity
         self.main_server=main_server
         self.patient=False
+        self.patient_time = 0
+        #self.error=False
 
     def handle_read(self):
         instruction = self.recv(8192)
         if instruction:
-            self.patient = True
             #print ('received instruction，length:',len(instruction))
             self.unpack_instrs(instruction)
+
 
 
     def handle_write(self):
@@ -44,9 +46,10 @@ class IOHandler(asyncore.dispatcher):
                     self.send(bytes(3)+self.unit_serializer(dead))
             elif type(data) is set:
                 byte_message=self.instr_serializer(data)
-
             elif type(data)is dict and 1 in data[0]:
                 byte_message=self.buff_serializer(data)
+            elif type(data)is int:
+                byte_message = self.end_serializer(int(data)+300)
             else:
                 byte_message=self.resource_serializer(data)
             self.send(byte_message)
@@ -86,7 +89,7 @@ class IOHandler(asyncore.dispatcher):
                     continue
                 pack_header+="i" if type(value)==int or type(value)==bool else (str(len(value))+("s") if type(value)==str else 'f')
                 args.append(value if type(value)!=str else value.encode('utf-8'))
-        #print(pack_header)
+        #print(args)
         return struct.pack(pack_header,*args)
 
     def resource_serializer(self,object_dict):
@@ -109,13 +112,16 @@ class IOHandler(asyncore.dispatcher):
                     args.append(value if type(value)!=str else value.encode('utf-8'))
         return struct.pack(header,*args)
 
+    def end_serializer(self,winner):
+        header = "i"
+        args = [winner]
+        return struct.pack(header, *args)
+
     def unpack_instrs(self, instruction):
         num=int(len(instruction)/(28))
-        temp_instruction=[]
-        for i in range(0,num):
-            itype,uid,bid,pos1x,pos1y,po2x,pos2y=(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
+        for i in range(0, num):
+            itype, uid, bid, pos1x, pos1y, po2x, pos2y = (struct.unpack('iiiiiii', instruction[28 * i:28 * i + 28]))
             #print(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
-            self.instruction.append((itype,uid,bid,pos1x,pos1y,po2x,pos2y))
             if itype is 1 or itype is 2:
                 if bid is -1:
                     self.skill_instr.append([itype,uid,pos1x,pos1y])
@@ -127,7 +133,8 @@ class IOHandler(asyncore.dispatcher):
                 self.move_instr.append([uid,pos1x,pos1y])
             elif itype is 5:
                 self.capture_instr.append([uid,bid])
-        self.instruction=temp_instruction
+        self.patient = True
+        return 0
         #print(len(self.produce_instr))
 
     def dump(self):
@@ -137,6 +144,9 @@ class IOHandler(asyncore.dispatcher):
         self.move_instr=[]
         self.capture_instr=[]
         return instr_pack
+
+    def handle_close(self):
+        self.close()
 
 
 class MainServer(asyncore.dispatcher):
@@ -161,7 +171,6 @@ class MainServer(asyncore.dispatcher):
         if len(self.conn_list) is 2:
             print ("Both ai and unity connected")
             self.gamestart=True
-
     def send_to_unity(self,data):
         if len(self.conn_list)>=2:
             self.conn_list[2].info_queue.put(data)
