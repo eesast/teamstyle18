@@ -171,7 +171,7 @@ class MainServer(asyncore.dispatcher):
             self.conn_list.append(IOHandler(conn, self.ai_id_now, self, self.ai_id_now is 2))
             self.ai_id_now+=1
             print("player connected")
-        if len(self.conn_list) is 2:
+        if len(self.conn_list) is 3:
             print ("Both ai and unity connected")
             self.gamestart=True
     def send_to_unity(self,data):
