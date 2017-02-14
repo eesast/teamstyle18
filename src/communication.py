@@ -26,7 +26,7 @@ class IOHandler(asyncore.dispatcher):
         self.main_server=main_server
         self.patient=False
         self.patient_time = 0
-        self.instruction = None 
+        self.instruction = None
         #self.error=False
 
     def handle_read(self):
@@ -175,7 +175,7 @@ class MainServer(asyncore.dispatcher):
             print ("Both ai and unity connected")
             self.gamestart=True
     def send_to_unity(self,data):
-        if len(self.conn_list)>=2:
+        if len(self.conn_list)>=3:
             self.conn_list[2].info_queue.put(data)
 
     def send_to_player(self, data):
