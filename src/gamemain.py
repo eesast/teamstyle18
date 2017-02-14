@@ -15,6 +15,7 @@ class GameMain:
     buildings = []  # 中立建筑
     # turn_flag = 0  # 谁的回合
     is_end = False
+    check_winner = 3 #胜利者
     turn_num = 0  # 回合数
     phase_num = 0  # 回合阶段指示
     skill_instr_0 = []  # ai0的当前回合指令
@@ -352,7 +353,7 @@ class GameMain:
                 return 0
             if self.hqs[0].health_now == self.hqs[1].health_now:
                 for things in unit_obj:
-                    if things.__unit_type == 1 or things.__unit_type == 2 or things.__unit_type == 3:
+                    if things.Get_unit_type() == 1 or things.Get_unit_type() == 2 or things.Get_unit_type() == 3:
                         if things.flag == flag_0:
                             counter_01 += 1
                         if things.flag == flag_1:
@@ -514,7 +515,8 @@ class GameMain:
                     my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 核子坦克技能2
-        def nuke_tank_skill2(id, attack_range):
+        def nuke_tank_skill2(id, attack_range_x, attack_range_y):
+            attack_range = [attack_range_x,attack_range_y]
             my_information = Get_id_information(id)
             skill_cd = self.turn_num - my_information.skill_last_release_time2
             distance = Get_distance(my_information.position, attack_range)
@@ -524,15 +526,20 @@ class GameMain:
                     enemy_position = self.units[k].position
                     if (Get_distance(enemy_position, attack_range) < 2):
                         self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 800 * (
-                        1 - self.units[k].defense_now / 1000))
+                      1 - self.units[k].defense_now / 1000))
                 base_position = self.hqs[0].position
                 if (Get_distance(base_position, attack_range) < 2):
                     self.hqs[0].reset_attribute(self.buff, health=self.hqs[0].health_now - 800 * (
                     1 - self.units[k].defense_now / 1000))
+                base_position2 = self.hqs[1].position
+                if (Get_distance(base_position2, attack_range) < 2):
+                    self.hqs[1].reset_attribute(self.buff, health=self.hqs[1].health_now - 800 * (
+                    1 - self.units[k].defense_now / 1000))
                 my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         # 鹰式战斗机技能1
-        def eagle_skill1(id, attack_range):
+        def eagle_skill1(id, attack_range_x,attack_range_y):
+            attack_range = [attack_range_x,attack_range_y]
             my_information = Get_id_information(id)
             skill_cd = self.turn_num - my_information.skill_last_release_time1
             distance = Get_distance(my_information.position, attack_range)
@@ -548,10 +555,16 @@ class GameMain:
                 if (base_position == attack_range):
                     self.hqs[0].reset_attribute(self.buff, health=self.hqs[0].health_now - my_information.attack_now * (
                     1 - self.units[k].defense_now / 1000))
+                base_position2 = self.hqs[1].position
+                if (base_position2 == attack_range):
+                    self.hqs[1].reset_attribute(self.buff, health=self.hqs[1].health_now - my_information.attack_now * (
+                        1 - self.units[k].defense_now / 1000))
                 my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 鹰式战斗机技能2
-        def eagle_skill2(id, attack_range1, attack_range2):
+        def eagle_skill2(id, attack_range_x1,attack_range_y1,attack_range_x2, attack_range_y2):
+            attack_range1 = [attack_range_x1,attack_range_y1]
+            attack_range2 = [attack_range_x2,attack_range_y2]
             my_information = Get_id_information(id)
             skill_cd = self.turn_num - my_information.skill_last_release_time2
             distance1 = Get_distance(my_information.position, attack_range1)
@@ -566,6 +579,10 @@ class GameMain:
                 base_position = self.hqs[0].position
                 if (base_position == attack_range1 or base_position == attack_range2):
                     self.hqs[0].reset_attribute(self.buff, health=self.hqs[0].health_now - 400 * (
+                    1 - self.units[k].defense_now / 1000))
+                base_position2 = self.hqs[1].position
+                if (base_position2 == attack_range1 or base_position2 == attack_range2):
+                    self.hqs[1].reset_attribute(self.buff, health=self.hqs[1].health_now - 400 * (
                     1 - self.units[k].defense_now / 1000))
                 print(my_information.max_speed_now)
                 my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5)
@@ -620,13 +637,13 @@ class GameMain:
                 nuke_tank_skill1(order[k][1], order[k][2])
                 #print('use skill5')
             elif (Get_id_information(order[k][1]).Get_type_name() == 6 and order[k][0]==2):#'nuke_tank'
-                nuke_tank_skill2(order[k][1], order[k][2])
+                nuke_tank_skill2(order[k][1], order[k][2],order[k][3])
                 #print('use skill6')
             elif (Get_id_information(order[k][1]).Get_type_name() == 8and order[k][0]==1):#'eagle'
-                eagle_skill1(order[k][1], order[k][2])
+                eagle_skill1(order[k][1], order[k][2],order[k][3])
                 #print('use skill7')
             elif (Get_id_information(order[k][1]).Get_type_name() == 8and order[k][0]==2):#'eagle'
-                eagle_skill2(order[k][1], order[k][2], order[k][3])
+                eagle_skill2(order[k][1], order[k][2], order[k][3],order[k][4], order[k][5])
                 #print('use skill8')
             elif (Get_id_information(order[k][1]).Get_type_name() == 3and order[k][0]==1):#'superman'
                 superman_skill1(order[k][1], order[k][2])
@@ -1081,13 +1098,14 @@ class GameMain:
         self.skill_phase(self.skill_instr_1)
         #print("HP0:",self.hqs[0].health_now,"HP1:",self.hqs[1].health_now)
         self.cleanup_phase()
-        check_winner=self.win_determine()
+        self.check_winner=self.win_determine()
         print("produce instr_0:", len(self.produce_instr_0), "move instr_0:", len(self.move_instr_0), "cap instr_0:",len(self.capture_instr_0), "skill instr_0:", len(self.skill_instr_0))
         print("produce instr_1:", len(self.produce_instr_1), "move instr_1:", len(self.move_instr_1), "cap instr_1:",len(self.capture_instr_1), "skill instr_1:", len(self.skill_instr_1))
-        self.move_phase()
-        self.produce_phase()
-        self.resource_phase()
-        self.capture_phase()
+        if (self.check_winner == 3):
+            self.move_phase()
+            self.produce_phase()
+            self.resource_phase()
+            self.capture_phase()
         check_timeup =self.timeup_determine()
         print("after HP0:", self.hqs[0].health_now, "after HP1:", self.hqs[1].health_now)
         ai0 = {}
@@ -1111,17 +1129,15 @@ class GameMain:
         self.capture_instr_0 = []  # 指令格式[[unit_id,building_id][unit_id,building_id][]]
         self.capture_instr_1 = []
         self.turn_num+=1
-        if(check_winner==3):
+        if(self.check_winner==3 and check_timeup==3):
             pass
-        else:
-            print("winner is",check_winner,"!!")
-            self.is_end=True
-        if(check_winner == 3):
-             pass
-        else:
-            print("winner is", check_winner, "!!")
+        elif(self.check_winner!=3):
+            print("winner is",self.check_winner,"!!")
             self.is_end = True
-
+        else :
+            print("winner is", check_timeup, "!!")
+            self.is_end = True
+            self.check_winner = check_timeup
     def to_string(self):
         # 将当前状态信息返回，用String,Json什么都行，你们自己起名字吧
         pass

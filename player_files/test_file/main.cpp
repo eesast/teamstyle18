@@ -35,44 +35,35 @@ double buff[40] = { 0.0 }; //buffÈ«¾Ö±äÁ¿ Ç°20¸ö ÕóÓª1[µ¥Î»ÀàÐÍ][buffÀàÐÍ] ºó20¸
 
 Unit all_unit[300];	 //±ä³É ËùÓÐµÄunit (ÐÅÏ¢¶ÔË«·½¶¼ÊÇÍ¸Ã÷µÄ)
 int all_unit_size=0;	
-/*
-Unit * all_unit_1= new Unit[1];			  //¿ÉÒÔÖªµÀµÄËùÓÐµÄÕóÓª1µÄunit      //±ä³É ËùÓÐµÄunit (ÐÅÏ¢¶ÔË«·½¶¼ÊÇÍ¸Ã÷µÄ)
-int all_unit_size_1=0;				//¼ÇÂ¼ÕóÓª1ËùÓÐunitµÄ¸öÊý
-Unit * all_unit_2= new Unit[1];			  //¿ÉÒÔÖªµÀµÄËùÓÐµÄÕóÓª2µÄunit 
-int all_unit_size_2=0;				//¼ÇÂ¼ÕóÓª2ËùÓÐunitµÄ¸öÊý
-*/
-//ÆäÊµÓ¦¸Ã¿ÉÒÔ²»¶¨ÒåÎªÈ«¾Ö±äÁ¿
+
 recv_send_socket  * p_sock_receive_send = new recv_send_socket;			//Í¨ÐÅµÄsocket
 
 int main()
 {
-	
 	init_global_vars();		//¶¨ÒåËùÓÐÐèÒª¶¨ÒåµÄÈ«¾Ö±äÁ¿
 	//½¨Á½¸ösocket
 	
 	p_sock_receive_send->create_recv_socket();
-	send_client_hello();	//¸æËßÂß¼­¶ËÁ½¸öÑ¡ÊÖÒÑ¾­Æô¶¯ÁËÓÎÏ·						//Õâ¸öµØ·½µØÖ·ÒªºÍÑîÓ¦ÈËÐ­ÉÌ£¡
-	//recv_server_hello();	//»ñÈ¡Âß¼­¶ËÓÃpythonÍ¨¹ýsocket·¢À´µÄËùÓÐÊý¾Ý£¨½¨Öþ¡¢½ðÇ®¡¢µ¥Î»µÈ£©
+	send_client_hello();	//¸æËßÂß¼­¶ËÁ½¸öÑ¡ÊÖÒÑ¾­Æô¶¯ÁËÓÎÏ·
 
-	//¿ªÆôÁù¸öÏß³Ì//²»¶ÔÊÇ2¸ö£¬µ÷ÓÃÑ¡ÊÖaiµÄÏß³ÌÀïÊµÏÖ·¢ËÍÖ¸Áî
-	HANDLE   hth_receive_send,hth_player;				
-    unsigned  ui_thread_recive_sendID,ui_thread_playerID;	
+	HANDLE   hth_receive_send,hth_player, except_handle;
+    unsigned  ui_thread_recive_sendID,ui_thread_playerID, ui_thread_exceptID;
 	//Ïß³Ì1£¬ÓÃÀ´½ÓÊÕÊý¾Ý
 	hth_receive_send = (HANDLE)_beginthreadex( NULL,0,recv_send_socket::static_recv_data,p_sock_receive_send,CREATE_SUSPENDED,&ui_thread_recive_sendID );			//Õâ¸öµØ·½¿ÉÄÜÐ´µÄÓÐµãÎÊÌâ£¬ÎÒÓ¦¸Ã°ÑÕâ¸öÏß³ÌÒ»Ö±¿ª×Å¾Í¹»ÁË
 	//Ïß³Ì2£¬ÓÃÀ´ ¿ØÖÆµ÷ÓÃÑ¡ÊÖ1µÄai µÄÏß³Ì
 	hth_player = (HANDLE)_beginthreadex( NULL,0,start_player,NULL,CREATE_SUSPENDED,&ui_thread_playerID );
-	
+
 	//¿ªÆôÈý¸öÏß³Ì
-	ResumeThread(hth_receive_send);					//¾Í°ÑËü´ò¿ªÀ´Ò»Ö±ÓÃÀ´½ÓÊÕ
-	ResumeThread(hth_player);						//ÕâÑùÊµÏÖÌ«¸´ÔÓÁË£¬¿Ï¶¨»¹ÊÇÒª¸ÄµÄ
+	ResumeThread(hth_receive_send);	
+	ResumeThread(hth_player);
 	
 	WaitForSingleObject(hth_receive_send,INFINITE);
 	WaitForSingleObject(hth_player,INFINITE);
-	
+
 	CloseHandle(hth_receive_send);
-	CloseHandle(hth_player);
+	CloseHandle(hth_player);	
+
 	p_sock_receive_send->close_recv_socket();
-	delete [] all_unit;
-	cout<<"1"<<endl;
+	system("pause");
 	return 0;
 }  

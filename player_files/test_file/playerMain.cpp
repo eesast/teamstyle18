@@ -1,4 +1,5 @@
 //选手1写入ai
+
 #include "teamstyle18-my-1.h"
 #include<vector>
 #include<queue>
@@ -6,13 +7,13 @@
 #include<algorithm>
 #include<ctime>
 const int mapsize = 100;
-extern bool runAI;
 using namespace std;
+
 Unit mybase;
 Unit enemybase;
 int stage = 0;
 vector<Position>obstacle;
-int distance(Position a, Position b)
+int Distance(Position a, Position b)
 {
 	return abs(a.x - b.x) + abs(a.y - b.y);
 }
@@ -35,7 +36,7 @@ bool find_obstacle(Position src)
 }
 Position nextPace(Position src, Position target, int speed)
 {
-	if (distance(src, target) <= speed)
+	if (Distance(src, target) <= speed)
 	{
 		return target;
 	}
@@ -51,43 +52,37 @@ Position nextPace(Position src, Position target, int speed)
 				{
 					return temp;
 				}
+				else{}
 			}
 		}
 		return Position(src.x + xxx*speed/2, src.y + yyy*speed / 2);
 	}
 	
-
+	
 }
 
 
-int turn = 0;
+extern int turn ;
 void player_main(void)
 {
+	
 	Unit * myunit = getUnit();
 	int myUnitSize = getUnitSize();
 	srand(int(time(0)));
 	int meat_num = 0;
-	cout << "回合数：" << (turn++) ;
+	//printf("回合数：%d",turn);
 	double * myBuff = getBuff();
 	resourse myResourse = getResourse();
 	int myflag = getTeamId();
 	int enemyflag = !myflag;
-	cout << "unit num:" << myUnitSize ;
+	//printf("unit num:%d\n", myUnitSize);
+	//cout << "unit num:" << myUnitSize<<endl ;
 	vector<Unit>my_units[22];
 	vector<Unit>enemy_units[22];
 	vector<Unit>netural_units[22];
 	vector<Unit>meats;	
-	//if (turn <= 3)
-	//{
-	//	for (int i = 0; i < myUnitSize; i++)
-	//	{
-	//		cout << myunit[i].position.x <<","<< myunit[i].position.y << endl;
-	//	}
-	//}
 
-		//bool enemyflag = !myflag;
-
-		//cout << "money1:" << myResourse.money_1 << "tech1:" << myResourse.tech_1 << "people1:" << myResourse.remain_people_1;
+		//cout << "money1:" << myResourse.money_1 << "tech1:" << myResourse.tech_1 << "people1:" << myResourse.remain_people_1<<endl;
 		
 		for (int i = 0; i < myUnitSize; i++)
 		{
@@ -159,15 +154,15 @@ void player_main(void)
 		//}
 		for (int i = 0; i < min(meats.size(), cap_target.size()); i++)
 		{
-			if (distance(meats[i].position, cap_target[i].position) >= 2)
+			if (Distance(meats[i].position, cap_target[i].position) >= 2)
 			{
 				//cout << "break!!!" << endl;
 				//Move(meats[i].unit_id, { meats[i].position.x + 1,meats[i].position.y + 1 });
 				//cout << "*";
 				Move(meats[i].unit_id, nextPace(meats[i].position,
-				{ cap_target[i].position.x - 1,  cap_target[i].position.y }, meats[i].max_speed_now));
+				Position(cap_target[i].position.x - 1,  cap_target[i].position.y), meats[i].max_speed_now));
 			}
-			if (distance(meats[i].position, cap_target[i].position) == 1)
+			if (Distance(meats[i].position, cap_target[i].position) == 1)
 			{
 				capture(meats[i].unit_id, cap_target[i].unit_id);
 
@@ -199,10 +194,10 @@ void player_main(void)
 			{
 				for (int j = 0; j < my_units[i].size(); j++)
 				{
-					if (distance(my_units[i][j].position, enemybase.position) > origin_attribute[i][ORIGIN_SHOT_RANGE])
+					if (Distance(my_units[i][j].position, enemybase.position) > origin_attribute[i][ORIGIN_SHOT_RANGE])
 					{
 						//cout << "move!";
-						Move(my_units[i][j].unit_id, nextPace(my_units[i][j].position, { enemybase.position.x - 1,  enemybase.position.y }, my_units[i][j].max_speed_now));
+						Move(my_units[i][j].unit_id, nextPace(my_units[i][j].position, Position(enemybase.position.x - 1,  enemybase.position.y), my_units[i][j].max_speed_now));
 					}
 					else
 					{
@@ -249,12 +244,9 @@ void player_main(void)
 				}
 			}
 	}
-	cout << endl<<"*************************" << endl;
-	if (turn % 10 == 0)
-	{
-		//system("cls");
-	}
-	runAI = false;
+		//cout << endl;
+		//<<"*************************" << endl;
+		
 }
 
 
