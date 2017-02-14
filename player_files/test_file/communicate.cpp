@@ -7,12 +7,15 @@ using namespace std;
 extern int team_id;
 extern bool flag_of_round;	
 extern resourse allResourse;
+extern recv_send_socket  * p_sock_receive_send;
 extern double buff[40]; //buff全局变量 阵营1[单位类型][buff类型]
 extern Unit all_unit[300];			  //所有的unit
 extern int all_unit_size;				//记录所有unit的个数
 extern int all_received = 0;
 extern bool receiveable;
 extern bool runAI;
+extern bool flag_of_gameOver;
+extern bool recv_except = false;
 extern queue <Instr>  q_instruction;
 
 void recv_send_socket::create_recv_socket(void)  
@@ -36,7 +39,8 @@ void recv_send_socket::create_recv_socket(void)
 void recv_send_socket::InitialSocketClient(void)				//与python端建立连接、开始游戏
 {
 	sockClient=socket(AF_INET,SOCK_STREAM,0);  
-  
+	int nRecvBuf = 32 * 1024;//设置为32k
+	setsockopt(sockClient, SOL_SOCKET, SO_RCVBUF, (const char*)&nRecvBuf, sizeof(int));
         SOCKADDR_IN addrClt;//需要包含服务端IP信息  
         addrClt.sin_addr.S_un.S_addr=inet_addr("127.0.0.1");// inet_addr将IP地址从点数格式转换成网络字节格式整型。		//为什么是这个地址？？//←mdzz
         addrClt.sin_family=AF_INET;   
@@ -71,57 +75,73 @@ void wrapper_recv_data(SOCKET s,char* buf,int len,int flags)
 	}
 	
 }
-void recv_send_socket::recv_data(void)
+
+int recv_send_socket::recv_data(void)
 {
-	//
-	while (game_not_end())						//
+	while (!flag_of_gameOver)
 	{
-		while (!receiveable) { Sleep(1); }
 		//我只将0、1、2接收3次
 		int recvType=10;				//等下会接收三种类型的数据
 		int data = 0;
 		data = recv(sockClient,(char*)&recvType,sizeof(int),0);
-		cout << "数据类型" << recvType;
+		Sleep(1);
+		//cout << data << "bytes";
+		//cout << "data" << recvType;
 		switch (recvType)
 		{
+		case 5:						//结束了
+			cout << "game is tie!!" << endl;
+			runAI = false;
+			flag_of_gameOver = true;
+			break;
+		case 4:						//结束了
+			cout << "winner is AI1!!" << endl;
+			runAI = false;
+			flag_of_gameOver = true;
+			break;
+		case 3:						//结束了
+			cout << "winner is AI0!!" << endl;
+			runAI = false;
+			flag_of_gameOver = true;
+			break;
 		case 2:						//资源
 			data = recv(sockClient,(char*)&allResourse,sizeof(resourse),0);
 			//cout << "收资源";
 			all_received++;
 			break;
 		case 1:						//四个兵种的buff
-			data = recv(sockClient,(char*)&buff,2*3*5*sizeof(double),0);
+			data = recv(sockClient,(char*)&buff,2*3*6*sizeof(double),0);
 			all_received++;
 			//cout << "收buff";
 			break;
 		case 0:						//双方各自可以获得的地图上的unit的信息
 			recv(sockClient,(char*)&all_unit_size,sizeof(int),0);
 			for (int i=0;i<all_unit_size;i++)
-				recv(sockClient,(char*)(all_unit+i),sizeof(Unit),0);
-			//all_unit[0].Print();
+				recv(sockClient, (char*)(all_unit + i), sizeof(Unit), 0);
 			all_received++;
 			//cout << "收单位";
 			break;
 		default:
+			int k;
+			recv(sockClient, (char*)(&k), sizeof(int), 0);
+			cout << k;
 			break;
 		}
-		cout << "当前:" << all_received << ",";
+		//cout << "当前:" << all_received << ",";
 		if (all_received >= 3)
 		{
-			//flag_of_round = true;
 			all_received = 0;
 			runAI = true;
 		}
 	}
-	
+	return 0;
 }
 void recv_send_socket::send_data(void)
 {
-	cout << "发发发！"<<endl;
+	//cout << "发发发！"<<endl;
 	Instr Isttemp(1, -1, -1);
 	q_instruction.push(Isttemp);
 	int sizeQueue=q_instruction.size();
-	//cout << "instr num:" << sizeQueue << endl;
 	if (sizeQueue != 0)
 	{
 		Instr * allInstr = new Instr[sizeQueue];			//为0是会有问题
@@ -130,10 +150,11 @@ void recv_send_socket::send_data(void)
 			allInstr[i] = q_instruction.front();
 			q_instruction.pop();
 		}
-		send(sockClient, (char*)allInstr, sizeQueue * sizeof(Instr), 0);		//将指令全部发送过去
+		send(sockClient, (char*)allInstr, sizeQueue * sizeof(Instr), 0);
 		delete[] allInstr;
+		//Sleep(5);
 	}
-	receiveable = true;
+	//receiveable = true;
 }
 
 void recv_send_socket::close_recv_socket(void)

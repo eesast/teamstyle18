@@ -11,7 +11,7 @@ public:
 	void create_recv_socket(void);
 	void InitialSocketClient(void);
 	static unsigned __stdcall static_recv_data(void * pThis);
-	void recv_data(void);
+	int __stdcall recv_data(void);
 	void send_data(void);
 	void close_recv_socket(void);
 	
