@@ -16,7 +16,7 @@ class IOHandler(asyncore.dispatcher):
         asyncore.dispatcher.__init__(self, sock)
         self.info_queue = queue.Queue()
         self.ai_id=ai_id
-        self.send(struct.pack('i',self.ai_id))
+        if not is_unity: self.send(struct.pack('i',self.ai_id))
         self.skill_instr=[]
         self.produce_instr=[]
         self.move_instr=[]
@@ -42,9 +42,9 @@ class IOHandler(asyncore.dispatcher):
             data=self.info_queue.get(block=False)
             if type(data)is list:
                 byte_message=self.unit_serializer(data)
-                if self.is_unity:                                   #Also send dead unit list to unity side
-                    dead=[unit for unit in self.last_units if unit not in data]
-                    self.send(bytes(3)+self.unit_serializer(dead))
+                #if self.is_unity:                                   #Also send dead unit list to unity side
+                #    dead=[unit for unit in self.last_units if unit not in data]
+                #    self.send(bytes(3)+self.unit_serializer(dead))
             elif type(data) is set:
                 byte_message=self.instr_serializer(data)
             elif type(data)is dict and 1 in data[0]:
@@ -171,7 +171,7 @@ class MainServer(asyncore.dispatcher):
             self.conn_list.append(IOHandler(conn, self.ai_id_now, self, self.ai_id_now is 2))
             self.ai_id_now+=1
             print("player connected")
-        if len(self.conn_list) is 2:
+        if len(self.conn_list) is 3:
             print ("Both ai and unity connected")
             self.gamestart=True
     def send_to_unity(self,data):
