@@ -5,11 +5,75 @@ import socket
 import queue
 import asyncore
 import struct
+from time import sleep
+import time
 '''
 使用asyncore().loop启动服务器，选手端发起连接请求，接受请求后会向选手端发送ai_id
 发送数据: MainServer.send_to_player(data)
 接收数据：MainServer.conn_list[ai_id].dump,返回(skill_instr,produce_instr,move_instr,capture_instr)
 '''
+filename = 'ts18_' + time.strftime('%m%d%H%M%S') + '.rpy'
+
+
+def e_serializer(winner):
+    header = "i"
+    args = [winner]
+    return struct.pack(header, *args)
+def instr_serializer(object_list):
+    pack_header = "ii"
+    args = [12345678, len(object_list)]
+    for instr in object_list:
+        for value in instr:
+            pack_header += "i"
+            args.append(value)
+    return struct.pack(pack_header, *args)
+
+
+def u_serializer(object_list):
+    pack_header = "ii"
+    args = [12345, len(object_list)]
+    for obj in object_list:
+        for name, value in sorted(vars(obj).items(), key=lambda t: t[0]):
+            if (name[0] == '_') and name != '_UnitObject__unit_type' and name != '_UnitObject__type_name':
+                continue
+            elif (name == '_UnitObject__unit_type' or name == '_UnitObject__type_name'):
+                name = name[-9:]
+            if value is None:
+                pack_header += "i"
+                args.append(0)
+                continue
+            if type(value) == tuple or type(value) == list:
+                for sub in value:
+                    pack_header += "i" if type(sub) == int else (("15s") if type(sub) == str else 'f')
+                    args.append(sub if type(sub) != str else (sub + str((15 - len(sub)) * ' ').encode('utf-8')))
+                continue
+            pack_header += "i" if type(value) == int or type(value) == bool else (
+            str(len(value)) + ("s") if type(value) == str else 'f')
+            args.append(value if type(value) != str else value.encode('utf-8'))
+    # print(args)
+    return struct.pack(pack_header, *args)
+
+
+def r_serializer(object_dict):
+    header = "i"
+    args = [1234567]
+    for name, value in sorted(object_dict.items(), key=lambda t: t[0]):
+        for name, value in sorted(value.items(), key=lambda t: t[0]):
+            header += "i"
+            args.append(value if type(value) != str else value.encode('utf-8'))
+    return struct.pack(header, *args)
+
+
+def b_serializer(object_dict):
+    # print('fucker')
+    header = "i"
+    args = [123456]
+    for name, value in sorted(object_dict.items(), key=lambda t: t[0]):
+        for name, value in sorted(value.items(), key=lambda t: t[0]):
+            for name, value in sorted(value.items(), key=lambda t: t[0]):
+                header += "i" if type(value) == int else ((str(len(value)) + "s") if type(value) == str else 'f')
+                args.append(value if type(value) != str else value.encode('utf-8'))
+    return struct.pack(header, *args)
 
 class IOHandler(asyncore.dispatcher):
     def __init__(self, sock, ai_id, main_server, is_unity=False):
@@ -27,7 +91,7 @@ class IOHandler(asyncore.dispatcher):
         self.patient=False
         self.patient_time = 0
         self.instruction = None
-        #self.error=False
+
 
     def handle_read(self):
         instruction = self.recv(8192)
@@ -42,11 +106,12 @@ class IOHandler(asyncore.dispatcher):
             data=self.info_queue.get(block=False)
             if type(data)is list:
                 byte_message=self.unit_serializer(data)
-                if self.is_unity:                                   #Also send dead unit list to unity side
-                    dead=[unit for unit in self.last_units if unit not in data]
-                    self.send(bytes(3)+self.unit_serializer(dead))
-            elif type(data) is set:
-                byte_message=self.instr_serializer(data)
+                #if self.is_unity:                                   #Also send dead unit list to unity side
+                #    dead=[unit for unit in self.last_units if unit not in data]
+                #    self.last_units = data
+                #    self.send(self.dead_unit_serializer(dead))
+            #elif type(data) is set:
+            #    byte_message=self.instr_serializer(data)
             elif type(data)is dict and 1 in data[0]:
                 byte_message=self.buff_serializer(data)
             elif type(data)is int:
@@ -55,14 +120,6 @@ class IOHandler(asyncore.dispatcher):
                 byte_message=self.resource_serializer(data)
             self.send(byte_message)
 
-    def instr_serializer(self, object_list):
-        pack_header="ii"
-        args=[4,len(object_list)]
-        for instr in object_list:
-            for value in instr:
-                pack_header+="i"
-                args.append(value)
-        return struct.pack(pack_header,*args)
 
     def writable(self):
         return True
@@ -121,8 +178,10 @@ class IOHandler(asyncore.dispatcher):
     def unpack_instrs(self, instruction):
         num=int(len(instruction)/(28))
         temp_instruction=[]
+
         for i in range(0, num):
             itype, uid, bid, pos1x, pos1y, po2x, pos2y = (struct.unpack('iiiiiii', instruction[28 * i:28 * i + 28]))
+            temp_instruction.append((itype, uid, bid, pos1x, pos1y, po2x, pos2y))
             #print(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
             if itype is 1 or itype is 2:
                 if bid is -1:
@@ -174,9 +233,7 @@ class MainServer(asyncore.dispatcher):
         if len(self.conn_list) is 2:
             print ("Both ai and unity connected")
             self.gamestart=True
-    def send_to_unity(self,data):
-        if len(self.conn_list)>=3:
-            self.conn_list[2].info_queue.put(data)
+
 
     def send_to_player(self, data):
         for conn in self.conn_list:
