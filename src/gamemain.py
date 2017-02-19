@@ -5,7 +5,7 @@ import unit
 from unit import origin_attribute
 import random
 from random import choice
-
+import time
 MAXROUND = 1000
 
 
@@ -26,6 +26,7 @@ class GameMain:
     move_instr_1 = []
     capture_instr_0 = []  # 指令格式[[unit_id,building_id][unit_id,building_id][]]
     capture_instr_1 = []
+
     buff = {
         unit.FLAG_0: {
             unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
