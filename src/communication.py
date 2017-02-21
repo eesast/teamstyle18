@@ -147,7 +147,7 @@ class IOHandler(asyncore.dispatcher):
                     continue
                 pack_header+="i" if type(value)==int or type(value)==bool else (str(len(value))+("s") if type(value)==str else 'f')
                 args.append(value if type(value)!=str else value.encode('utf-8'))
-        #print(args)
+
         return struct.pack(pack_header,*args)
 
     def resource_serializer(self,object_dict):
