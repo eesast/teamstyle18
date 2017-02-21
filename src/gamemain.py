@@ -26,7 +26,8 @@ class GameMain:
     move_instr_1 = []
     capture_instr_0 = []  # 指令格式[[unit_id,building_id][unit_id,building_id][]]
     capture_instr_1 = []
-
+    superman_motortype = [0,0]
+    superman_skill_release_time = [0,0]
     buff = {
         unit.FLAG_0: {
             unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
@@ -80,8 +81,8 @@ class GameMain:
         ai_id1 = 1
         # 地图生成模块
         # 初始化self.resource
-        self.resource = {ai_id0: {"tech": 100000, "money": 100000, "remain_people": 100},
-                         ai_id1: {"tech": 100000, "money": 100000, "remain_people": 100}}
+        self.resource = {ai_id0: {"tech": 100000, "money": 100000, "remain_people": 300},
+                         ai_id1: {"tech": 100000, "money": 100000, "remain_people": 300}}
         # 在一定范围内random出一个基地并中心对称 并伴随生成bank 和teaching building 各一个
         box_base0_x = random.randint(2, 7)
         box_base0_y = random.randint(2, 3)
@@ -422,7 +423,10 @@ class GameMain:
 
     def skill_phase(self, order):
         # 技能结算
-
+        if(self.turn_num-self.superman_skill_release_time[0]>20):
+            self.superman_motortype[0]=0
+        if(self.turn_num-self.superman_skill_release_time[1]>20):
+            self.superman_motortype[1]=0
         def Get_id_information(id):
             for k in self.units:
                 if (k == id):
@@ -598,13 +602,13 @@ class GameMain:
             distance = Get_distance(my_information.position, enemy_information.position)
             if (skill_cd >= origin_attribute['superman']['skill_cd_1'] and distance <= origin_attribute['superman'][
                 'origin_shot_range'] and (my_information.flag != enemy_information.flag)):
-                if (my_information.motor_type == 0) and (
+                if (self.superman_motortype[my_information.flag]== 0) and (
                             enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2):
                     enemy_information.reset_attribute(self.buff,
                                                       health=enemy_information.health_now - my_information.attack_now * (
                                                       1 - enemy_information.defense_now / 1000))
                     my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
-                elif (my_information.motor_type == 1) and (
+                elif (self.superman_motortype[my_information.flag] == 1) and (
                                 enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 3):
                     enemy_information.reset_attribute(self.buff,
                                                       health=enemy_information.health_now - my_information.attack_now * (
@@ -616,9 +620,10 @@ class GameMain:
             my_information = Get_id_information(id)
             skill_cd = self.turn_num - my_information.skill_last_release_time1
             if (skill_cd >= origin_attribute['superman']['skill_cd_2']):
-                my_information.reset_attribute(self.buff, motor_type=1, speed=12,
+                my_information.reset_attribute(self.buff, speed=12,
                                                health=my_information.health.now * 1.02)
                 my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                self.superman_skill_release_time[my_information.flag]=self.turn_num
 
         for k in range(len(order)):
             #print(Get_id_information(order[k][1]).Get_type_name())
