@@ -22,8 +22,12 @@ class GameMain:
     skill_instr_1 = []  # ai1的当前回合制令
     produce_instr_0 = []  # 指令格式为[building_id,building_id,]
     produce_instr_1 = []
-
-
+    move_instr_0 = []  # 指令格式[[unit_id,position_x,position_y],[unit_id,position_x,position_y]]
+    move_instr_1 = []
+    capture_instr_0 = []  # 指令格式[[unit_id,building_id][unit_id,building_id][]]
+    capture_instr_1 = []
+    superman_motortype = [0,0]
+    superman_skill_release_time = [0,0]
     buff = {
         unit.FLAG_0: {
             unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
@@ -419,7 +423,10 @@ class GameMain:
 
     def skill_phase(self, order):
         # 技能结算
-
+        if(self.turn_num-self.superman_skill_release_time[0]>20):
+            self.superman_motortype[0]=0
+        if(self.turn_num-self.superman_skill_release_time[1]>20):
+            self.superman_motortype[1]=0
         def Get_id_information(id):
             for k in self.units:
                 if (k == id):
@@ -595,13 +602,13 @@ class GameMain:
             distance = Get_distance(my_information.position, enemy_information.position)
             if (skill_cd >= origin_attribute['superman']['skill_cd_1'] and distance <= origin_attribute['superman'][
                 'origin_shot_range'] and (my_information.flag != enemy_information.flag)):
-                if (my_information.motor_type == 0) and (
+                if (self.superman_motortype[my_information.flag]== 0) and (
                             enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2):
                     enemy_information.reset_attribute(self.buff,
                                                       health=enemy_information.health_now - my_information.attack_now * (
                                                       1 - enemy_information.defense_now / 1000))
                     my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
-                elif (my_information.motor_type == 1) and (
+                elif (self.superman_motortype[my_information.flag] == 1) and (
                                 enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 3):
                     enemy_information.reset_attribute(self.buff,
                                                       health=enemy_information.health_now - my_information.attack_now * (
@@ -613,9 +620,10 @@ class GameMain:
             my_information = Get_id_information(id)
             skill_cd = self.turn_num - my_information.skill_last_release_time1
             if (skill_cd >= origin_attribute['superman']['skill_cd_2']):
-                my_information.reset_attribute(self.buff, motor_type=1, speed=12,
+                my_information.reset_attribute(self.buff, speed=12,
                                                health=my_information.health.now * 1.02)
                 my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                self.superman_skill_release_time[my_information.flag]=self.turn_num
 
         for k in range(len(order)):
             #print(Get_id_information(order[k][1]).Get_type_name())
@@ -659,51 +667,22 @@ class GameMain:
                 if obj.unit_id == things[0]:  # 如果unit_id 相符
                     if obj.Get_unit_type() == 0 or obj.Get_unit_type() == 4 or obj.flag != 0:
                         pass
-                    else:#指令合法
+                    else:
                         x = things[1]
                         y = things[2]
                         x1 = obj.position[0]
                         y1 = obj.position[1]
-                        sigx=x-x1
-                        sigy=y-y1
                         if x > 100 or y > 100 or x < 0 or y < 0:
                             return
-                        else:
-                            if abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:#如果移动的位置在本回合范围内
-                                for obj_1 in id_collection:
-                                    if obj_1.position[0] == x and obj_1.position[1] == y:
-                                        pass
-                                    else:
-                                        obj.position=[x,y]
-
-                            if abs(x1 - x) + abs(y1 - y) > obj.max_speed_now:#不在指定范围内
-                                if x>=x1+obj.max_speed_now or x<=x1-obj.max_speed_now:
-                                    if x>=x1+obj.max_speed_now:
-                                        obj.position=[x1+obj.max_speed_now,y1]
-                                    else:
-                                        obj.position=[x1-obj.max_speed_now,y1]
-                                elif y>=y1+obj.max_speed_now or y<=y1-obj.max_speed_now:
-                                     if y>=y1+obj.max_speed_now:
-                                         obj.position = [x1 , y1+obj.max_speed_now]
-                                     else:
-                                         obj.position = [x1 , y1-obj.max_speed_now]
+                        elif abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:
+                            for obj_1 in id_collection:
+                                if obj_1.position[0] == x and obj_1.position[1] == y:
+                                    pass
                                 else:
-                                    z=obj.max_speed_now-abs(x-x1)
-                                    if y>=y1:
-                                        obj.position = [x, y1+z]
-                                    else:
-                                        obj.position = [x, y1-z]
-                        x1=obj.position[0]
-                        y1=obj.position[1]#移动结束的位置
-                        for thing in id_collection:#遍历所有的建筑
-                            if thing.Get_unit_type() == 4 and thing.position[0] == x1 and thing.position[1] == y1:# 4 is building
-                                if sigx >= 0:
-                                    obj.position[0]-=1
-                                else :
-                                    obj.position[0]+=1
+                                    obj.position=[x,y]
 
-
-
+                        else:
+                            pass
         for things in self.move_instr_1:
             for obj in id_collection:
                 if obj.unit_id == things[0]:  # 如果unit_id 相符
@@ -714,37 +693,17 @@ class GameMain:
                         y = things[2]
                         x1 = obj.position[0]
                         y1 = obj.position[1]
-                        sigx = x - x1
-                        sigy = y - y1
                         if x > 100 or y > 100 or x < 0 or y < 0:
                             return
-                        else :
-                            if abs(x1 - x) + abs(y1 - y) > obj.max_speed_now:#不在指定范围内
-                                if x>=x1+obj.max_speed_now or x<=x1-obj.max_speed_now:
-                                    if x>=x1+obj.max_speed_now:
-                                        obj.position=[x1+obj.max_speed_now,y1]
-                                    else:
-                                        obj.position=[x1-obj.max_speed_now,y1]
-                                elif y>=y1+obj.max_speed_now or y<=y1-obj.max_speed_now:
-                                     if y>=y1+obj.max_speed_now:
-                                         obj.position = [x1 , y1+obj.max_speed_now]
-                                     else:
-                                         obj.position = [x1 , y1-obj.max_speed_now]
+                        elif abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:
+                            for obj_1 in id_collection:
+                                if obj_1.position[0] == x and obj_1.position[1] == y:
+                                    pass
                                 else:
-                                    z=obj.max_speed_now-abs(x-x1)
-                                    if y>=y1:
-                                        obj.position = [x, y1+z]
-                                    else:
-                                        obj.position = [x, y1-z]
-                            x1 = obj.position[0]
-                            y1 = obj.position[1]  # 移动结束的位置
-                            for thing in id_collection:  # 遍历所有的建筑
-                                if thing.Get_unit_type() == 4 and thing.position[0] == x1 and thing.position[
-                                    1] == y1:  # 4 is building
-                                    if sigx >= 0:
-                                        obj.position[0] -= 1
-                                    else:
-                                        obj.position[0] += 1
+                                    obj.position=(x,y)
+                        else:
+                            pass
+
         pass
 
     def produce_phase(self):
