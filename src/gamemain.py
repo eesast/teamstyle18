@@ -83,8 +83,8 @@ class GameMain:
         ai_id1 = 1
         # 地图生成模块
         # 初始化self.resource
-        self.resource = {ai_id0: {"tech": 0, "money": 500, "remain_people": 200},
-                         ai_id1: {"tech": 0, "money": 500, "remain_people": 200}}
+        self.resource = {ai_id0: {"tech": 0, "money": 1000, "remain_people": 200},
+                         ai_id1: {"tech": 0, "money": 1000, "remain_people": 200}}
         # 在一定范围内random出一个基地并中心对称 并伴随生成bank 和teaching building 各一个
         box_base0_x = random.randint(2, 7)
         box_base0_y = random.randint(2, 3)
@@ -939,7 +939,7 @@ class GameMain:
             if unit_id.flag == -1:
                 continue
             if unit_id.Get_type_name() == 21:
-                self.resource[unit_id.flag]["money"] += 500
+                self.resource[unit_id.flag]["money"] += 100
             if unit_id.Get_type_name() == 20:
                 self.resource[unit_id.flag]["tech"] += 50
         pass
