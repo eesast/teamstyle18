@@ -427,6 +427,9 @@ class GameMain:
             self.superman_motortype[0]=0
         if(self.turn_num-self.superman_skill_release_time[1]>20):
             self.superman_motortype[1]=0
+        for u in self.units.values():
+            if u.Get_type_name()==8 and self.turn_num-u.skill_last_release_time2>10:
+                u.max_speed_now-=5
         def Get_id_information(id):
             for k in self.units:
                 if (k == id):
