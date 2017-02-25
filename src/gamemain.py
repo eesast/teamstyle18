@@ -52,6 +52,8 @@ class GameMain:
         0: {'eagle': False, 'nuke_tank': False, 'superman': False},
         1: {'eagle': False, 'nuke_tank': False, 'superman': False}
     }  # 记录eagle superman 和 nuketank的最大上限是否达到
+    meat_count0 = 0
+    meat_count1 = 0
 
     def __init__(self):
         map = []
@@ -81,8 +83,8 @@ class GameMain:
         ai_id1 = 1
         # 地图生成模块
         # 初始化self.resource
-        self.resource = {ai_id0: {"tech": 100000, "money": 100000, "remain_people": 300},
-                         ai_id1: {"tech": 100000, "money": 100000, "remain_people": 300}}
+        self.resource = {ai_id0: {"tech": 0, "money": 500, "remain_people": 200},
+                         ai_id1: {"tech": 0, "money": 500, "remain_people": 200}}
         # 在一定范围内random出一个基地并中心对称 并伴随生成bank 和teaching building 各一个
         box_base0_x = random.randint(2, 7)
         box_base0_y = random.randint(2, 3)
@@ -405,6 +407,10 @@ class GameMain:
                     self.amount_limit[things.flag]['eagle'] = False
                 if things.Get_type_name() == 1:
                     self.resource[things.flag]['remain_people'] += origin_attribute['meat']['people_cost']
+                    if things.flag == 0:
+                        self.meat_count0 -= 1
+                    if things.flag == 1:
+                        self.meat_count1 -= 1
             if things.hacked_point >= things.max_health_now >= 0:
                 del self.units[unit_id]  # 从字典里删除被黑了的单位
                 if things.Get_type_name() == 4:
@@ -807,9 +813,10 @@ class GameMain:
             if self.units[building_id].Get_type_name() == 0:
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['meat']['people_cost'] or \
                                 self.resource[ai_id]['money'] < unit.origin_attribute['meat']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['meat']['tech_cost']:
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['meat']['tech_cost'] or self.meat_count0 >= 10:
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'meat', self.units[building_id].position, self.buff)
+                self.meat_count0 += 1
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['meat']['people_cost']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['meat']['money_cost']
                 self.resource[ai_id]['tech'] -= unit.origin_attribute['meat']['tech_cost']
@@ -914,8 +921,9 @@ class GameMain:
             if self.units[building_id].Get_type_name() == 0:
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['meat']['people_cost'] or \
                                 self.resource[ai_id]['money'] < unit.origin_attribute['meat']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['meat']['tech_cost']:
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['meat']['tech_cost'] or self.meat_count1 >= 10:
                     continue
+                meat_count1 +=1
                 weapon = unit.UnitObject(self.total_id, ai_id, 'meat', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['meat']['people_cost']
                 self.resource[ai_id]['money'] -= unit.origin_attribute['meat']['money_cost']
