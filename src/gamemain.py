@@ -81,8 +81,8 @@ class GameMain:
         ai_id1 = 1
         # 地图生成模块
         # 初始化self.resource
-        self.resource = {ai_id0: {"tech": 100000, "money": 100000, "remain_people": 100},
-                         ai_id1: {"tech": 100000, "money": 100000, "remain_people": 100}}
+        self.resource = {ai_id0: {"tech": 3000, "money": 5000, "remain_people": 100},
+                         ai_id1: {"tech": 3000, "money": 5000, "remain_people": 100}}
         # 在一定范围内random出一个基地并中心对称 并伴随生成bank 和teaching building 各一个
         box_base0_x = random.randint(2, 7)
         box_base0_y = random.randint(2, 3)
@@ -440,7 +440,7 @@ class GameMain:
         def Get_distance(my_position, enemy_position):
             x = my_position[0] - enemy_position[0]
             y = my_position[1] - enemy_position[1]
-            return (x * x + y * y) ** 0.5
+            return abs(x)+abs(y)
 
         # 电子对抗坦克技能1 修改计算公式
         def bolt_tank_skill1(id, attack_id):
@@ -469,11 +469,11 @@ class GameMain:
                 'origin_shot_range']):
                 if (my_information.flag != enemy_information.flag) and (
                         enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2):
-                    enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point + 1)
+                    enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point + 15)
                     my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
                 elif (my_information.flag == enemy_information.flag) and (
                         enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2):
-                    enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point - 1)
+                    enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point - 15)
                     my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 无人战机技能1
@@ -934,9 +934,9 @@ class GameMain:
             if unit_id.flag == -1:
                 continue
             if unit_id.Get_type_name() == 21:
-                self.resource[unit_id.flag]["money"] += 500
+                self.resource[unit_id.flag]["money"] += 50
             if unit_id.Get_type_name() == 20:
-                self.resource[unit_id.flag]["tech"] += 50
+                self.resource[unit_id.flag]["tech"] += 20
         pass
 
     def capture_phase(self):
