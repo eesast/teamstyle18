@@ -10,30 +10,23 @@ extern recv_send_socket  * p_sock_receive_send;
 extern int all_received;
 extern bool receiveable = true;
 extern bool runAI = false;
-void player_main(void);				//é€‰æ‰‹çš„çº¿ç¨‹è¦è°ƒç”¨     å†™åœ¨playerMain.cppä¸­
+extern int turn=0;
+void player_main(void);				//Ñ¡ÊÖµÄÏß³ÌÒªµ÷ÓÃ     Ğ´ÔÚplayerMain.cppÖĞ
 
 
-void init_global_vars()					//å†…å®¹å¾…å®šï¼Œç­‰åˆ°æ¥åˆ°ä¿¡æ¯æ—¶å†è½¬ä¸ºtrue
+void init_global_vars()					//ÄÚÈİ´ı¶¨£¬µÈµ½½Óµ½ĞÅÏ¢Ê±ÔÙ×ªÎªtrue
 {
 	flag_of_round=false;	
-	flag_of_gameOver=false;				//æ¸¸æˆç»“æŸæ—¶å†ç½®ä¸ºtrue
+	flag_of_gameOver=false;				//ÓÎÏ·½áÊøÊ±ÔÙÖÃÎªtrue
 }
 
-void send_client_hello()				//å‘Šè¯‰é€»è¾‘ç«¯ï¼Œ é€‰æ‰‹è¿™è¾¹å‡†å¤‡å¥½äº†
+void send_client_hello()				//¸æËßÂß¼­¶Ë£¬ Ñ¡ÊÖÕâ±ß×¼±¸ºÃÁË
 {
-	p_sock_receive_send->InitialSocketClient();					//åˆå§‹åŒ–socketï¼Œå¹¶å‘ é€»è¾‘ç«¯å‘å‡ºåˆå§‹åŒ–çš„è¯·æ±‚
+	p_sock_receive_send->InitialSocketClient();					//³õÊ¼»¯socket£¬²¢Ïò Âß¼­¶Ë·¢³ö³õÊ¼»¯µÄÇëÇó
 	
 }
-//æš‚æ—¶çº¦å®šä¸æ”¶helloç›´æ¥å¼€å§‹å§
-/*void recv_server_hello()				//ä»é€»è¾‘ç«¯æ¥æ”¶ä¸€äº›å¯èƒ½åˆå§‹å¿…è¦çš„æ•°æ®ï¼ˆè¿™ä¸ªå‡½æ•°å¯èƒ½æ˜¯ä¸éœ€è¦çš„ï¼‰				
-{
-	;									//æ¥æ”¶ä¿¡æ¯
-	flag1_of_round=true;
-	flag2_of_round=true;				//å›åˆå¼€å§‹ï¼Ÿï¼Ÿï¼Ÿï¼Ÿ
-}*/
-//å¾…å®Œå–„
-//å…¶å®å®Œå…¨æ²¡æœ‰å¿…è¦ç”¨è¿™ä¸ªå‡½æ•°ï¼Œå¯ä»¥è€ƒè™‘åˆ å»
-bool game_not_end()						//å¾—ä»é€»è¾‘ç«¯è·å–æ¸¸æˆæ˜¯å¦ç»“æŸçš„ä¿¡æ¯
+
+bool game_not_end()						//µÃ´ÓÂß¼­¶Ë»ñÈ¡ÓÎÏ·ÊÇ·ñ½áÊøµÄĞÅÏ¢
 {
 	if (flag_of_gameOver==true)
 		return false;
@@ -45,28 +38,29 @@ bool game_not_end()						//å¾—ä»é€»è¾‘ç«¯è·å–æ¸¸æˆæ˜¯å¦ç»“æŸçš„ä¿¡æ¯
 #endif
 }
 
-unsigned int __stdcall start_player(void* arg)					//å¯åŠ¨é€‰æ‰‹1çš„çº¿ç¨‹
+unsigned int __stdcall start_player(void* arg)					//Æô¶¯Ñ¡ÊÖ1µÄÏß³Ì
 {
-	while (game_not_end())
+	while (!flag_of_gameOver)
 	{
 		if (runAI)
 		{
-			
+		cout<<"turns£º"<<turn<<endl;
 		player_main();
+		turn++;
+		runAI = false;
 		p_sock_receive_send->send_data();
-							//å°†æ‰€æœ‰çš„æŒ‡ä»¤å‘é€å‡ºå»
-		}				                                  
+		}	
+
 	}
-	
 	return 0;
 }
 
 
-void wait_till_next_round()					//ä¹‹ååŠ ä¸€æ®µæ—¶é—´çš„é—´éš”  é¿å…ç©ºè½¬
+void wait_till_next_round()					//Ö®ºó¼ÓÒ»¶ÎÊ±¼äµÄ¼ä¸ô  ±ÜÃâ¿Õ×ª
 {
 	while (true)
 	{
-		if (flag_of_round == true)					//å¯ä»¥è¿›å…¥ä¸‹ä¸€æ¬¡è°ƒç”¨å‡½æ•°
+		if (flag_of_round == true)					//¿ÉÒÔ½øÈëÏÂÒ»´Îµ÷ÓÃº¯Êı
 			return;
 		else if (all_received >= 3)
 		{
@@ -75,8 +69,8 @@ void wait_till_next_round()					//ä¹‹ååŠ ä¸€æ®µæ—¶é—´çš„é—´éš”  é¿å…ç©ºè½¬
 		}
 		else 
 		{
-			//Sleep(1000*time_round/100);
-		}//å¦åˆ™ç­‰å¾…   ç›´åˆ°é€»è¾‘ç«¯å‘Šè¯‰æˆ‘ä¸‹ä¸€å›åˆå¼€å§‹äº†
-				//			//æš‚æ—¶ä¼‘æ¯1/100å›åˆå…å¾—ç©ºè½¬			//ä¸çŸ¥é“å¯¹çº¿ç¨‹ä¼šä¸ä¼šæœ‰å¾ˆå¤§å½±å“ï¼Ÿ
+			Sleep(1000*time_round/1000);
+		}//·ñÔòµÈ´ı   Ö±µ½Âß¼­¶Ë¸æËßÎÒÏÂÒ»»ØºÏ¿ªÊ¼ÁË
+				//			//ÔİÊ±ĞİÏ¢1/100»ØºÏÃâµÃ¿Õ×ª			//²»ÖªµÀ¶ÔÏß³Ì»á²»»áÓĞºÜ´óÓ°Ïì£¿
 	}
 }

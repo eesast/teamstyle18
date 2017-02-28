@@ -1,14 +1,14 @@
-//ä¸é€‰æ‰‹æ¥å£ç«¯å•†é‡ä¹‹åå†ç¡®å®š
+//ÓëÑ¡ÊÖ½Ó¿Ú¶ËÉÌÁ¿Ö®ºóÔÙÈ·¶¨
 #include "teamstyle18-my-1.h"
 
 #include <queue>
 using namespace std;
- //æ€ä¹ˆåŠï¼Ÿï¼Ÿï¼Ÿ
+ //ÔõÃ´°ì£¿£¿£¿
 extern queue <Instr>  q_instruction;
 extern resourse allResourse;
-extern double buff[40]; //buffå…¨å±€å˜é‡ é˜µè¥1[å•ä½ç±»å‹][buffç±»å‹]
-extern Unit all_unit[300];			  //æ‰€æœ‰çš„unit
-extern int all_unit_size;				//è®°å½•æ‰€æœ‰unitçš„ä¸ªæ•°
+extern double buff[40]; //buffÈ«¾Ö±äÁ¿ ÕóÓª1[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
+extern Unit all_unit[300];			  //ËùÓĞµÄunit
+extern int all_unit_size;				//¼ÇÂ¼ËùÓĞunitµÄ¸öÊı
 extern int team_id;
 template <typename Data> 
 void safeQueue<Data>::safePush(Data value)
@@ -28,17 +28,17 @@ Data safeQueue<Data>::safeFront(void)
 	;
 }
 /*
-//extern double buff1[4][5]; //buffå…¨å±€å˜é‡ é˜µè¥1[å•ä½ç±»å‹][buffç±»å‹]
-//extern double buff2[4][5]; //buffå…¨å±€å˜é‡ é˜µè¥2[å•ä½ç±»å‹][buffç±»å‹]
-extern double buff_1[20]; //buffå…¨å±€å˜é‡ é˜µè¥1[å•ä½ç±»å‹][buffç±»å‹]
-extern double buff_2[20]; //buffå…¨å±€å˜é‡ é˜µè¥2[å•ä½ç±»å‹][buffç±»å‹]
-extern Unit * all_unit_1;			  //é˜µè¥1ï¼Œå¯ä»¥çŸ¥é“çš„æ‰€æœ‰çš„unit
-extern int all_unit_size_1;				//è®°å½•é˜µè¥1æ‰€æœ‰unitçš„ä¸ªæ•°
-extern Unit * all_unit_2;			  //é˜µè¥2ï¼Œå¯ä»¥çŸ¥é“çš„æ‰€æœ‰çš„unit
-extern int all_unit_size_2;				//è®°å½•é˜µè¥1æ‰€æœ‰unitçš„ä¸ªæ•°
+//extern double buff1[4][5]; //buffÈ«¾Ö±äÁ¿ ÕóÓª1[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
+//extern double buff2[4][5]; //buffÈ«¾Ö±äÁ¿ ÕóÓª2[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
+extern double buff_1[20]; //buffÈ«¾Ö±äÁ¿ ÕóÓª1[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
+extern double buff_2[20]; //buffÈ«¾Ö±äÁ¿ ÕóÓª2[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
+extern Unit * all_unit_1;			  //ÕóÓª1£¬¿ÉÒÔÖªµÀµÄËùÓĞµÄunit
+extern int all_unit_size_1;				//¼ÇÂ¼ÕóÓª1ËùÓĞunitµÄ¸öÊı
+extern Unit * all_unit_2;			  //ÕóÓª2£¬¿ÉÒÔÖªµÀµÄËùÓĞµÄunit
+extern int all_unit_size_2;				//¼ÇÂ¼ÕóÓª1ËùÓĞunitµÄ¸öÊı
 */
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 Unit::Unit(){};
 Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 {
@@ -48,7 +48,7 @@ Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 	position = pos;
 	type_name = _type_name;
 	unit_type = UnitType(origin_attribute[type_name][UNIT_TYPE]);
-	health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[20*flag+5*unit_type+HEALTH]);	//ä»â€œdoubleâ€è½¬æ¢åˆ°â€œintâ€ï¼Œå¯èƒ½ä¸¢å¤±æ•°æ®	  //å•ä½ç”Ÿæˆæ—¶é»˜è®¤ä¸ºæœ€å¤§è¡€é‡ï¼Œä»¥ä¸‹åŒç†
+	health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[20*flag+5*unit_type+HEALTH]);	//´Ó¡°double¡±×ª»»µ½¡°int¡±£¬¿ÉÄÜ¶ªÊ§Êı¾İ	  //µ¥Î»Éú³ÉÊ±Ä¬ÈÏÎª×î´óÑªÁ¿£¬ÒÔÏÂÍ¬Àí
 	max_health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[20*flag+5*unit_type+HEALTH]);
 	max_speed_now = origin_attribute[type_name][ORIGIN_MAX_SPEED] * (1 + buff[20*flag+5*unit_type+SPEED]);
 	shot_range_now = origin_attribute[type_name][ORIGIN_SHOT_RANGE] * (1 + buff[20*flag+5*unit_type+SHOT_RANGE]);
@@ -61,28 +61,28 @@ void Unit::Print()
 	//cout<<"what i get"<<endl;
 	//cout<<type_name<<endl;
 	//cout<<unit_type<<endl;
-	//cout<<attack_mode<<endl;			// æ”»å‡»æ¨¡å¼ï¼Œä¾‹å¦‚å¯å¯¹ç©ºï¼Œå¯å¯¹å¦å…‹ï¼Œå¯å¯¹æ­¥å…µä¹‹ç±»çš„
-	//cout<<attack_now<<endl;					// å½“å‰æ”»å‡»
-	//cout<<defense_now<<endl;				// å½“å‰é˜²å¾¡
-	//cout<<disable_since<<endl ;			// è¢«ç˜«ç—ªçš„æ—¶é—´ç‚¹ï¼Œç”¨äºåˆ¤æ–­ç˜«ç—ªæ—¶é—´
-	//cout<<flag <<endl;					// æ‰€å±é˜µè¥
-	//cout<<hacked_point<<endl;				// è¢«é»‘çš„ç‚¹æ•°
-	//cout<<healing_rate <<endl;		// æ²»ç–— / ç»´ä¿®é€Ÿç‡	
-	//cout<<health_now<<endl;					// å½“å‰ç”Ÿå‘½å€¼		
-	//cout<<is_disable<<endl;		// æ˜¯å¦è¢«ç˜«ç—ª
-	//cout<<max_health_now<<endl;				// å½“å‰HPä¸Šé™
-	//cout<<max_speed_now<<endl;				// å½“å‰æœ€å¤§é€Ÿåº¦
-	//cout<<position.x<<endl;				// å•ä½ä½ç½®ï¼Œç›®æµ‹æ˜¯ä¸€ä¸ªpointä¹‹ç±»çš„ä¸œè¥¿
+	//cout<<attack_mode<<endl;			// ¹¥»÷Ä£Ê½£¬ÀıÈç¿É¶Ô¿Õ£¬¿É¶ÔÌ¹¿Ë£¬¿É¶Ô²½±øÖ®ÀàµÄ
+	//cout<<attack_now<<endl;					// µ±Ç°¹¥»÷
+	//cout<<defense_now<<endl;				// µ±Ç°·ÀÓù
+	//cout<<disable_since<<endl ;			// ±»Ì±»¾µÄÊ±¼äµã£¬ÓÃÓÚÅĞ¶ÏÌ±»¾Ê±¼ä
+	//cout<<flag <<endl;					// ËùÊôÕóÓª
+	//cout<<hacked_point<<endl;				// ±»ºÚµÄµãÊı
+	//cout<<healing_rate <<endl;		// ÖÎÁÆ / Î¬ĞŞËÙÂÊ	
+	//cout<<health_now<<endl;					// µ±Ç°ÉúÃüÖµ		
+	//cout<<is_disable<<endl;		// ÊÇ·ñ±»Ì±»¾
+	//cout<<max_health_now<<endl;				// µ±Ç°HPÉÏÏŞ
+	//cout<<max_speed_now<<endl;				// µ±Ç°×î´óËÙ¶È
+	//cout<<position.x<<endl;				// µ¥Î»Î»ÖÃ£¬Ä¿²âÊÇÒ»¸öpointÖ®ÀàµÄ¶«Î÷
 	//cout<<position.y<<endl;	
-	//cout<<shot_range_now<<endl;				// å½“å‰å°„ç¨‹(ç°é˜¶æ®µè²Œä¼¼æ²¡æœ‰æå‡å°„ç¨‹çš„æŠ€èƒ½ï¼Œä¸è¿‡å…ˆä¿ç•™)
-	//cout<<skill_last_release_time1<<endl;// ä¸Šæ¬¡æŠ€èƒ½1é‡Šæ”¾æ—¶é—´
-	//cout<<skill_last_release_time2<<endl;// ä¸Šæ¬¡æŠ€èƒ½2é‡Šæ”¾æ—¶é—´
-	//cout<<unit_id<<endl;				// å•ä½id
+	//cout<<shot_range_now<<endl;				// µ±Ç°Éä³Ì(ÏÖ½×¶ÎÃ²ËÆÃ»ÓĞÌáÉıÉä³ÌµÄ¼¼ÄÜ£¬²»¹ıÏÈ±£Áô)
+	//cout<<skill_last_release_time1<<endl;// ÉÏ´Î¼¼ÄÜ1ÊÍ·ÅÊ±¼ä
+	//cout<<skill_last_release_time2<<endl;// ÉÏ´Î¼¼ÄÜ2ÊÍ·ÅÊ±¼ä
+	//cout<<unit_id<<endl;				// µ¥Î»id
 }
 Instr::Instr(int instru_type,int u_id,int tar_build_id,Position tpos1,Position tpos2):instruction_type(instru_type),the_unit_id(u_id),target_id_building_id(tar_build_id),pos1(tpos1),pos2(tpos2){};
 
 
-//1è¡¨ç¤ºskkil1,2è¡¨ç¤ºskkil2,3è¡¨ç¤ºproduce,4è¡¨ç¤ºMove,5è¡¨ç¤ºcapture
+//1±íÊ¾skkil1,2±íÊ¾skkil2,3±íÊ¾produce,4±íÊ¾Move,5±íÊ¾capture
 //team1
 void skill_1(int unit_id,int target_id,Position tpos1,Position tpos2) 
 {
@@ -140,13 +140,13 @@ void NewData(void)
 {
 	;
 }
-/*class Instr							//æŠŠå‡ ç§æŒ‡ä»¤çš„æ•°æ®éƒ½æ”¾åˆ°è¿™ä¸ªé‡Œé¢
+/*class Instr							//°Ñ¼¸ÖÖÖ¸ÁîµÄÊı¾İ¶¼·Åµ½Õâ¸öÀïÃæ
 {
 public:
-	int instruction_type;				//1è¡¨ç¤ºskkil1,2è¡¨ç¤ºskkil2,3è¡¨ç¤ºproduce,4è¡¨ç¤ºMove,5è¡¨ç¤ºcapture
+	int instruction_type;				//1±íÊ¾skkil1,2±íÊ¾skkil2,3±íÊ¾produce,4±íÊ¾Move,5±íÊ¾capture
 	int the_unit_id;
 	int target_id_building_id;
-	Position_x_y pos1;					//ä¸ºä»€ä¹ˆè¦åŠ struct?
+	Position_x_y pos1;					//ÎªÊ²Ã´Òª¼Óstruct?
 	Position_x_y pos2;
 	Instr(int instru_type=-1,int u_id=-1,int tar_build_id=-1,Position_x_y tpos1=(-1,-1),Position_x_y tpos2=(-1,-1));
 };*/
@@ -172,10 +172,10 @@ resourse getResourse_1(void)
 /*
 resourse resourse_of_1;
 resourse resourse_of_2;
-double buff1[4][5] = { 0.0 }; //buffå…¨å±€å˜é‡ é˜µè¥1[å•ä½ç±»å‹][buffç±»å‹]
-double buff2[4][5] = { 0.0 }; //buffå…¨å±€å˜é‡ é˜µè¥2[å•ä½ç±»å‹][buffç±»å‹]
-Unit * all_unit_1 = new Unit[1];			  //é˜µè¥1ï¼Œå¯ä»¥çŸ¥é“çš„æ‰€æœ‰çš„unit
-int all_unit_size_1=0;				//è®°å½•é˜µè¥1æ‰€æœ‰unitçš„ä¸ªæ•°
-Unit * all_unit_2 = new Unit[1];			  //é˜µè¥2ï¼Œå¯ä»¥çŸ¥é“çš„æ‰€æœ‰çš„unit
-int all_unit_size_2=0;				//è®°å½•é˜µè¥2æ‰€æœ‰unitçš„ä¸ªæ•°
+double buff1[4][5] = { 0.0 }; //buffÈ«¾Ö±äÁ¿ ÕóÓª1[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
+double buff2[4][5] = { 0.0 }; //buffÈ«¾Ö±äÁ¿ ÕóÓª2[µ¥Î»ÀàĞÍ][buffÀàĞÍ]
+Unit * all_unit_1 = new Unit[1];			  //ÕóÓª1£¬¿ÉÒÔÖªµÀµÄËùÓĞµÄunit
+int all_unit_size_1=0;				//¼ÇÂ¼ÕóÓª1ËùÓĞunitµÄ¸öÊı
+Unit * all_unit_2 = new Unit[1];			  //ÕóÓª2£¬¿ÉÒÔÖªµÀµÄËùÓĞµÄunit
+int all_unit_size_2=0;				//¼ÇÂ¼ÕóÓª2ËùÓĞunitµÄ¸öÊı
 */
