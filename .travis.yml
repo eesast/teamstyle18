@@ -6,7 +6,7 @@ before_script:
 - "sh -e /etc/init.d/xvfb start"
 - sleep 3
 script:
-- sudo apt-get install --install-recommends winehq-staging winetricks
+- sudo apt-get install --install-recommends wine winetricks
 - wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-amd64.exe
 - wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-embed-amd64.zip
 - git clone https://github.com/htgoebel/virtual-wine.git
