@@ -8,7 +8,7 @@ before_script:
 script:
 - sudo apt-get install --install-recommends wine winetricks
 - wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-amd64.exe
-- wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-embed-amd64.zip
+- wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-embed-win32.zip
 - git clone https://github.com/htgoebel/virtual-wine.git
 - export WINEARCH=win32
 - wineboot -i
@@ -16,10 +16,10 @@ script:
 - sudo apt-get install scons
 - pwd
 - mkdir python
-- mv python-3.6.0-embed-amd64.zip python/
+- mv python-3.6.0-embed-win32.zip python/
 - cd python
 - wine --check-libs
-- unzip python-3.6.0-embed-amd64.zip
+- unzip python-3.6.0-embed-win32.zip
 - cd ..
 - git clone https://www.github.com/pyinstaller/pyinstaller.git
 - wine python/python.exe pyinstaller/pyinstaller.py --onefile src/main.py
