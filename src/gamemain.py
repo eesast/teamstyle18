@@ -592,10 +592,10 @@ class GameMain:
                 if (base_position2 == attack_range1 or base_position2 == attack_range2):
                     self.hqs[1].reset_attribute(self.buff, health=self.hqs[1].health_now - 400 * (
                     1 - self.units[k].defense_now / 1000))
-                print(my_information.max_speed_now)
+                #print(my_information.max_speed_now)
                 my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5)
                 my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
-                print(my_information.max_speed_now)
+                #print(my_information.max_speed_now)
 
         # 改造人战士技能1
         def superman_skill1(id, attack_id):
@@ -1108,15 +1108,15 @@ class GameMain:
         #print("HP0:",self.hqs[0].health_now,"HP1:",self.hqs[1].health_now)
         self.cleanup_phase()
         self.check_winner=self.win_determine()
-        print("produce instr_0:", len(self.produce_instr_0), "move instr_0:", len(self.move_instr_0), "cap instr_0:",len(self.capture_instr_0), "skill instr_0:", len(self.skill_instr_0))
-        print("produce instr_1:", len(self.produce_instr_1), "move instr_1:", len(self.move_instr_1), "cap instr_1:",len(self.capture_instr_1), "skill instr_1:", len(self.skill_instr_1))
+        #print("produce instr_0:", len(self.produce_instr_0), "move instr_0:", len(self.move_instr_0), "cap instr_0:",len(self.capture_instr_0), "skill instr_0:", len(self.skill_instr_0))
+        #print("produce instr_1:", len(self.produce_instr_1), "move instr_1:", len(self.move_instr_1), "cap instr_1:",len(self.capture_instr_1), "skill instr_1:", len(self.skill_instr_1))
         if (self.check_winner == 3):
             self.move_phase()
             self.produce_phase()
             self.resource_phase()
             self.capture_phase()
         check_timeup =self.timeup_determine()
-        print("after HP0:", self.hqs[0].health_now, "after HP1:", self.hqs[1].health_now)
+        #print("after HP0:", self.hqs[0].health_now, "after HP1:", self.hqs[1].health_now)
         ai0 = {}
         ai1 = {}
         for x in range(22):
@@ -1127,8 +1127,8 @@ class GameMain:
                 ai0[u.Get_type_name()] += 1
             if u.flag==1:
                 ai1[u.Get_type_name()] += 1
-        print(ai0)
-        print(ai1)
+        #print(ai0)
+        #print(ai1)
         self.skill_instr_0 = []  # ai0的当前回合指令
         self.skill_instr_1 = []  # ai1的当前回合制令
         self.produce_instr_0 = []  # 指令格式为[building_id,building_id,]

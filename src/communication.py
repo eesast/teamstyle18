@@ -90,7 +90,7 @@ class IOHandler(asyncore.dispatcher):
         self.main_server=main_server
         self.patient=False
         self.patient_time = 0
-        self.instruction = None
+        self.instruction = []
 
 
     def handle_read(self):
