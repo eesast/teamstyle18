@@ -14,11 +14,12 @@ script:
 - wget https://www.python.org/ftp/python/3.6.0/python-3.6.0.exe
 - export WINEARCH=win32
 - wineboot -i
-- winetricks -q python
+- ls ~/.wine
+- wine python-3.6.0.exe /quiet
 - winetricks -q corefonts 
 - export
+- ls ~/.wine
 - winetricks -q vcrun2015
-- wine python-3.6.0.exe /quiet
 - sudo apt-get install scons
 - pwd
 - mkdir python
