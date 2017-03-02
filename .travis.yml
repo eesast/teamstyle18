@@ -11,11 +11,13 @@ script:
 - chmod +x winetricks 
 - sudo mv -v winetricks /usr/local/bin
 - wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-embed-win32.zip
+- wget https://www.python.org/ftp/python/3.6.0/python-3.6.0.exe
 - export WINEARCH=win32
 - wineboot -i
 - winetricks -q python
 - winetricks -q corefonts 
 - winetricks -q vcrun2015
+- wine python-3.6.0.exe /quiet
 - sudo apt-get install scons
 - pwd
 - mkdir python
