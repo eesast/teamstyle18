@@ -19,8 +19,10 @@ script:
 - mv python-3.6.0-embed-win32.zip python/
 - cd python
 - wine --check-libs
+- winetricks -q vcrun2015
 - unzip python-3.6.0-embed-win32.zip
 - cd ..
+- wine --help
 - git clone https://www.github.com/pyinstaller/pyinstaller.git
 - wine python/python.exe pyinstaller/pyinstaller.py --onefile src/main.py
 deploy:
