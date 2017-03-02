@@ -12,7 +12,7 @@ script:
 - git clone https://github.com/htgoebel/virtual-wine.git
 - export WINEARCH=win32
 - wineboot -i
-- winetricks python
+- winetricks -q python
 - sudo apt-get install scons
 - pwd
 - mkdir python
