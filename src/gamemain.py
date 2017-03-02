@@ -675,7 +675,7 @@ class GameMain:
                         y = things[2]
                         x1 = obj.position[0]
                         y1 = obj.position[1]
-                        if x > 100 or y > 100 or x < 0 or y < 0:
+                        if x >= 100 or y >= 100 or x < 0 or y < 0:
                             return
                         elif abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:
                             for obj_1 in id_collection:
@@ -696,14 +696,14 @@ class GameMain:
                         y = things[2]
                         x1 = obj.position[0]
                         y1 = obj.position[1]
-                        if x > 100 or y > 100 or x < 0 or y < 0:
+                        if x >= 100 or y >= 100 or x < 0 or y < 0:
                             return
                         elif abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:
                             for obj_1 in id_collection:
                                 if obj_1.position[0] == x and obj_1.position[1] == y:
                                     pass
                                 else:
-                                    obj.position=(x,y)
+                                    obj.position=[x,y]
                         else:
                             pass
 
@@ -936,7 +936,7 @@ class GameMain:
             if unit_id.Get_type_name() == 21:
                 self.resource[unit_id.flag]["money"] += 50
             if unit_id.Get_type_name() == 20:
-                self.resource[unit_id.flag]["tech"] += 20
+                self.resource[unit_id.flag]["tech"] += 25
         pass
 
     def capture_phase(self):
