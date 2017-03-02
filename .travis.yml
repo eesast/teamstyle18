@@ -16,6 +16,7 @@ script:
 - wineboot -i
 - winetricks -q python
 - winetricks -q corefonts 
+- export
 - winetricks -q vcrun2015
 - wine python-3.6.0.exe /quiet
 - sudo apt-get install scons
