@@ -1,16 +1,20 @@
 __author__ = 'Administrator'
 from gamemain import GameMain
 from communication import MainServer
-from communication import filename
 import communication
 from time import sleep
 import unit
-import runner
 import time
 import threading
 import asyncore
 import os
-comm_server=MainServer(('127.0.0.1',18223))
+import sys
+
+filename = 'ts18_' + time.strftime('%m%d%H%M%S') + '.rpy'
+connection_port=18223
+if (len(sys.argv)>1):
+    filename = sys.argv[1]
+comm_server=MainServer(('127.0.0.1',connection_port))
 game=GameMain()
 server_thread=threading.Thread(target=asyncore.loop)
 server_thread.start()
@@ -23,8 +27,9 @@ while (game.is_end==False):
     comm_server.send_to_player(game.resource)
     comm_server.send_to_player(game.buff)
 
-    while(comm_server.conn_list[0].patient==False and comm_server.conn_list[0].patient_time<=500000):
+    while((comm_server.conn_list[0].patient==False and comm_server.conn_list[0].patient_time<=150000)or(comm_server.conn_list[1].patient == False and comm_server.conn_list[1].patient_time<=150000)):
         comm_server.conn_list[0].patient_time+=1
+        comm_server.conn_list[1].patient_time += 1
         #print("slower main timer")
         #sleep(0.001)
 
@@ -33,9 +38,9 @@ while (game.is_end==False):
     game.capture_instr_0 = comm_server.conn_list[0].capture_instr
     game.skill_instr_0 = comm_server.conn_list[0].skill_instr
     comm_server.conn_list[0].dump()
-    while (comm_server.conn_list[1].patient == False and comm_server.conn_list[1].patient_time<=500000):
-        comm_server.conn_list[1].patient_time += 1
-    comm_server.conn_list[1].error = False
+	
+    #while (comm_server.conn_list[1].patient == False and comm_server.conn_list[1].patient_time<=500000):
+    #   comm_server.conn_list[1].patient_time += 1
 
         #sleep(0.01)
     game.produce_instr_1=comm_server.conn_list[1].produce_instr
@@ -43,7 +48,7 @@ while (game.is_end==False):
     game.capture_instr_1 = comm_server.conn_list[1].capture_instr
     game.skill_instr_1 = comm_server.conn_list[1].skill_instr
     comm_server.conn_list[1].dump()
-    print (len(list(game.units.values())),"turns:", game.turn_num,game.resource)
+    print ("server turns:", game.turn_num)
 
     file.append(communication.u_serializer(list(game.units.values())))
     file.append(communication.r_serializer(game.resource))
