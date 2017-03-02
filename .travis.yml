@@ -10,8 +10,7 @@ script:
 - wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 - chmod +x winetricks 
 - sudo mv -v winetricks /usr/local/bin
-- wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-amd64.exe
-- git clone https://github.com/htgoebel/virtual-wine.git
+- wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-embed-win32.zip
 - export WINEARCH=win32
 - wineboot -i
 - winetricks -q python
