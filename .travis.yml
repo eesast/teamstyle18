@@ -14,6 +14,14 @@ script:
 - wget https://www.python.org/ftp/python/3.6.0/python-3.6.0.exe
 - export WINEARCH=win32
 - wineboot -i
+- "export W=~/.wine"
+- "export WINEVERPATH=$W"
+- "export PATH=$W/bin:$PATH"
+- "export WINESERVER=$W/bin/wineserver"
+- "export WINELOADER=$W/bin/wine"
+- "export WINEDLLPATH=$W/lib/wine/fakedlls"
+- export LD_LIBRARY_PATH="$W/lib:$LD_LIBRARY_PATH"
+
 - ls ~/.wine
 - wine python-3.6.0.exe /quiet
 - winetricks -q corefonts 
