@@ -11,23 +11,13 @@ script:
 - chmod +x winetricks 
 - sudo mv -v winetricks /usr/local/bin
 - wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-embed-win32.zip
-- wget https://www.python.org/ftp/python/3.6.0/python-3.6.0.exe
 - export WINEARCH=win32
 - wineboot -i
-- "export W=~/.wine"
-- "export WINEVERPATH=$W"
-- "export PATH=$W/bin:$PATH"
-- "export WINESERVER=$W/bin/wineserver"
-- "export WINELOADER=$W/bin/wine"
-- "export WINEDLLPATH=$W/lib/wine/fakedlls"
-- export LD_LIBRARY_PATH="$W/lib:$LD_LIBRARY_PATH"
-
-- ls ~/.wine
-- wine python-3.6.0.exe /quiet
 - winetricks -q corefonts 
+- http://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe
+- wine vc_redist.x86.exe /quiet
 - export
 - ls ~/.wine
-- winetricks -q vcrun2015
 - sudo apt-get install scons
 - pwd
 - mkdir python
