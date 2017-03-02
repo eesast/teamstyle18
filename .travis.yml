@@ -7,19 +7,22 @@ before_script:
 - sleep 3
 script:
 - sudo apt-get install --install-recommends wine winetricks
+- wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+- chmod +x winetricks 
+- sudo mv -v winetricks /usr/local/bin
 - wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-amd64.exe
-- wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-embed-win32.zip
 - git clone https://github.com/htgoebel/virtual-wine.git
 - export WINEARCH=win32
 - wineboot -i
 - winetricks -q python
+- winetricks -q corefonts 
+- winetricks -q vcrun2015
 - sudo apt-get install scons
 - pwd
 - mkdir python
 - mv python-3.6.0-embed-win32.zip python/
 - cd python
 - wine --check-libs
-- winetricks -q vcrun2015
 - unzip python-3.6.0-embed-win32.zip
 - cd ..
 - wine --help
