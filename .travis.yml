@@ -1,0 +1,38 @@
+sudo: required
+before_install:
+- sudo add-apt-repository -y ppa:wine/wine-builds && sudo apt-get update
+before_script:
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
+- sleep 3
+script:
+- sudo apt-get install --install-recommends wine winetricks
+- wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+- chmod +x winetricks 
+- sudo mv -v winetricks /usr/local/bin
+- wget https://www.python.org/ftp/python/3.6.0/python-3.6.0-embed-win32.zip
+- export WINEARCH=win32
+- wineboot -i
+- winetricks -q corefonts 
+- wget http://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe
+- wine vc_redist.x86.exe /quiet
+- export
+- ls ~/.wine
+- sudo apt-get install scons
+- pwd
+- mkdir python
+- mv python-3.6.0-embed-win32.zip python/
+- cd python
+- wine --check-libs
+- unzip python-3.6.0-embed-win32.zip
+- cd ..
+- wine --help
+- git clone https://www.github.com/pyinstaller/pyinstaller.git
+- wine python/python.exe pyinstaller/pyinstaller.py --onefile src/main.py
+deploy:
+  provider: releases
+  api_key:
+    secure: RK1zGaK9vzrTF0c3XpzV4Wjn6mVbDZNcja+HseAHR3R2lTcuS4hArESCnTSb6yKx7CYqfyLjkqf1viq2/ZwLdvvLmO9EDEyluxxS5oydZTSk7XPYQYJiDvtTQVOEQpSvZupCbOI4dzp6vQMafb0WAvB576kfuKJhhTsoCN5payc27XYfDtHA28XDpTcownAxXak5c+0RaG88h2a1jfiuhp2sOCFg+OP6eLzytvvATJw07mcV21dG7bkX2d4mkeaFM2p6J18gjQCXDrn17BFizNWR9shZvt6Fna1iR7doZ7RNY2CuXbSt3i2y3FcW0SqgW3OfPQG96//VACkwywQ5qmeqKVxK7UR1/ai49spVut8i73zuUJRvQ+R9ELygf3hNNHn6OUBxlKX6QPPuQ2rYv1sn5icNp8KDOGQytORaxMAFCzBVVB52GxUkS38dSMO/OaDyD2sjWlh9d0rjOu6MmaLGX9syapNFvPohMA4sKt/SQz6dWtrvbVOtlF+/y9LsU/NBlPs5wJSMk5rXgoR+7+VOVgUpC9mdAjUqFcoHFJu0xVi5ERutoOa0RJ7ej+cC4TE09Jg1FemCdkskLIOcLjxBOHtLYofNaQequBq12FhO62foOaWDjL4Et8mi7YtpVytsUJcjFtfctq+HVLwAIkL0IRDDe//qhitMIQZm680=
+  file: dist/main.exe
+  on:
+    repo: K-Wu/ts18-release-kwu
