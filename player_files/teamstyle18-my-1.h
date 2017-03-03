@@ -23,13 +23,15 @@ public:
 	Data safeFront(void);
 };
 
+//若干枚举型变量
+//type_name
 enum UnitType
 {
 	BASE,	     //主基地
 	INFANTRY,	 //步兵
-	VEHICLE, //坦克
+	VEHICLE,	 //坦克
 	AIRCRAFT,	 //飞机
-	BUILDING	 //建筑
+	BUILDING   	 //建筑
 };
 
 enum BuffType
@@ -43,15 +45,15 @@ enum BuffType
 
 enum TypeName
 {
-	__BASE,   //主基地
+	__BASE, 
 	
-	MEAT, HACKER, SUPERMAN, //小鲜肉,黑客,改造人
+	MEAT, HACKER, SUPERMAN,
 	
-	BATTLE_TANK, BOLT_TANK, NUKE_TANK, //主战坦克,电子对抗坦克,核子坦克
+	BATTLE_TANK, BOLT_TANK, NUKE_TANK, 
 	
-	UAV, EAGLE, //无人机,鹰式战斗机
+	UAV, EAGLE, 
 	
-	HACK_LAB, BID_LAB, CAR_LAB, ELEC_LAB, RADIATION_LAB, //黑客学院,
+	HACK_LAB, BID_LAB, CAR_LAB, ELEC_LAB, RADIATION_LAB, 
 	UAV_LAB, AIRCRAFT_LAB, BUILD_LAB, FINANCE_LAB, MATERIAL_LAB,
 	NANO_LAB, TEACH_BUILDING, BANK,
 	Type_num
@@ -103,10 +105,10 @@ const int origin_attribute[Type_num][attribute_num] =
 
 };
 
-
+//定义的若干结构体
+//resourse
 struct resourse
 {
-
 	int money_1;
 	int remain_people_1;
 	int tech_1;
@@ -122,6 +124,15 @@ struct Position
 	Position(int xx = -1, int yy = -1) :x(xx),y(yy){};
 };
 const Position none_position = Position(-1,-1);
+struct BuildingHandle
+{
+	int id;
+	int flag;
+	TypeName type;
+	Position pos;
+	BuildingHandle(int xx = -1, int yy = -1,TypeName t= Type_num,int x=0,int y=0) :id(xx), flag(yy), type(t),pos(x,y){};
+};
+
 
 
 struct Unit
@@ -144,27 +155,33 @@ struct Unit
 	int skill_last_release_time1;// 上次技能1释放时间
 	int skill_last_release_time2;// 上次技能2释放时间
 	int unit_id;				// 单位id
-	Unit();
-	Unit(int unit_id, int flag, TypeName type_name, Position pos); 
+	Unit();	
+	Unit(int unit_id, int flag, TypeName type_name, Position pos);  
 	void Print();
 };
 
-class Instr
+class Instr	
 {
 public:
-	int instruction_type;
+	int instruction_type;				//1表示skil1,2表示skil2,3表示produce,4表示Move,5表示capture
 	int the_unit_id;
 	int target_id_building_id;
-	Position pos1;
+	Position pos1;					
 	Position pos2;
 	Instr(int instru_type=-1,int u_id=-1,int tar_build_id=-1,Position tpos1=none_position,Position tpos2=none_position);
 };
 
+
+
+
+
+//选手调用函数的声明
 void skill_1(int unit_id,int target_id=-1,Position tpos1=none_position,Position tpos2=none_position) ;
 void skill_2(int unit_id,int target_id=-1,Position tpos1=none_position,Position tpos2=none_position) ;
 void produce(int building_id);
 void Move(int unit_id, Position pos);
 void capture(int unit_id, int building_id);
+
 
 
 Unit * getUnit(void);

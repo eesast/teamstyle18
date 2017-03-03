@@ -1,12 +1,13 @@
 
 #include "teamstyle18-my-1.h"
+
 #include <queue>
 using namespace std;
 extern queue <Instr>  q_instruction;
 extern resourse allResourse;
-extern double buff[40]; 
-extern Unit all_unit[300];
-extern int all_unit_size;
+extern double buff[40]; //buff全局变量 阵营1[单位类型][buff类型]
+extern Unit all_unit[300];			  //所有的unit
+extern int all_unit_size;				//记录所有unit的个数
 extern int team_id;
 template <typename Data> 
 void safeQueue<Data>::safePush(Data value)
@@ -25,6 +26,8 @@ Data safeQueue<Data>::safeFront(void)
 {
 	;
 }
+
+//构造函数
 Unit::Unit(){};
 Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 {
@@ -49,10 +52,10 @@ void Unit::Print()
 Instr::Instr(int instru_type,int u_id,int tar_build_id,Position tpos1,Position tpos2):instruction_type(instru_type),the_unit_id(u_id),target_id_building_id(tar_build_id),pos1(tpos1),pos2(tpos2){};
 
 
+//1表示skkil1,2表示skkil2,3表示produce,4表示Move,5表示capture
 void skill_1(int unit_id,int target_id,Position tpos1,Position tpos2) 
 {
 	Instr Isttemp(1,unit_id,target_id,tpos1,tpos2);
-	
 	q_instruction.push(Isttemp);
 }
 void skill_2(int unit_id,int target_id,Position tpos1,Position tpos2) 
