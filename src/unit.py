@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#type_name
+#unit_type
 BASE = 0
 INFANTRY = 1
 VEHICLE = 2
@@ -67,6 +67,7 @@ class UnitObject(object):
     flag = -1 #所属阵营
     position = [-1,-1] #单位位置，目测是一个point之类的东西
     motor_type = -1  # 移动方式，分地面和空中，精英步兵的技能会用到
+    eagle_flag=0 #鹰式战机技能2是否启用
     max_health_now = -1 #当前HP上限
     health_now = -1  # 当前生命值
     max_speed_now = 0 #当前最大速度
@@ -93,12 +94,11 @@ class UnitObject(object):
         self.hacked_point = 0  # 被黑的点数
         self.is_disable = False  # 是否被瘫痪
         self.disable_since = 0  # 被瘫痪的时间点，用于判断瘫痪时间
-        self.skill_last_release_time1 = 0  # 上次技能1释放时间
-        self.skill_last_release_time2 = 0  # 上次技能2释放时间
-        self.attack_mode = 0  # 攻击模式，例如可对空，可对坦克，可对步兵之类的
-
         self.skill_last_release_time1 = -1000
         self.skill_last_release_time2 = -1000
+        self.attack_mode = 0  # 攻击模式，例如可对空，可对坦克，可对步兵之类的
+
+
         # 增加了对建筑的判断
         if (self.__unit_type != BASE)and(self.__unit_type != BUILDING):
             self.health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])   #单位生成时默认为最大血量，以下同理
@@ -124,10 +124,10 @@ class UnitObject(object):
         print('id:',self.unit_id,'阵营:',self.flag, '位置:',self.position, '类型:',self.__unit_type,'兵种:',self.__type_name,'自定名称:',self.name,
               'HP:',self.health_now, 'MAXHP:',self.max_health_now, '速度:',self.max_speed_now, '射程:',self.shot_range_now, '防御:',self.defense_now, '攻击:',self.attack_now,
               '最大数量:',origin_attribute[self.__type_name]['max_account'],
-              '人口:',origin_attribute[self.__type_name]['people_cost'],
-              '金钱消耗:',origin_attribute[self.__type_name]['money_cost'],
-              '科技消耗:',origin_attribute[self.__type_name]['tech_cost'],
-              'CD1:',self.__skill_1_cd, 'CD2:',self.__skill_2_cd)
+             '人口:',origin_attribute[self.__type_name]['people_cost'],
+             '金钱消耗:',origin_attribute[self.__type_name]['money_cost'],
+             '科技消耗:',origin_attribute[self.__type_name]['tech_cost'],
+             'CD1:',self.__skill_1_cd, 'CD2:',self.__skill_2_cd)
 
     def Get_unit_type(self):
         return self.__unit_type
@@ -163,6 +163,8 @@ class UnitObject(object):
             self.attack_now = kwargs['position']
         if 'attack_mode' in kwargs:
             self.attack_now = kwargs['attack_mode']
+        if 'eagle_flag' in kwargs:
+            self.eagle_flag = kwargs['eagle_flag']
         #增加了对建筑的判断
         if(self.__unit_type != BASE )and(self.__unit_type != BUILDING):
             self.max_health_now *= (1 + buff[self.flag][self.__unit_type]['health_buff'])
@@ -193,7 +195,4 @@ test_buff = {
 
 
 #-------------实例化-------------
-"""tank = UnitObject(1, 1, 'nuke_tank', (22, 33), test_buff)
-tank.print_info()
-tank.reset_attribute(test_buff, speed=15, health=6666)
-tank.print_info()"""
+

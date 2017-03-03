@@ -100,24 +100,24 @@ class GameMain:
         map_use(player1_x, player1_y + 2)
         map_use(player1_x, player1_y - 2)
 
-        base0 = unit.UnitObject(self.total_id, ai_id0, 'base', (player0_x, player0_y), self.buff)
+        base0 = unit.UnitObject(self.total_id, ai_id0, 'base', [player0_x, player0_y], self.buff)
         self.units[self.total_id] = base0
         self.hqs.append(base0)
         self.total_id += 1
-        base1 = unit.UnitObject(self.total_id, ai_id1, 'base', (player1_x, player1_y), self.buff)
+        base1 = unit.UnitObject(self.total_id, ai_id1, 'base', [player1_x, player1_y], self.buff)
         self.units[self.total_id] = base1
         self.hqs.append(base1)
         self.total_id += 1
-        tech0 = unit.UnitObject(self.total_id, ai_id0, 'teach_building', (player0_x, player0_y + 2), self.buff)
+        tech0 = unit.UnitObject(self.total_id, ai_id0, 'teach_building', [player0_x, player0_y + 2], self.buff)
         self.units[self.total_id] = tech0
         self.total_id += 1
-        tech1 = unit.UnitObject(self.total_id, ai_id1, 'teach_building', (99 - player0_x, 97 - player0_y), self.buff)
+        tech1 = unit.UnitObject(self.total_id, ai_id1, 'teach_building', [99 - player0_x, 97 - player0_y], self.buff)
         self.units[self.total_id] = tech1
         self.total_id += 1
-        bank0 = unit.UnitObject(self.total_id, ai_id0, 'bank', (player0_x, player0_y - 2), self.buff)
+        bank0 = unit.UnitObject(self.total_id, ai_id0, 'bank', [player0_x, player0_y - 2], self.buff)
         self.units[self.total_id] = bank0
         self.total_id += 1
-        bank1 = unit.UnitObject(self.total_id, ai_id1, 'bank', (99 - player0_x, 101 - player0_y), self.buff)
+        bank1 = unit.UnitObject(self.total_id, ai_id1, 'bank', [99 - player0_x, 101 - player0_y], self.buff)
         self.units[self.total_id] = bank1
         self.total_id += 1
         # random银行和教学楼并中心对称
@@ -139,12 +139,12 @@ class GameMain:
                 map_use(tech_1_x, tech_1_y)
 
                 tech0 = unit.UnitObject(self.total_id, -1, 'teach_building',
-                                        (tech_x, tech_y), self.buff)
+                                        [tech_x, tech_y], self.buff)
                 self.units[self.total_id] = tech0
                 self.buildings.append(tech0)
                 self.total_id += 1
                 tech1 = unit.UnitObject(self.total_id, -1, 'teach_building',
-                                        (tech_1_x, tech_1_y), self.buff)
+                                        [tech_1_x, tech_1_y], self.buff)
                 self.units[self.total_id] = tech1
                 self.buildings.append(tech1)
                 self.total_id += 1
@@ -160,12 +160,12 @@ class GameMain:
                 map_use(bank_1_x, bank_1_y)
 
                 bank0 = unit.UnitObject(self.total_id, -1, 'bank',
-                                        (bank_x, bank_y), self.buff)
+                                        [bank_x, bank_y], self.buff)
                 self.units[self.total_id] = bank0
                 self.buildings.append(bank0)
                 self.total_id += 1
                 bank1 = unit.UnitObject(self.total_id, -1, 'bank',
-                                        (bank_1_x, bank_1_y), self.buff)
+                                        [bank_1_x, bank_1_y], self.buff)
                 self.buildings.append(bank1)
                 self.units[self.total_id] = bank1
                 self.total_id += 1
@@ -181,112 +181,112 @@ class GameMain:
                 building_y = random.randint(1, 98)
             building_type = choice(building_list)
             if building_type == 1:
-                hack_lab0 = unit.UnitObject(self.total_id, -1, 'hack_lab', (building_x, building_y), self.buff)
+                hack_lab0 = unit.UnitObject(self.total_id, -1, 'hack_lab', [building_x, building_y], self.buff)
                 self.buildings.append(hack_lab0)
                 self.units[self.total_id] = hack_lab0
                 self.total_id += 1
-                hack_lab1 = unit.UnitObject(self.total_id, -1, 'hack_lab', (99 - building_x, 99 - building_y),
+                hack_lab1 = unit.UnitObject(self.total_id, -1, 'hack_lab', [99 - building_x, 99 - building_y],
                                             self.buff)
                 self.units[self.total_id] = hack_lab1
                 self.buildings.append(hack_lab1)
                 self.total_id += 1
             if building_type == 2:
-                bid_lab0 = unit.UnitObject(self.total_id, -1, 'bid_lab', (building_x, building_y), self.buff)
+                bid_lab0 = unit.UnitObject(self.total_id, -1, 'bid_lab', [building_x, building_y], self.buff)
                 self.buildings.append(bid_lab0)
                 self.units[self.total_id] = bid_lab0
                 self.total_id += 1
-                bid_lab1 = unit.UnitObject(self.total_id, -1, 'bid_lab', (99 - building_x, 99 - building_y),
+                bid_lab1 = unit.UnitObject(self.total_id, -1, 'bid_lab', [99 - building_x, 99 - building_y],
                                            self.buff)
                 self.buildings.append(bid_lab1)
                 self.units[self.total_id] = bid_lab1
                 self.total_id += 1
             if building_type == 3:
-                car_lab0 = unit.UnitObject(self.total_id, -1, 'car_lab', (building_x, building_y), self.buff)
+                car_lab0 = unit.UnitObject(self.total_id, -1, 'car_lab', [building_x, building_y], self.buff)
                 self.buildings.append(car_lab0)
                 self.units[self.total_id] = car_lab0
                 self.total_id += 1
-                car_lab1 = unit.UnitObject(self.total_id, -1, 'car_lab', (99 - building_x, 99 - building_y),
+                car_lab1 = unit.UnitObject(self.total_id, -1, 'car_lab', [99 - building_x, 99 - building_y],
                                            self.buff)
                 self.units[self.total_id] = car_lab1
                 self.buildings.append(car_lab1)
                 self.total_id += 1
             if building_type == 4:
-                elec_lab0 = unit.UnitObject(self.total_id, -1, 'elec_lab', (building_x, building_y), self.buff)
+                elec_lab0 = unit.UnitObject(self.total_id, -1, 'elec_lab', [building_x, building_y], self.buff)
                 self.buildings.append(elec_lab0)
                 self.units[self.total_id] = elec_lab0
                 self.total_id += 1
-                elec_lab1 = unit.UnitObject(self.total_id, -1, 'elec_lab', (99 - building_x, 99 - building_y),
+                elec_lab1 = unit.UnitObject(self.total_id, -1, 'elec_lab', [99 - building_x, 99 - building_y],
                                             self.buff)
                 self.buildings.append(elec_lab1)
                 self.units[self.total_id] = elec_lab1
                 self.total_id += 1
             if building_type == 5:
-                radiation_lab0 = unit.UnitObject(self.total_id, -1, 'radiation_lab', (building_x, building_y),
+                radiation_lab0 = unit.UnitObject(self.total_id, -1, 'radiation_lab', [building_x, building_y],
                                                  self.buff)
                 self.buildings.append(radiation_lab0)
                 self.units[self.total_id] = radiation_lab0
                 self.total_id += 1
                 radiation_lab1 = unit.UnitObject(self.total_id, -1, 'radiation_lab',
-                                                 (99 - building_x, 99 - building_y), self.buff)
+                                                 [99 - building_x, 99 - building_y], self.buff)
                 self.buildings.append(radiation_lab1)
                 self.units[self.total_id] = radiation_lab1
                 self.total_id += 1
             if building_type == 6:
-                uav_lab0 = unit.UnitObject(self.total_id, -1, 'uav_lab', (building_x, building_y), self.buff)
+                uav_lab0 = unit.UnitObject(self.total_id, -1, 'uav_lab', [building_x, building_y], self.buff)
                 self.buildings.append(uav_lab0)
                 self.units[self.total_id] = uav_lab0
                 self.total_id += 1
-                uav_lab1 = unit.UnitObject(self.total_id, -1, 'uav_lab', (99 - building_x, 99 - building_y),
+                uav_lab1 = unit.UnitObject(self.total_id, -1, 'uav_lab', [99 - building_x, 99 - building_y],
                                            self.buff)
                 self.buildings.append(uav_lab1)
                 self.units[self.total_id] = uav_lab1
                 self.total_id += 1
             if building_type == 7:
-                aircraft_lab0 = unit.UnitObject(self.total_id, -1, 'aircraft_lab', (building_x, building_y), self.buff)
+                aircraft_lab0 = unit.UnitObject(self.total_id, -1, 'aircraft_lab', [building_x, building_y], self.buff)
                 self.buildings.append(aircraft_lab0)
                 self.units[self.total_id] = aircraft_lab0
                 self.total_id += 1
-                aircraft_lab1 = unit.UnitObject(self.total_id, -1, 'aircraft_lab', (99 - building_x, 99 - building_y),
+                aircraft_lab1 = unit.UnitObject(self.total_id, -1, 'aircraft_lab', [99 - building_x, 99 - building_y],
                                                 self.buff)
                 self.units[self.total_id] = aircraft_lab1
                 self.buildings.append(aircraft_lab1)
                 self.total_id += 1
             if building_type == 8:
-                build_lab0 = unit.UnitObject(self.total_id, -1, 'build_lab', (building_x, building_y), self.buff)
+                build_lab0 = unit.UnitObject(self.total_id, -1, 'build_lab', [building_x, building_y], self.buff)
                 self.buildings.append(build_lab0)
                 self.units[self.total_id] = build_lab0
                 self.total_id += 1
-                build_lab1 = unit.UnitObject(self.total_id, -1, 'build_lab', (99 - building_x, 99 - building_y),
+                build_lab1 = unit.UnitObject(self.total_id, -1, 'build_lab', [99 - building_x, 99 - building_y],
                                              self.buff)
                 self.units[self.total_id] = build_lab1
                 self.buildings.append(build_lab1)
                 self.total_id += 1
             if building_type == 9:
-                finance_lab0 = unit.UnitObject(self.total_id, -1, 'finance_lab', (building_x, building_y), self.buff)
+                finance_lab0 = unit.UnitObject(self.total_id, -1, 'finance_lab', [building_x, building_y], self.buff)
                 self.buildings.append(finance_lab0)
                 self.units[self.total_id] = finance_lab0
                 self.total_id += 1
-                finance_lab1 = unit.UnitObject(self.total_id, -1, 'finance_lab', (99 - building_x, 99 - building_y),
+                finance_lab1 = unit.UnitObject(self.total_id, -1, 'finance_lab', [99 - building_x, 99 - building_y],
                                                self.buff)
                 self.units[self.total_id] = finance_lab1
                 self.buildings.append(finance_lab1)
                 self.total_id += 1
             if building_type == 10:
-                material_lab0 = unit.UnitObject(self.total_id, -1, 'material_lab', (building_x, building_y), self.buff)
+                material_lab0 = unit.UnitObject(self.total_id, -1, 'material_lab', [building_x, building_y], self.buff)
                 self.buildings.append(material_lab0)
                 self.units[self.total_id] = material_lab0
                 self.total_id += 1
-                material_lab1 = unit.UnitObject(self.total_id, -1, 'material_lab', (99 - building_x, 99 - building_y),
+                material_lab1 = unit.UnitObject(self.total_id, -1, 'material_lab', [99 - building_x, 99 - building_y],
                                                 self.buff)
                 self.units[self.total_id] = material_lab1
                 self.buildings.append(material_lab1)
                 self.total_id += 1
             if building_type == 11:
-                nano_lab0 = unit.UnitObject(self.total_id, -1, 'nano_lab', (building_x, building_y), self.buff)
+                nano_lab0 = unit.UnitObject(self.total_id, -1, 'nano_lab', [building_x, building_y], self.buff)
                 self.buildings.append(nano_lab0)
                 self.units[self.total_id] = nano_lab0
                 self.total_id += 1
-                nano_lab1 = unit.UnitObject(self.total_id, -1, 'nano_lab', (99 - building_x, 99 - building_y),
+                nano_lab1 = unit.UnitObject(self.total_id, -1, 'nano_lab', [99 - building_x, 99 - building_y],
                                             self.buff)
                 self.units[self.total_id] = nano_lab1
                 self.buildings.append(nano_lab1)
@@ -423,13 +423,14 @@ class GameMain:
 
     def skill_phase(self, order):
         # 技能结算
-        if(self.turn_num-self.superman_skill_release_time[0]>20):
-            self.superman_motortype[0]=0
-        if(self.turn_num-self.superman_skill_release_time[1]>20):
-            self.superman_motortype[1]=0
-        for u in self.units.values():
-            if u.Get_type_name()==8 and self.turn_num-u.skill_last_release_time2>10:
-                u.max_speed_now-=5
+      #  for u in self.units.values():
+       #     if u.Get_type_name()==8 and u.eagle_flag==1 and self.turn_num-u.skill_last_release_time2>10:
+       #         u.max_speed_now-=5
+        #        u.eagle_flag=0
+        #    if u.Get_type_name()==3 and u.motor_type==1 and self.turn_num-u.skill_last_release_time2>20:
+        #        u.motor_type=0
+         #       u.reset_attribute(self.buff, speed=4)
+
         def Get_id_information(id):
             for k in self.units:
                 if (k == id):
@@ -441,6 +442,11 @@ class GameMain:
             x = my_position[0] - enemy_position[0]
             y = my_position[1] - enemy_position[1]
             return abs(x)+abs(y)
+
+        def Get_distance2(my_position, enemy_position):
+            x = my_position[0] - enemy_position[0]
+            y = my_position[1] - enemy_position[1]
+            return (x*x+y*y)**0.5
 
         # 电子对抗坦克技能1 修改计算公式
         def bolt_tank_skill1(id, attack_id):
@@ -516,7 +522,7 @@ class GameMain:
             if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_1'] and distance <= origin_attribute['nuke_tank'][
                 'origin_shot_range'] and (my_information.flag != enemy_information.flag)):
                 if (
-                            enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
+                    enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
                     enemy_information.reset_attribute(self.buff,
                                                       health=enemy_information.health_now - my_information.attack_now * (
                                                       1 - enemy_information.defense_now / 1000))
@@ -532,17 +538,9 @@ class GameMain:
                 'origin_shot_range']):
                 for k in self.units:
                     enemy_position = self.units[k].position
-                    if (Get_distance(enemy_position, attack_range) < 2):
+                    if (Get_distance2(enemy_position, attack_range) < 2):
                         self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 800 * (
                       1 - self.units[k].defense_now / 1000))
-                base_position = self.hqs[0].position
-                if (Get_distance(base_position, attack_range) < 2):
-                    self.hqs[0].reset_attribute(self.buff, health=self.hqs[0].health_now - 800 * (
-                    1 - self.units[k].defense_now / 1000))
-                base_position2 = self.hqs[1].position
-                if (Get_distance(base_position2, attack_range) < 2):
-                    self.hqs[1].reset_attribute(self.buff, health=self.hqs[1].health_now - 800 * (
-                    1 - self.units[k].defense_now / 1000))
                 my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         # 鹰式战斗机技能1
@@ -559,14 +557,6 @@ class GameMain:
                         self.units[k].reset_attribute(self.buff,
                                                       health=self.units[k].health_now - my_information.attack_now * (
                                                       1 - self.units[k].defense_now / 1000))
-                base_position = self.hqs[0].position
-                if (base_position == attack_range):
-                    self.hqs[0].reset_attribute(self.buff, health=self.hqs[0].health_now - my_information.attack_now * (
-                    1 - self.units[k].defense_now / 1000))
-                base_position2 = self.hqs[1].position
-                if (base_position2 == attack_range):
-                    self.hqs[1].reset_attribute(self.buff, health=self.hqs[1].health_now - my_information.attack_now * (
-                        1 - self.units[k].defense_now / 1000))
                 my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 鹰式战斗机技能2
@@ -584,18 +574,10 @@ class GameMain:
                     if (enemy_position == attack_range1 or enemy_position == attack_range2):
                         self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400 * (
                         1 - self.units[k].defense_now / 1000))
-                base_position = self.hqs[0].position
-                if (base_position == attack_range1 or base_position == attack_range2):
-                    self.hqs[0].reset_attribute(self.buff, health=self.hqs[0].health_now - 400 * (
-                    1 - self.units[k].defense_now / 1000))
-                base_position2 = self.hqs[1].position
-                if (base_position2 == attack_range1 or base_position2 == attack_range2):
-                    self.hqs[1].reset_attribute(self.buff, health=self.hqs[1].health_now - 400 * (
-                    1 - self.units[k].defense_now / 1000))
-                print(my_information.max_speed_now)
-                my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5)
+                #print(my_information.max_speed_now)
+                my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5,eagle_flag=1)
                 my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
-                print(my_information.max_speed_now)
+                #print(my_information.max_speed_now)
 
         # 改造人战士技能1
         def superman_skill1(id, attack_id):
@@ -623,8 +605,12 @@ class GameMain:
             my_information = Get_id_information(id)
             skill_cd = self.turn_num - my_information.skill_last_release_time1
             if (skill_cd >= origin_attribute['superman']['skill_cd_2']):
+                if(my_information.health.now+0.02*my_information.max_health_now>my_information.max_health_now):
+                    new_health=my_information.max_health_now
+                else:
+                    new_health=my_information.health.now+0.02*my_information.max_health_now
                 my_information.reset_attribute(self.buff, speed=12,
-                                               health=my_information.health.now * 1.02)
+                                               health=new_health)
                 my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
                 self.superman_skill_release_time[my_information.flag]=self.turn_num
 
@@ -648,16 +634,18 @@ class GameMain:
             elif (Get_id_information(order[k][1]).Get_type_name() == 6 and order[k][0]==2):#'nuke_tank'
                 nuke_tank_skill2(order[k][1], order[k][2],order[k][3])
                 #print('use skill6')
-            elif (Get_id_information(order[k][1]).Get_type_name() == 8and order[k][0]==1):#'eagle'
+            elif (Get_id_information(order[k][1]).Get_type_name() == 8 and order[k][0]==1):#'eagle'
                 eagle_skill1(order[k][1], order[k][2],order[k][3])
                 #print('use skill7')
-            elif (Get_id_information(order[k][1]).Get_type_name() == 8and order[k][0]==2):#'eagle'
+                #print(order[k][1],order[k][2],order[k][3])
+                #print('base1:',self.hqs[0].position,'base2:',self.hqs[1].position)
+            elif (Get_id_information(order[k][1]).Get_type_name() == 8 and order[k][0]==2):#'eagle'
                 eagle_skill2(order[k][1], order[k][2], order[k][3],order[k][4], order[k][5])
                 #print('use skill8')
-            elif (Get_id_information(order[k][1]).Get_type_name() == 3and order[k][0]==1):#'superman'
+            elif (Get_id_information(order[k][1]).Get_type_name() == 3 and order[k][0]==1):#'superman'
                 superman_skill1(order[k][1], order[k][2])
                 #print('use skill9')
-            elif (Get_id_information(order[k][1]).Get_type_name() == 3and order[k][0]==2):#'superman'
+            elif (Get_id_information(order[k][1]).Get_type_name() == 3 and order[k][0]==2):#'superman'
                 superman_skill2(order[k][1])
                 #print('use skill0')
         pass
@@ -675,7 +663,7 @@ class GameMain:
                         y = things[2]
                         x1 = obj.position[0]
                         y1 = obj.position[1]
-                        if x > 100 or y > 100 or x < 0 or y < 0:
+                        if x >= 100 or y >= 100 or x < 0 or y < 0:
                             return
                         elif abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:
                             for obj_1 in id_collection:
@@ -696,14 +684,14 @@ class GameMain:
                         y = things[2]
                         x1 = obj.position[0]
                         y1 = obj.position[1]
-                        if x > 100 or y > 100 or x < 0 or y < 0:
+                        if x >= 100 or y >= 100 or x < 0 or y < 0:
                             return
                         elif abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:
                             for obj_1 in id_collection:
                                 if obj_1.position[0] == x and obj_1.position[1] == y:
                                     pass
                                 else:
-                                    obj.position=(x,y)
+                                    obj.position=[x,y]
                         else:
                             pass
 
@@ -936,7 +924,7 @@ class GameMain:
             if unit_id.Get_type_name() == 21:
                 self.resource[unit_id.flag]["money"] += 50
             if unit_id.Get_type_name() == 20:
-                self.resource[unit_id.flag]["tech"] += 20
+                self.resource[unit_id.flag]["tech"] += 25
         pass
 
     def capture_phase(self):
@@ -1108,15 +1096,15 @@ class GameMain:
         #print("HP0:",self.hqs[0].health_now,"HP1:",self.hqs[1].health_now)
         self.cleanup_phase()
         self.check_winner=self.win_determine()
-        print("produce instr_0:", len(self.produce_instr_0), "move instr_0:", len(self.move_instr_0), "cap instr_0:",len(self.capture_instr_0), "skill instr_0:", len(self.skill_instr_0))
-        print("produce instr_1:", len(self.produce_instr_1), "move instr_1:", len(self.move_instr_1), "cap instr_1:",len(self.capture_instr_1), "skill instr_1:", len(self.skill_instr_1))
+        #print("produce instr_0:", len(self.produce_instr_0), "move instr_0:", len(self.move_instr_0), "cap instr_0:",len(self.capture_instr_0), "skill instr_0:", len(self.skill_instr_0))
+        #print("produce instr_1:", len(self.produce_instr_1), "move instr_1:", len(self.move_instr_1), "cap instr_1:",len(self.capture_instr_1), "skill instr_1:", len(self.skill_instr_1))
         if (self.check_winner == 3):
             self.move_phase()
             self.produce_phase()
             self.resource_phase()
             self.capture_phase()
         check_timeup =self.timeup_determine()
-        print("after HP0:", self.hqs[0].health_now, "after HP1:", self.hqs[1].health_now)
+        #print("after HP0:", self.hqs[0].health_now, "after HP1:", self.hqs[1].health_now)
         ai0 = {}
         ai1 = {}
         for x in range(22):
@@ -1127,8 +1115,8 @@ class GameMain:
                 ai0[u.Get_type_name()] += 1
             if u.flag==1:
                 ai1[u.Get_type_name()] += 1
-        print(ai0)
-        print(ai1)
+        #print(ai0)
+        #print(ai1)
         self.skill_instr_0 = []  # ai0的当前回合指令
         self.skill_instr_1 = []  # ai1的当前回合制令
         self.produce_instr_0 = []  # 指令格式为[building_id,building_id,]
@@ -1152,3 +1140,22 @@ class GameMain:
         pass
 
         # 测试技能用
+'''A = GameMain()
+tank = unit.UnitObject(1, 1, 'nuke_tank', [22, 33], A.buff)
+battle = unit.UnitObject(2, 0, 'battle_tank', [22, 32], A.buff)
+eagle = unit.UnitObject(3, 1, 'eagle', [22, 33], A.buff)
+base = unit.UnitObject(4, 0, 'base' , [21,32], A.buff)
+#A.hqs.append(base)
+
+A.units[0] = base
+A.units[1] = tank
+A.units[2] = battle
+A.units[3] = eagle
+
+A.units[0].print_info()
+order=[[1,3,21,32]]
+A.skill_phase(order)
+#A.units[1].print_info()
+#A.units[2].print_info()
+#A.units[3].print_info()
+A.units[0].print_info()'''
