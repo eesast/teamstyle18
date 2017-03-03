@@ -1,4 +1,4 @@
-//Ñ¡ÊÖ1Ð´Èëai
+//Ñ¡ï¿½ï¿½1Ð´ï¿½ï¿½ai
 
 #include "teamstyle18-my-1.h"
 #include<vector>
@@ -57,20 +57,20 @@ Position nextPace(Position src, Position target, int speed)
 		}
 		return Position(src.x + xxx*speed/2, src.y + yyy*speed / 2);
 	}
-	
-	
+
+
 }
 
 
 extern int turn ;
 void player_main(void)
 {
-	
+
 	Unit * myunit = getUnit();
 	int myUnitSize = getUnitSize();
 	srand(int(time(0)));
 	int meat_num = 0;
-	//printf("»ØºÏÊý£º%d",turn);
+	//printf("ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½%d",turn);
 	double * myBuff = getBuff();
 	resourse myResourse = getResourse();
 	int myflag = getTeamId();
@@ -80,10 +80,10 @@ void player_main(void)
 	vector<Unit>my_units[22];
 	vector<Unit>enemy_units[22];
 	vector<Unit>netural_units[22];
-	vector<Unit>meats;	
+	vector<Unit>meats;
 
 		//cout << "money1:" << myResourse.money_1 << "tech1:" << myResourse.tech_1 << "people1:" << myResourse.remain_people_1<<endl;
-		
+
 		for (int i = 0; i < myUnitSize; i++)
 		{
 			if (myunit[i].type_name== __BASE|| (myunit[i].type_name>=9&& myunit[i].type_name<=21))
@@ -129,11 +129,11 @@ void player_main(void)
 		for (int i = 0; i < my_units[MEAT].size(); i++)
 		{
 			meats.push_back(my_units[MEAT][i]);
-		}		
+		}
 		if (stage == 0 && meat_num<=3)
 		{
 			produce(mybase.unit_id);
-		}	
+		}
 
 		if (init1)
 		{
@@ -146,8 +146,8 @@ void player_main(void)
 			cap_target.push_back(netural_units[target2][0]);
 			init1 = false;
 		}
-		
-		//cout << "Ä¿±ê£º";
+
+		//cout << "Ä¿ï¿½ê£º";
 		//for (int i = 0; i < cap_target.size(); i++)
 		//{
 		//	cout << "(" << cap_target[i].position.x << "," << cap_target[i].position.y << ")";
@@ -246,7 +246,5 @@ void player_main(void)
 	}
 		//cout << endl;
 		//<<"*************************" << endl;
-		
+
 }
-
-
