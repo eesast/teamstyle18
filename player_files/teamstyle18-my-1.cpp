@@ -1,30 +1,15 @@
 
 #include "teamstyle18-my-1.h"
+
 #include <queue>
 using namespace std;
 extern queue <Instr>  q_instruction;
 extern resourse allResourse;
-extern double buff[40]; 
-extern Unit all_unit[300];
-extern int all_unit_size;
+extern double buff[40]; //buffå…¨å±€å˜é‡ é˜µè¥1[å•ä½ç±»å‹][buffç±»å‹]
+extern Unit all_unit[300];			  //æ‰€æœ‰çš„unit
+extern int all_unit_size;				//è®°å½•æ‰€æœ‰unitçš„ä¸ªæ•°
 extern int team_id;
-template <typename Data> 
-void safeQueue<Data>::safePush(Data value)
-{
-	mtx.lock();
-	squeue.push();
-	mtx.unlock();
-}
-template <typename Data> 
-void safeQueue<Data>::safePop(void)
-{
-	;
-}
-template <typename Data> 
-Data safeQueue<Data>::safeFront(void)
-{
-	;
-}
+//æ„é€ å‡½æ•°
 Unit::Unit(){};
 Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 {
@@ -34,7 +19,7 @@ Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 	position = pos;
 	type_name = _type_name;
 	unit_type = UnitType(origin_attribute[type_name][UNIT_TYPE]);
-	health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[20*flag+5*unit_type+HEALTH]);	//´Ó¡°double¡±×ª»»µ½¡°int¡±£¬¿ÉÄÜ¶ªÊ§Êı¾İ	  //µ¥Î»Éú³ÉÊ±Ä¬ÈÏÎª×î´óÑªÁ¿£¬ÒÔÏÂÍ¬Àí
+	health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[20*flag+5*unit_type+HEALTH]);	//ä»â€œdoubleâ€è½¬æ¢åˆ°â€œintâ€ï¼Œå¯èƒ½ä¸¢å¤±æ•°æ®	  //å•ä½ç”Ÿæˆæ—¶é»˜è®¤ä¸ºæœ€å¤§è¡€é‡ï¼Œä»¥ä¸‹åŒç†
 	max_health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[20*flag+5*unit_type+HEALTH]);
 	max_speed_now = origin_attribute[type_name][ORIGIN_MAX_SPEED] * (1 + buff[20*flag+5*unit_type+SPEED]);
 	shot_range_now = origin_attribute[type_name][ORIGIN_SHOT_RANGE] * (1 + buff[20*flag+5*unit_type+SHOT_RANGE]);
@@ -49,10 +34,10 @@ void Unit::Print()
 Instr::Instr(int instru_type,int u_id,int tar_build_id,Position tpos1,Position tpos2):instruction_type(instru_type),the_unit_id(u_id),target_id_building_id(tar_build_id),pos1(tpos1),pos2(tpos2){};
 
 
+//1è¡¨ç¤ºskkil1,2è¡¨ç¤ºskkil2,3è¡¨ç¤ºproduce,4è¡¨ç¤ºMove,5è¡¨ç¤ºcapture
 void skill_1(int unit_id,int target_id,Position tpos1,Position tpos2) 
 {
 	Instr Isttemp(1,unit_id,target_id,tpos1,tpos2);
-	
 	q_instruction.push(Isttemp);
 }
 void skill_2(int unit_id,int target_id,Position tpos1,Position tpos2) 

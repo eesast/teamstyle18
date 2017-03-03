@@ -17,6 +17,9 @@ extern bool runAI;
 extern bool flag_of_gameOver;
 extern bool recv_except = false;
 extern queue <Instr>  q_instruction;
+int changed_building_num = 0;
+int other_unit_num = 0;
+BuildingHandle changed_building[200];
 
 void recv_send_socket::create_recv_socket(void)  
 {  
@@ -76,6 +79,7 @@ void wrapper_recv_data(SOCKET s,char* buf,int len,int flags)
 
 int recv_send_socket::recv_data(void)
 {
+	bool first_round = true;
 	while (!flag_of_gameOver)
 	{
 		
@@ -109,9 +113,26 @@ int recv_send_socket::recv_data(void)
 			all_received++;
 			break;
 		case 0:	
-			recv(sockClient,(char*)&all_unit_size,sizeof(int),0);
-			for (int i=0;i<all_unit_size;i++)
-				recv(sockClient, (char*)(all_unit + i), sizeof(Unit), 0);
+			if (first_round)
+			{
+				recv(sockClient, (char*)&all_unit_size, sizeof(int), 0);
+				recv(sockClient, (char*)&all_unit_size, sizeof(int), 0);
+				for (int i = 0; i<all_unit_size; i++)
+					recv(sockClient, (char*)(all_unit + i), sizeof(Unit), 0);
+			}
+			else 
+			{
+				recv(sockClient, (char*)&other_unit_num, sizeof(int), 0);
+				recv(sockClient, (char*)&all_unit_size, sizeof(int), 0);
+				for (int i = 0; i<other_unit_num; i++)
+					recv(sockClient, (char*)(all_unit + i), sizeof(Unit), 0);
+			}
+			all_received++;
+			break;
+		case 450:
+			recv(sockClient, (char*)&changed_building_num, sizeof(int), 0);
+			for (int i = 0; i<changed_building_num; i++)
+				recv(sockClient, (char*)(changed_building + i), sizeof(BuildingHandle), 0);
 			all_received++;
 			break;
 		default:
@@ -120,8 +141,16 @@ int recv_send_socket::recv_data(void)
 			cout << k;
 			break;
 		}
-		if (all_received >= 3)
+		if ((first_round&&all_received >= 3)|| (!first_round&&all_received >= 4))
 		{
+			if (!first_round)
+			{
+				for (int i = 0; i < changed_building_num; i++)
+				{
+					all_unit[other_unit_num + i] = Unit(changed_building[i].id, changed_building[i].flag, changed_building[i].type, changed_building[i].pos);
+				}
+			}
+			first_round = false;
 			all_received = 0;
 			runAI = true;
 		}

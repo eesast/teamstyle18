@@ -23,10 +23,24 @@ while not comm_server.gamestart:
 print ('start')
 file =[]
 while (game.is_end==False):
-    comm_server.send_to_player(list(game.units.values()))
+    changed_building=set()
+    other_unit=[]
+    if game.turn_num==0:
+        communication.c_unit_num = len(game.units)
+        comm_server.send_to_player(list(game.units.values()))
+    else:
+        for unit in game.units.values():
+            if unit.Get_unit_type()!=4:
+                other_unit.append(unit)
+            else:
+                changed_building.add((unit.unit_id,unit.flag,unit.Get_type_name(),unit.position[0],unit.position[1]))
+        communication.c_unit_num=len(game.units)
+        comm_server.send_to_player(other_unit)
+        comm_server.send_to_player(changed_building)
+
     comm_server.send_to_player(game.resource)
     comm_server.send_to_player(game.buff)
-
+    #print(game.resource)
     while((comm_server.conn_list[0].patient==False and comm_server.conn_list[0].patient_time<=150000)or(comm_server.conn_list[1].patient == False and comm_server.conn_list[1].patient_time<=150000)):
         comm_server.conn_list[0].patient_time+=1
         comm_server.conn_list[1].patient_time += 1
@@ -38,9 +52,6 @@ while (game.is_end==False):
     game.capture_instr_0 = comm_server.conn_list[0].capture_instr
     game.skill_instr_0 = comm_server.conn_list[0].skill_instr
     comm_server.conn_list[0].dump()
-	
-    #while (comm_server.conn_list[1].patient == False and comm_server.conn_list[1].patient_time<=500000):
-    #   comm_server.conn_list[1].patient_time += 1
 
         #sleep(0.01)
     game.produce_instr_1=comm_server.conn_list[1].produce_instr
@@ -59,7 +70,6 @@ while (game.is_end==False):
     comm_server.conn_list[1].patient = False
     comm_server.conn_list[0].patient_time = 0
     comm_server.conn_list[1].patient_time = 0
-    #runner.make_pip(game.units)
     #sleep(0.05)
 
 f = open(filename, 'ab')
