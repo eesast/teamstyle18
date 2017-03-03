@@ -13,7 +13,7 @@ import time
 接收数据：MainServer.conn_list[ai_id].dump,返回(skill_instr,produce_instr,move_instr,capture_instr)
 '''
 filename = 'ts18_' + time.strftime('%m%d%H%M%S') + '.rpy'
-
+c_unit_num=0
 
 def e_serializer(winner):
     header = "i"
@@ -110,8 +110,8 @@ class IOHandler(asyncore.dispatcher):
                 #    dead=[unit for unit in self.last_units if unit not in data]
                 #    self.last_units = data
                 #    self.send(self.dead_unit_serializer(dead))
-            #elif type(data) is set:
-            #    byte_message=self.instr_serializer(data)
+            elif type(data) is set:
+                byte_message=self.building_serializer(data)
             elif type(data)is dict and 1 in data[0]:
                 byte_message=self.buff_serializer(data)
             elif type(data)is int:
@@ -127,9 +127,21 @@ class IOHandler(asyncore.dispatcher):
     def readable(self):
         return True
 
+    def building_serializer(self, building_list):
+        header = "ii"
+        args = [450, len(building_list)]
+        for b in building_list:
+            header += "iiiii"
+            args.append(b[0])
+            args.append(b[1])
+            args.append(b[2])
+            args.append(b[3])
+            args.append(b[4])
+        return struct.pack(header, *args)
+
     def unit_serializer(self, object_list):
-        pack_header="ii"
-        args=[0,len(object_list)]
+        pack_header = "iii"
+        args = [0, len(object_list),c_unit_num]
         for obj in object_list:
             for name, value in sorted(vars(obj).items(), key=lambda t: t[0]):
                 if (name[0]=='_') and name!='_UnitObject__unit_type' and name!='_UnitObject__type_name':

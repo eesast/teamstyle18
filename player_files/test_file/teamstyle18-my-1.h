@@ -29,9 +29,9 @@ enum UnitType
 {
 	BASE,	     //主基地
 	INFANTRY,	 //步兵
-	VEHICLE, //坦克
+	VEHICLE,	 //坦克
 	AIRCRAFT,	 //飞机
-	BUILDING	 //建筑
+	BUILDING   	 //建筑
 };
 
 enum BuffType
@@ -84,11 +84,11 @@ const int origin_attribute[Type_num][attribute_num] =
 {INFANTRY,	100    ,  3,   1,   10,   0,   -1,  -1,   -1,    1,   100,   0	    },
 {INFANTRY,	150    ,  3,   18,  20,   0,   1,   -1,   -1,    2,   600,   300	},
 {INFANTRY,	500    ,  4,   10,  150,  15,  1,   50,   1,     10,  2000,  1500	},
-{VEHICLE,	600    ,  7,   14,  400,  100, 10,  -1,   -1,    4,   1500,  600	},
-{VEHICLE,	500    ,  6,   12,  100,  200, 10,  -1,   -1,    3,   1000,  400	},
-{VEHICLE,	800    ,  5,   20,  100,  300, 10,  75,   1,     10,  4000,  2500	},
-{AIRCRAFT,	300    ,  12,  10,  50,   5,   1,   -1,   -1,    2,   200,   400	},
-{AIRCRAFT,	600    ,  15,  16,  200,  200, 20,  50,   1,     1,   1500,  3000	},
+{VEHICLE,	900    ,  7,   14,  200,  100, 10,  -1,   -1,    4,   1500,  600	},
+{VEHICLE,	500    ,  6,   12,  100,  200, 10,  -1,   -1,    3,   1000,  500	},
+{VEHICLE,	700    ,  5,   20,  150,  300, 10,  150,  1,     10,  4000,  2000	},
+{AIRCRAFT,	300    ,  12,  10,  50,   5,   1,   -1,   -1,    2,   400,   100	},
+{AIRCRAFT,	600    ,  15,  16,  200,  200, 20,  50,   1,     1,   3000,  1500	},
 {BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
 {BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
 {BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
@@ -109,8 +109,6 @@ const int origin_attribute[Type_num][attribute_num] =
 //resourse
 struct resourse
 {
-	//int round;
-	
 	int money_1;
 	int remain_people_1;
 	int tech_1;
@@ -126,11 +124,16 @@ struct Position
 	Position(int xx = -1, int yy = -1) :x(xx),y(yy){};
 };
 const Position none_position = Position(-1,-1);
+struct BuildingHandle
+{
+	int id;
+	int flag;
+	TypeName type;
+	Position pos;
+	BuildingHandle(int xx = -1, int yy = -1,TypeName t= Type_num,int x=0,int y=0) :id(xx), flag(yy), type(t),pos(x,y){};
+};
 
 
-
-//按我的顺序改一下
-//按字母顺序排序
 
 struct Unit
 {
@@ -147,25 +150,23 @@ struct Unit
 	int is_disable;		// 是否被瘫痪
 	float max_health_now;				// 当前HP上限
 	float max_speed_now;				// 当前最大速度
-	Position position;				// 单位位置，目测是一个point之类的东西
-	float shot_range_now;				// 当前射程(现阶段貌似没有提升射程的技能，不过先保留)
+	Position position;				// 单位位置
+	float shot_range_now;				// 当前射程
 	int skill_last_release_time1;// 上次技能1释放时间
 	int skill_last_release_time2;// 上次技能2释放时间
 	int unit_id;				// 单位id
-	Unit();						//new 时需要空的构造函数
-	Unit(int unit_id, int flag, TypeName type_name, Position pos);    //(这是用来干什么的，有些完全不需要的信息怎么处理，没辙了？得用一个for循环，把接到的数据在再进去，不能直接用它？)
+	Unit();	
+	Unit(int unit_id, int flag, TypeName type_name, Position pos);  
 	void Print();
 };
 
-
-//默认参数这怎么回事？
-class Instr							//把几种指令的数据都放到这个里面
+class Instr	
 {
 public:
 	int instruction_type;				//1表示skil1,2表示skil2,3表示produce,4表示Move,5表示capture
 	int the_unit_id;
 	int target_id_building_id;
-	Position pos1;					//为什么要加struct?
+	Position pos1;					
 	Position pos2;
 	Instr(int instru_type=-1,int u_id=-1,int tar_build_id=-1,Position tpos1=none_position,Position tpos2=none_position);
 };
