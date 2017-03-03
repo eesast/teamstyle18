@@ -3,7 +3,6 @@
 #include<string>
 #include<iostream>
 #include<vector>
-#include <mutex>
 #include <queue>
 #include "communicate.h"
 using namespace std;
@@ -11,36 +10,24 @@ using std::string;
 using std::vector;
 using std::mutex;
 
-template <typename Data> 
-class safeQueue
-{
-private:
-	std::queue<Data> squeue ;  
-	mutex mtx;
-public:
-	void safePush(Data value);
-	void safePop(void);
-	Data safeFront(void);
-};
-
-//Èô¸ÉÃ¶¾ÙĞÍ±äÁ¿
+//è‹¥å¹²æšä¸¾å‹å˜é‡
 //type_name
 enum UnitType
 {
-	BASE,	     //Ö÷»ùµØ
-	INFANTRY,	 //²½±ø
-	VEHICLE,	 //Ì¹¿Ë
-	AIRCRAFT,	 //·É»ú
-	BUILDING   	 //½¨Öş
+	BASE,	     //ä¸»åŸºåœ°
+	INFANTRY,	 //æ­¥å…µ
+	VEHICLE,	 //å¦å…‹
+	AIRCRAFT,	 //é£æœº
+	BUILDING   	 //å»ºç­‘
 };
 
 enum BuffType
 {
-	ATTACK,		 //¹¥»÷buff
-	DEFENSE,	 //·ÀÓùbuff
-	HEALTH,	     //×î´óÉúÃüÖµbuff
-	SHOT_RANGE, 	 //Éä³Ìbuff
-	SPEED		 //ËÙ¶Èbuff
+	ATTACK,		 //æ”»å‡»buff
+	DEFENSE,	 //é˜²å¾¡buff
+	HEALTH,	     //æœ€å¤§ç”Ÿå‘½å€¼buff
+	SHOT_RANGE, 	 //å°„ç¨‹buff
+	SPEED		 //é€Ÿåº¦buff
 };
 
 enum TypeName
@@ -76,7 +63,7 @@ enum attribute
 	TECH_COST,
 	attribute_num
 };
-//ÓÃÀ´¸øunit³õÊ¼»¯
+//ç”¨æ¥ç»™unitåˆå§‹åŒ–
 const int origin_attribute[Type_num][attribute_num] =
 {
 
@@ -105,7 +92,7 @@ const int origin_attribute[Type_num][attribute_num] =
 
 };
 
-//¶¨ÒåµÄÈô¸É½á¹¹Ìå
+//å®šä¹‰çš„è‹¥å¹²ç»“æ„ä½“
 //resourse
 struct resourse
 {
@@ -139,22 +126,22 @@ struct Unit
 {
 	TypeName type_name;
 	UnitType unit_type;
-	int attack_mode;			// ¹¥»÷Ä£Ê½£¬ÀıÈç¿É¶Ô¿Õ£¬¿É¶ÔÌ¹¿Ë£¬¿É¶Ô²½±øÖ®ÀàµÄ
-	float attack_now;					// µ±Ç°¹¥»÷
-	float defense_now;				// µ±Ç°·ÀÓù
-	int disable_since ;			// ±»Ì±»¾µÄÊ±¼äµã£¬ÓÃÓÚÅĞ¶ÏÌ±»¾Ê±¼ä
-	int flag ;					// ËùÊôÕóÓª
-	int hacked_point;				// ±»ºÚµÄµãÊı
-	int healing_rate ;		// ÖÎÁÆ / Î¬ĞŞËÙÂÊ	
-	float health_now;					// µ±Ç°ÉúÃüÖµ		
-	int is_disable;		// ÊÇ·ñ±»Ì±»¾
-	float max_health_now;				// µ±Ç°HPÉÏÏŞ
-	float max_speed_now;				// µ±Ç°×î´óËÙ¶È
-	Position position;				// µ¥Î»Î»ÖÃ
-	float shot_range_now;				// µ±Ç°Éä³Ì
-	int skill_last_release_time1;// ÉÏ´Î¼¼ÄÜ1ÊÍ·ÅÊ±¼ä
-	int skill_last_release_time2;// ÉÏ´Î¼¼ÄÜ2ÊÍ·ÅÊ±¼ä
-	int unit_id;				// µ¥Î»id
+	int attack_mode;			// æ”»å‡»æ¨¡å¼ï¼Œä¾‹å¦‚å¯å¯¹ç©ºï¼Œå¯å¯¹å¦å…‹ï¼Œå¯å¯¹æ­¥å…µä¹‹ç±»çš„
+	float attack_now;					// å½“å‰æ”»å‡»
+	float defense_now;				// å½“å‰é˜²å¾¡
+	int disable_since ;			// è¢«ç˜«ç—ªçš„æ—¶é—´ç‚¹ï¼Œç”¨äºåˆ¤æ–­ç˜«ç—ªæ—¶é—´
+	int flag ;					// æ‰€å±é˜µè¥
+	int hacked_point;				// è¢«é»‘çš„ç‚¹æ•°
+	int healing_rate ;		// æ²»ç–— / ç»´ä¿®é€Ÿç‡	
+	float health_now;					// å½“å‰ç”Ÿå‘½å€¼		
+	int is_disable;		// æ˜¯å¦è¢«ç˜«ç—ª
+	float max_health_now;				// å½“å‰HPä¸Šé™
+	float max_speed_now;				// å½“å‰æœ€å¤§é€Ÿåº¦
+	Position position;				// å•ä½ä½ç½®
+	float shot_range_now;				// å½“å‰å°„ç¨‹
+	int skill_last_release_time1;// ä¸Šæ¬¡æŠ€èƒ½1é‡Šæ”¾æ—¶é—´
+	int skill_last_release_time2;// ä¸Šæ¬¡æŠ€èƒ½2é‡Šæ”¾æ—¶é—´
+	int unit_id;				// å•ä½id
 	Unit();	
 	Unit(int unit_id, int flag, TypeName type_name, Position pos);  
 	void Print();
@@ -163,7 +150,7 @@ struct Unit
 class Instr	
 {
 public:
-	int instruction_type;				//1±íÊ¾skil1,2±íÊ¾skil2,3±íÊ¾produce,4±íÊ¾Move,5±íÊ¾capture
+	int instruction_type;				//1è¡¨ç¤ºskil1,2è¡¨ç¤ºskil2,3è¡¨ç¤ºproduce,4è¡¨ç¤ºMove,5è¡¨ç¤ºcapture
 	int the_unit_id;
 	int target_id_building_id;
 	Position pos1;					
@@ -175,7 +162,7 @@ public:
 
 
 
-//Ñ¡ÊÖµ÷ÓÃº¯ÊıµÄÉùÃ÷
+//é€‰æ‰‹è°ƒç”¨å‡½æ•°çš„å£°æ˜
 void skill_1(int unit_id,int target_id=-1,Position tpos1=none_position,Position tpos2=none_position) ;
 void skill_2(int unit_id,int target_id=-1,Position tpos1=none_position,Position tpos2=none_position) ;
 void produce(int building_id);
