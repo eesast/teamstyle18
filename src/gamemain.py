@@ -423,20 +423,17 @@ class GameMain:
 
     def skill_phase(self, order):
         # 技能结算
-      #  for u in self.units.values():
-       #     if u.Get_type_name()==8 and u.eagle_flag==1 and self.turn_num-u.skill_last_release_time2>10:
-       #         u.max_speed_now-=5
-        #        u.eagle_flag=0
-        #    if u.Get_type_name()==3 and u.motor_type==1 and self.turn_num-u.skill_last_release_time2>20:
-        #        u.motor_type=0
-         #       u.reset_attribute(self.buff, speed=4)
+        for u in self.units.values():
+            if u.Get_type_name()==8 and u.eagle_flag==1 and self.turn_num-u.skill_last_release_time2>10:
+                u.reset_attribute(self.buff, speed=u.max_speed_now-5,eagle_flag=0)
+            if u.Get_type_name()==3 and u.motor_type==1 and self.turn_num-u.skill_last_release_time2>20:
+                u.reset_attribute(self.buff, speed=4,motor_type=0)
 
         def Get_id_information(id):
             for k in self.units:
                 if (k == id):
                     return self.units[k]
-            if (self.hqs[0].unit_id == id):
-                return self.hqs[0]
+            return -1
 
         def Get_distance(my_position, enemy_position):
             x = my_position[0] - enemy_position[0]
@@ -452,81 +449,68 @@ class GameMain:
         def bolt_tank_skill1(id, attack_id):
             my_information = Get_id_information(id)
             enemy_information = Get_id_information(attack_id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time1
-            distance = Get_distance(my_information.position, enemy_information.position)
-            if (skill_cd >= origin_attribute['bolt_tank']['skill_cd_1'] and distance <= origin_attribute['bolt_tank'][
-                'origin_shot_range']):
-                if (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 3):
-                    enemy_information.reset_attribute(self.buff,
-                                                      health=enemy_information.health_now - my_information.attack_now * (
-                                                      1 - enemy_information.defense_now / 1000))
-                    my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
-                elif (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 2):
-                    enemy_information.reset_attribute(self.buff, is_disable=True)
-                    my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+            if (my_information != -1 and enemy_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, enemy_information.position)
+                if (skill_cd >= origin_attribute['bolt_tank']['skill_cd_1'] and distance <= origin_attribute['bolt_tank']['origin_shot_range']):
+                    if (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 3):
+                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                    elif (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 2):
+                        enemy_information.reset_attribute(self.buff, is_disable=True)
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 黑客技能1
         def hacker_skill1(id, attack_id):
             my_information = Get_id_information(id)
             enemy_information = Get_id_information(attack_id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time1
-            distance = Get_distance(my_information.position, enemy_information.position)
-            if (skill_cd >= origin_attribute['hacker']['skill_cd_1'] and distance <= origin_attribute['hacker'][
-                'origin_shot_range']):
-                if (my_information.flag != enemy_information.flag) and (
-                        enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2):
-                    enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point + 15)
-                    my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
-                elif (my_information.flag == enemy_information.flag) and (
-                        enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2):
-                    enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point - 15)
-                    my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+            if(my_information!=-1 and enemy_information!=-1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, enemy_information.position)
+                if (skill_cd >= origin_attribute['hacker']['skill_cd_1'] and distance <= origin_attribute['hacker'][
+                 'origin_shot_range']):
+                    if (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2):
+                        enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point + 15)
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                    elif (my_information.flag == enemy_information.flag) and (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2):
+                        enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point - 15)
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 无人战机技能1
         def uav(id, attack_id):
             my_information = Get_id_information(id)
             enemy_information = Get_id_information(attack_id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time1
-            distance = Get_distance(my_information.position, enemy_information.position)
-            if (skill_cd >= origin_attribute['uav']['skill_cd_1'] and distance <= origin_attribute['uav'][
-                'origin_shot_range'] and (my_information.flag != enemy_information.flag)):
-                if (
-                                enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
-                    enemy_information.reset_attribute(self.buff,
-                                                      health=enemy_information.health_now - my_information.attack_now * (
-                                                      1 - enemy_information.defense_now / 1000))
-                    my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+            if (my_information != -1 and enemy_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, enemy_information.position)
+                if (skill_cd >= origin_attribute['uav']['skill_cd_1'] and distance <= origin_attribute['uav']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
+                    if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
+                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * ( 1 - enemy_information.defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 主站坦克技能1
         def battle_tank_skill1(id, attack_id):
             my_information = Get_id_information(id)
             enemy_information = Get_id_information(attack_id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time1
-            distance = Get_distance(my_information.position, enemy_information.position)
-            if (skill_cd >= origin_attribute['battle_tank']['skill_cd_1'] and distance <=
-                origin_attribute['battle_tank']['origin_shot_range'] and (
-                my_information.flag != enemy_information.flag)):
-                if (
-                                enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
-                    enemy_information.reset_attribute(self.buff,
-                                                      health=enemy_information.health_now - my_information.attack_now * (
-                                                      1 - enemy_information.defense_now / 1000))
-                    my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+            if (my_information != -1 and enemy_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, enemy_information.position)
+                if (skill_cd >= origin_attribute['battle_tank']['skill_cd_1'] and distance <=origin_attribute['battle_tank']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
+                    if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
+                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 核子坦克技能1
         def nuke_tank_skill1(id, attack_id):
             my_information = Get_id_information(id)
             enemy_information = Get_id_information(attack_id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time1
-            distance = Get_distance(my_information.position, enemy_information.position)
-            if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_1'] and distance <= origin_attribute['nuke_tank'][
-                'origin_shot_range'] and (my_information.flag != enemy_information.flag)):
-                if (
-                    enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
-                    enemy_information.reset_attribute(self.buff,
-                                                      health=enemy_information.health_now - my_information.attack_now * (
-                                                      1 - enemy_information.defense_now / 1000))
-                    my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+            if (my_information != -1 and enemy_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, enemy_information.position)
+                if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_1'] and distance <= origin_attribute['nuke_tank']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
+                    if (enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
+                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 核子坦克技能2
         def nuke_tank_skill2(id, attack_range_x, attack_range_y):
@@ -539,9 +523,8 @@ class GameMain:
                 for k in self.units:
                     enemy_position = self.units[k].position
                     if (Get_distance2(enemy_position, attack_range) < 2):
-                        self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 800 * (
-                      1 - self.units[k].defense_now / 1000))
-                my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
+                        self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 800 * (1 - self.units[k].defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         # 鹰式战斗机技能1
         def eagle_skill1(id, attack_range_x,attack_range_y):
@@ -554,10 +537,8 @@ class GameMain:
                 for k in self.units:
                     enemy_position = self.units[k].position
                     if (enemy_position == attack_range):
-                        self.units[k].reset_attribute(self.buff,
-                                                      health=self.units[k].health_now - my_information.attack_now * (
-                                                      1 - self.units[k].defense_now / 1000))
-                my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                        self.units[k].reset_attribute(self.buff,health=self.units[k].health_now - my_information.attack_now * (1 - self.units[k].defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 鹰式战斗机技能2
         def eagle_skill2(id, attack_range_x1,attack_range_y1,attack_range_x2, attack_range_y2):
@@ -567,38 +548,30 @@ class GameMain:
             skill_cd = self.turn_num - my_information.skill_last_release_time2
             distance1 = Get_distance(my_information.position, attack_range1)
             distance2 = Get_distance(my_information.position, attack_range2)
-            if (skill_cd >= origin_attribute['eagle']['skill_cd_2'] and distance1 <= origin_attribute['eagle'][
-                'origin_shot_range'] and distance2 <= origin_attribute['eagle']['origin_shot_range']):
+            if (skill_cd >= origin_attribute['eagle']['skill_cd_2'] and distance1 <= origin_attribute['eagle']['origin_shot_range'] and distance2 <= origin_attribute['eagle']['origin_shot_range']):
                 for k in self.units:
                     enemy_position = self.units[k].position
                     if (enemy_position == attack_range1 or enemy_position == attack_range2):
-                        self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400 * (
-                        1 - self.units[k].defense_now / 1000))
-                #print(my_information.max_speed_now)
-                my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5,eagle_flag=1)
-                my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
-                #print(my_information.max_speed_now)
+                        self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400 * (1 - self.units[k].defense_now / 1000))
+                        #print(my_information.max_speed_now)
+                        my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5,eagle_flag=1)
+                        my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
+                        #print(my_information.max_speed_now)
 
         # 改造人战士技能1
         def superman_skill1(id, attack_id):
             my_information = Get_id_information(id)
             enemy_information = Get_id_information(attack_id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time1
-            distance = Get_distance(my_information.position, enemy_information.position)
-            if (skill_cd >= origin_attribute['superman']['skill_cd_1'] and distance <= origin_attribute['superman'][
-                'origin_shot_range'] and (my_information.flag != enemy_information.flag)):
-                if (self.superman_motortype[my_information.flag]== 0) and (
-                            enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2):
-                    enemy_information.reset_attribute(self.buff,
-                                                      health=enemy_information.health_now - my_information.attack_now * (
-                                                      1 - enemy_information.defense_now / 1000))
-                    my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
-                elif (self.superman_motortype[my_information.flag] == 1) and (
-                                enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 3):
-                    enemy_information.reset_attribute(self.buff,
-                                                      health=enemy_information.health_now - my_information.attack_now * (
-                                                      1 - enemy_information.defense_now / 1000))
-                    my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+            if (my_information != -1 and enemy_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, enemy_information.position)
+                if (skill_cd >= origin_attribute['superman']['skill_cd_1'] and distance <= origin_attribute['superman']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
+                    if (my_information.motor_type== 0) and (enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2):
+                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                    elif(my_information.motor_type == 1) and (enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 3):
+                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 改造人战士技能2
         def superman_skill2(id):
@@ -609,9 +582,8 @@ class GameMain:
                     new_health=my_information.max_health_now
                 else:
                     new_health=my_information.health.now+0.02*my_information.max_health_now
-                my_information.reset_attribute(self.buff, speed=12,
-                                               health=new_health)
-                my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                my_information.reset_attribute(self.buff, speed=12,health=new_health,motor_type=1)
+                my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
                 self.superman_skill_release_time[my_information.flag]=self.turn_num
 
         for k in range(len(order)):
@@ -637,8 +609,6 @@ class GameMain:
             elif (Get_id_information(order[k][1]).Get_type_name() == 8 and order[k][0]==1):#'eagle'
                 eagle_skill1(order[k][1], order[k][2],order[k][3])
                 #print('use skill7')
-                #print(order[k][1],order[k][2],order[k][3])
-                #print('base1:',self.hqs[0].position,'base2:',self.hqs[1].position)
             elif (Get_id_information(order[k][1]).Get_type_name() == 8 and order[k][0]==2):#'eagle'
                 eagle_skill2(order[k][1], order[k][2], order[k][3],order[k][4], order[k][5])
                 #print('use skill8')
@@ -1139,23 +1109,3 @@ class GameMain:
         # 将当前状态信息返回，用String,Json什么都行，你们自己起名字吧
         pass
 
-        # 测试技能用
-'''A = GameMain()
-tank = unit.UnitObject(1, 1, 'nuke_tank', [22, 33], A.buff)
-battle = unit.UnitObject(2, 0, 'battle_tank', [22, 32], A.buff)
-eagle = unit.UnitObject(3, 1, 'eagle', [22, 33], A.buff)
-base = unit.UnitObject(4, 0, 'base' , [21,32], A.buff)
-#A.hqs.append(base)
-
-A.units[0] = base
-A.units[1] = tank
-A.units[2] = battle
-A.units[3] = eagle
-
-A.units[0].print_info()
-order=[[1,3,21,32]]
-A.skill_phase(order)
-#A.units[1].print_info()
-#A.units[2].print_info()
-#A.units[3].print_info()
-A.units[0].print_info()'''
