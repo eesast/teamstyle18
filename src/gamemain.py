@@ -388,37 +388,50 @@ class GameMain:
                 del self.units[unit_id]  # 从字典的value列表中把死亡单位删除
                 if things.Get_type_name() == 2:
                     self.resource[things.flag]['remain_people'] += origin_attribute['hacker']['people_cost']
+                    continue
                 if things.Get_type_name() == 3:
                     self.resource[things.flag]['remain_people'] += origin_attribute['superman']['people_cost']
                     self.amount_limit[things.flag]['superman'] = False
+                    continue
                 if things.Get_type_name() == 4:
                     self.resource[things.flag]['remain_people'] += origin_attribute['battle_tank']['people_cost']
+                    continue
                 if things.Get_type_name() == 5:
                     self.resource[things.flag]['remain_people'] += origin_attribute['bolt_tank']['people_cost']
+                    continue
                 if things.Get_type_name() == 6:
                     self.amount_limit[things.flag]['nuke_tank'] = False
                     self.resource[things.flag]['remain_people'] += origin_attribute['nuke_tank']['people_cost']
+                    continue
                 if things.Get_type_name() == 7:
                     self.resource[things.flag]['remain_people'] += origin_attribute['uav']['people_cost']
+                    continue
                 if things.Get_type_name() == 8:
                     self.resource[things.flag]['remain_people'] += origin_attribute['eagle']['people_cost']
                     self.amount_limit[things.flag]['eagle'] = False
+                    continue
                 if things.Get_type_name() == 1:
                     self.resource[things.flag]['remain_people'] += origin_attribute['meat']['people_cost']
-            if things.hacked_point >= things.max_health_now >= 0:
+                    continue
+            if things.hacked_point >= things.max_health_now:
                 del self.units[unit_id]  # 从字典里删除被黑了的单位
                 if things.Get_type_name() == 4:
                     self.resource[things.flag]['remain_people'] += origin_attribute['battle_tank']['people_cost']
+                    continue
                 if things.Get_type_name() == 5:
                     self.resource[things.flag]['remain_people'] += origin_attribute['bolt_tank']['people_cost']
+                    continue
                 if things.Get_type_name() == 6:
                     self.resource[things.flag]['remain_people'] += origin_attribute['nuke_tank']['people_cost']
                     self.amount_limit[things.flag]['nuke_tank'] = False
+                    continue
                 if things.Get_type_name() == 7:
                     self.resource[things.flag]['remain_people'] += origin_attribute['uav']['people_cost']
+                    continue
                 if things.Get_type_name() == 8:
                     self.resource[things.flag]['remain_people'] += origin_attribute['eagle']['people_cost']
                     self.amount_limit[things.flag]['eagle'] = False
+                    continue
         pass
 
     def skill_phase(self, order):
