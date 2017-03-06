@@ -6,7 +6,7 @@ using namespace std;
 extern queue <Instr>  q_instruction;
 extern resourse allResourse;
 extern float buff[48] = { 0.0 }; //buff全局变量 阵营1[单位类型][buff类型]
-extern Unit all_unit[300];			  //所有的unit
+extern Unit all_unit[500];			  //所有的unit
 extern int all_unit_size;				//记录所有unit的个数
 extern int team_id;
 //构造函数
