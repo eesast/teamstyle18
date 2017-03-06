@@ -8,7 +8,7 @@ extern int team_id;
 extern bool flag_of_round;	
 extern resourse allResourse;
 extern recv_send_socket  * p_sock_receive_send;
-extern double buff[40]; 
+extern float buff[48]; 
 extern Unit all_unit[500];
 extern int all_unit_size;
 extern int all_received = 0;
@@ -109,7 +109,11 @@ int recv_send_socket::recv_data(void)
 			all_received++;
 			break;
 		case 1:	
-			data = recv(sockClient,(char*)&buff,2*3*6*sizeof(double),0);
+			data = recv(sockClient,(char*)&buff,2*4*6*sizeof(float),0);
+			cout<<data<<" bytes"<<endl;
+			for (int i=0;i<48;i++){
+			cout<<buff[i]<<" ";
+			}cout<<endl;
 			all_received++;
 			break;
 		case 0:	
