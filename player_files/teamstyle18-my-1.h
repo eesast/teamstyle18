@@ -8,7 +8,7 @@
 using namespace std;
 using std::string;
 using std::vector;
-using std::mutex;
+//using std::mutex;
 
 //若干枚举型变量
 //type_name
