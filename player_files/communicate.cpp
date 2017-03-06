@@ -110,10 +110,6 @@ int recv_send_socket::recv_data(void)
 			break;
 		case 1:	
 			data = recv(sockClient,(char*)&buff,2*4*6*sizeof(float),0);
-			for (int i=0;i<48;i++){
-			cout<<buff[i]<<" ";
-			}cout<<endl;
-			all_received++;
 			break;
 		case 0:	
 			if (first_round)
