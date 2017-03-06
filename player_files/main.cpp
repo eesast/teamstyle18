@@ -15,9 +15,9 @@ bool flag_of_round;
 bool flag_of_gameOver;
 queue <Instr> q_instruction;
 resourse allResourse;
-double buff[40] = { 0.0 }; 
-Unit all_unit[300];	
-int all_unit_size=0;
+//float buff[48] = { 0.0 }; 
+//Unit all_unit[300];	
+//int all_unit_size=0;
 recv_send_socket  * p_sock_receive_send = new recv_send_socket;
 int main()
 {
