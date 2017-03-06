@@ -5,7 +5,7 @@
 using namespace std;
 extern queue <Instr>  q_instruction;
 extern resourse allResourse;
-extern double buff[40]; //buff全局变量 阵营1[单位类型][buff类型]
+extern float buff[48] = { 0.0 }; //buff全局变量 阵营1[单位类型][buff类型]
 extern Unit all_unit[300];			  //所有的unit
 extern int all_unit_size;				//记录所有unit的个数
 extern int team_id;
@@ -19,12 +19,12 @@ Unit::Unit(int _unit_id, int _flag, TypeName _type_name, Position pos)
 	position = pos;
 	type_name = _type_name;
 	unit_type = UnitType(origin_attribute[type_name][UNIT_TYPE]);
-	health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[20*flag+5*unit_type+HEALTH]);	//从“double”转换到“int”，可能丢失数据	  //单位生成时默认为最大血量，以下同理
-	max_health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[20*flag+5*unit_type+HEALTH]);
-	max_speed_now = origin_attribute[type_name][ORIGIN_MAX_SPEED] * (1 + buff[20*flag+5*unit_type+SPEED]);
-	shot_range_now = origin_attribute[type_name][ORIGIN_SHOT_RANGE] * (1 + buff[20*flag+5*unit_type+SHOT_RANGE]);
-	defense_now = origin_attribute[type_name][ORIGIN_DEFENSE] * (1 + buff[20*flag+5*unit_type+DEFENSE]);
-	attack_now = origin_attribute[type_name][ORIGIN_ATTACK] * (1 + buff[20*flag+5*unit_type+ATTACK]);
+	health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[24*flag+6*unit_type+HEALTH]);	//从“double”转换到“int”，可能丢失数据	  //单位生成时默认为最大血量，以下同理
+	max_health_now = origin_attribute[type_name][ORIGIN_MAX_HEALTH] * (1 + buff[24*flag+6*unit_type+HEALTH]);
+	max_speed_now = origin_attribute[type_name][ORIGIN_MAX_SPEED] * (1 + buff[24*flag+6*unit_type+SPEED]);
+	shot_range_now = origin_attribute[type_name][ORIGIN_SHOT_RANGE] * (1 + buff[24*flag+6*unit_type+SHOT_RANGE]);
+	defense_now = origin_attribute[type_name][ORIGIN_DEFENSE] * (1 + buff[24*flag+6*unit_type+DEFENSE]);
+	attack_now = origin_attribute[type_name][ORIGIN_ATTACK] * (1 + buff[24*flag+6*unit_type+ATTACK]);
 
 }
 void Unit::Print()
@@ -68,7 +68,7 @@ int getUnitSize(void)
 {
 	return all_unit_size;
 }
-double * getBuff(void)
+float * getBuff(void)
 {
 	return buff;
 }

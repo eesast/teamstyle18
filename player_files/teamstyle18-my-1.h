@@ -27,7 +27,8 @@ enum BuffType
 	DEFENSE,	 //防御buff
 	HEALTH,	     //最大生命值buff
 	SHOT_RANGE, 	 //射程buff
-	SPEED		 //速度buff
+	SPEED,		 //速度buff
+	PRODUCE
 };
 
 enum TypeName
@@ -173,7 +174,7 @@ void capture(int unit_id, int building_id);
 
 Unit * getUnit(void);
 int getUnitSize(void);
-double * getBuff(void);
+float * getBuff(void);
 resourse getResourse(void);
 bool getTeamId(void);
 void NewData(void);

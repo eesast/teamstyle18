@@ -7,7 +7,9 @@ import random
 from random import choice
 import time
 MAXROUND = 1000
-
+name=['base','meat','hacker','superman','battle_tank','bolt_tank','nuke_tank','uav','eagle',
+            'hack_lab','bid_lab','car_lab','elec_lab','radiation_lab','uav_lab','aircraft_lab',
+           'build_lab','finance_lab','material_lab','nano_lab','teach_building','bank']
 
 class GameMain:
     units = {}  # 单位dict key:unit_id value:unitobject
@@ -30,6 +32,8 @@ class GameMain:
     superman_skill_release_time = [0,0]
     buff = {
         unit.FLAG_0: {
+            unit.BASE:{'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                            'shot_range_buff': 0.0, 'produce_buff': 0.0},
             unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
                             'shot_range_buff': 0.0, 'produce_buff': 0.0},
             unit.VEHICLE: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
@@ -38,6 +42,8 @@ class GameMain:
                             'shot_range_buff': 0.0, 'produce_buff': 0.0}
         },
         unit.FLAG_1: {
+            unit.BASE: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
+                            'shot_range_buff': 0.0, 'produce_buff': 0.0},
             unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
                             'shot_range_buff': 0.0, 'produce_buff': 0.0},
             unit.VEHICLE: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
@@ -436,12 +442,6 @@ class GameMain:
 
     def skill_phase(self, order):
         # 技能结算
-        for u in self.units.values():
-            if u.Get_type_name()==8 and u.eagle_flag==1 and self.turn_num-u.skill_last_release_time2>10:
-                u.reset_attribute(self.buff, speed=u.max_speed_now-5,eagle_flag=0)
-            if u.Get_type_name()==3 and u.motor_type==1 and self.turn_num-u.skill_last_release_time2>20:
-                u.reset_attribute(self.buff, speed=4,motor_type=0)
-
         def Get_id_information(id):
             for k in self.units:
                 if (k == id):
@@ -453,10 +453,84 @@ class GameMain:
             y = my_position[1] - enemy_position[1]
             return abs(x)+abs(y)
 
-        def Get_distance2(my_position, enemy_position):
+        def Get_distance2(my_position, enemy_position):#核子坦克距离计算用
             x = my_position[0] - enemy_position[0]
             y = my_position[1] - enemy_position[1]
             return (x*x+y*y)**0.5
+
+        #主基地技能1
+        def base_skill1(id, attack_range_x,attack_range_y):
+            attack_range = [attack_range_x,attack_range_y]
+            my_information = Get_id_information(id)
+            if (my_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, attack_range)
+                if (skill_cd >= origin_attribute['base']['skill_cd_1'] and distance <= origin_attribute['eagle']['origin_shot_range']):
+                    for k in self.units:
+                        enemy_position = self.units[k].position
+                        if (enemy_position == attack_range):
+                            self.units[k].reset_attribute(self.buff,health=self.units[k].health_now - my_information.attack_now * (1 - self.units[k].defense_now / 1000))
+                            my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                        elif (Get_distance(enemy_position,attack_range) == 1):
+                            self.units[k].reset_attribute(self.buff,health=self.units[k].health_now - 0.5 * my_information.attack_now * (1 - self.units[k].defense_now / 1000))
+                            my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                        elif (Get_distance(enemy_position,attack_range) == 2):
+                            self.units[k].reset_attribute(self.buff,health=self.units[k].health_now - 0.25 * my_information.attack_now * (1 - self.units[k].defense_now / 1000))
+                            my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+        # 黑客技能1
+        def hacker_skill1(id, attack_id):
+            my_information = Get_id_information(id)
+            enemy_information = Get_id_information(attack_id)
+            if (my_information != -1 and enemy_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, enemy_information.position)
+                if (skill_cd >= origin_attribute['hacker']['skill_cd_1'] and distance <= origin_attribute['hacker']['origin_shot_range']):
+                    if (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 2):
+                        enemy_information.reset_attribute(self.buff,hacked_point=enemy_information.hacked_point + 15)
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                    elif (my_information.flag == enemy_information.flag) and (enemy_information.Get_unit_type() == 2):
+                        enemy_information.reset_attribute(self.buff,hacked_point=enemy_information.hacked_point - 15)
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+
+        # 改造人战士技能1
+        def superman_skill1(id, attack_id):
+            my_information = Get_id_information(id)
+            enemy_information = Get_id_information(attack_id)
+            if (my_information != -1 and enemy_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, enemy_information.position)
+                if (skill_cd >= origin_attribute['superman']['skill_cd_1'] and distance <= origin_attribute['superman']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
+                    if (my_information.motor_type == 0) and (enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2):
+                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+                    elif (my_information.motor_type == 1) and (enemy_information.Get_unit_type() != 4):
+                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+
+        # 改造人战士技能2
+        def superman_skill2(id):
+            my_information = Get_id_information(id)
+            if (my_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time2
+                if (skill_cd >= origin_attribute['superman']['skill_cd_2']):
+                    if (my_information.health.now + 0.02 * my_information.max_health_now > my_information.max_health_now):
+                        new_health = my_information.max_health_now
+                    else:
+                        new_health = my_information.health.now + 0.02 * my_information.max_health_now
+                    my_information.reset_attribute(self.buff, speed=12, health=new_health, motor_type=1,skill_last_release_time2=self.turn_num)
+                    #self.superman_skill_release_time[my_information.flag] = self.turn_num
+
+        # 主站坦克技能1
+        def battle_tank_skill1(id, attack_id):
+            my_information = Get_id_information(id)
+            enemy_information = Get_id_information(attack_id)
+            if (my_information != -1 and enemy_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, enemy_information.position)
+                if (skill_cd >= origin_attribute['battle_tank']['skill_cd_1'] and distance <= origin_attribute['battle_tank']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
+                    if (enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
+                        enemy_information.reset_attribute(self.buff, health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
+                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 电子对抗坦克技能1 修改计算公式
         def bolt_tank_skill1(id, attack_id):
@@ -470,24 +544,34 @@ class GameMain:
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
                     elif (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 2):
-                        enemy_information.reset_attribute(self.buff, is_disable=True)
+                        enemy_information.reset_attribute(self.buff, is_disable=True,disable_since=self.turn_num)
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
-        # 黑客技能1
-        def hacker_skill1(id, attack_id):
+        # 核子坦克技能1
+        def nuke_tank_skill1(id, attack_id):
             my_information = Get_id_information(id)
             enemy_information = Get_id_information(attack_id)
-            if(my_information!=-1 and enemy_information!=-1):
+            if (my_information != -1 and enemy_information != -1):
                 skill_cd = self.turn_num - my_information.skill_last_release_time1
                 distance = Get_distance(my_information.position, enemy_information.position)
-                if (skill_cd >= origin_attribute['hacker']['skill_cd_1'] and distance <= origin_attribute['hacker'][
-                 'origin_shot_range']):
-                    if (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2):
-                        enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point + 15)
+                if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_1'] and distance <=origin_attribute['nuke_tank']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
+                    if (enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
+                        enemy_information.reset_attribute(self.buff, health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
-                    elif (my_information.flag == enemy_information.flag) and (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2):
-                        enemy_information.reset_attribute(self.buff, hacked_point=enemy_information.hacked_point - 15)
-                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+
+        # 核子坦克技能2
+        def nuke_tank_skill2(id, attack_range_x, attack_range_y):
+            attack_range = [attack_range_x, attack_range_y]
+            my_information = Get_id_information(id)
+            if (my_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time2
+                distance = Get_distance(my_information.position, attack_range)
+                if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_2'] and distance <= origin_attribute['nuke_tank']['origin_shot_range']):
+                    for k in self.units:
+                        enemy_position = self.units[k].position
+                        if (Get_distance2(enemy_position, attack_range) < 2):
+                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 800 * (1 - self.units[k].defense_now / 1000))
+                            my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         # 无人战机技能1
         def uav(id, attack_id):
@@ -501,107 +585,46 @@ class GameMain:
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * ( 1 - enemy_information.defense_now / 1000))
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
-        # 主站坦克技能1
-        def battle_tank_skill1(id, attack_id):
-            my_information = Get_id_information(id)
-            enemy_information = Get_id_information(attack_id)
-            if (my_information != -1 and enemy_information != -1):
-                skill_cd = self.turn_num - my_information.skill_last_release_time1
-                distance = Get_distance(my_information.position, enemy_information.position)
-                if (skill_cd >= origin_attribute['battle_tank']['skill_cd_1'] and distance <=origin_attribute['battle_tank']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
-                    if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
-                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
-                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
-
-        # 核子坦克技能1
-        def nuke_tank_skill1(id, attack_id):
-            my_information = Get_id_information(id)
-            enemy_information = Get_id_information(attack_id)
-            if (my_information != -1 and enemy_information != -1):
-                skill_cd = self.turn_num - my_information.skill_last_release_time1
-                distance = Get_distance(my_information.position, enemy_information.position)
-                if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_1'] and distance <= origin_attribute['nuke_tank']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
-                    if (enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
-                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
-                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
-
-        # 核子坦克技能2
-        def nuke_tank_skill2(id, attack_range_x, attack_range_y):
-            attack_range = [attack_range_x,attack_range_y]
-            my_information = Get_id_information(id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time2
-            distance = Get_distance(my_information.position, attack_range)
-            if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_2'] and distance <= origin_attribute['nuke_tank'][
-                'origin_shot_range']):
-                for k in self.units:
-                    enemy_position = self.units[k].position
-                    if (Get_distance2(enemy_position, attack_range) < 2):
-                        self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 800 * (1 - self.units[k].defense_now / 1000))
-                        my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
-
         # 鹰式战斗机技能1
         def eagle_skill1(id, attack_range_x,attack_range_y):
             attack_range = [attack_range_x,attack_range_y]
             my_information = Get_id_information(id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time1
-            distance = Get_distance(my_information.position, attack_range)
-            if (skill_cd >= origin_attribute['eagle']['skill_cd_1'] and distance <= origin_attribute['eagle'][
-                'origin_shot_range']):
-                for k in self.units:
-                    enemy_position = self.units[k].position
-                    if (enemy_position == attack_range):
-                        self.units[k].reset_attribute(self.buff,health=self.units[k].health_now - my_information.attack_now * (1 - self.units[k].defense_now / 1000))
-                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
+            if (my_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time1
+                distance = Get_distance(my_information.position, attack_range)
+                if (skill_cd >= origin_attribute['eagle']['skill_cd_1'] and distance <= origin_attribute['eagle']['origin_shot_range']):
+                    for k in self.units:
+                        enemy_position = self.units[k].position
+                        if (enemy_position == attack_range):
+                            self.units[k].reset_attribute(self.buff,health=self.units[k].health_now - my_information.attack_now * (1 - self.units[k].defense_now / 1000))
+                            my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 鹰式战斗机技能2
         def eagle_skill2(id, attack_range_x1,attack_range_y1,attack_range_x2, attack_range_y2):
             attack_range1 = [attack_range_x1,attack_range_y1]
             attack_range2 = [attack_range_x2,attack_range_y2]
             my_information = Get_id_information(id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time2
-            distance1 = Get_distance(my_information.position, attack_range1)
-            distance2 = Get_distance(my_information.position, attack_range2)
-            if (skill_cd >= origin_attribute['eagle']['skill_cd_2'] and distance1 <= origin_attribute['eagle']['origin_shot_range'] and distance2 <= origin_attribute['eagle']['origin_shot_range']):
-                for k in self.units:
-                    enemy_position = self.units[k].position
-                    if (enemy_position == attack_range1 or enemy_position == attack_range2):
-                        self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400 * (1 - self.units[k].defense_now / 1000))
-                        #print(my_information.max_speed_now)
-                        my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5,eagle_flag=1)
-                        my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
-                        #print(my_information.max_speed_now)
+            if (my_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time2
+                distance1 = Get_distance(my_information.position, attack_range1)
+                distance2 = Get_distance(my_information.position, attack_range2)
+                if (skill_cd >= origin_attribute['eagle']['skill_cd_2'] and distance1 <= origin_attribute['eagle']['origin_shot_range'] and distance2 <= origin_attribute['eagle']['origin_shot_range']):
+                    for k in self.units:
+                        enemy_position = self.units[k].position
+                        if (enemy_position == attack_range1 or enemy_position == attack_range2):
+                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400 * (1 - self.units[k].defense_now / 1000))
+                            #print(my_information.max_speed_now)
+                            my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5,eagle_flag = 1)
+                            my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
+                            #print(my_information.max_speed_now)
 
-        # 改造人战士技能1
-        def superman_skill1(id, attack_id):
-            my_information = Get_id_information(id)
-            enemy_information = Get_id_information(attack_id)
-            if (my_information != -1 and enemy_information != -1):
-                skill_cd = self.turn_num - my_information.skill_last_release_time1
-                distance = Get_distance(my_information.position, enemy_information.position)
-                if (skill_cd >= origin_attribute['superman']['skill_cd_1'] and distance <= origin_attribute['superman']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
-                    if (my_information.motor_type== 0) and (enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2):
-                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
-                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
-                    elif(my_information.motor_type == 1) and (enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 3):
-                        enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000))
-                        my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
-        # 改造人战士技能2
-        def superman_skill2(id):
-            my_information = Get_id_information(id)
-            skill_cd = self.turn_num - my_information.skill_last_release_time1
-            if (skill_cd >= origin_attribute['superman']['skill_cd_2']):
-                if(my_information.health.now+0.02*my_information.max_health_now>my_information.max_health_now):
-                    new_health=my_information.max_health_now
-                else:
-                    new_health=my_information.health.now+0.02*my_information.max_health_now
-                my_information.reset_attribute(self.buff, speed=12,health=new_health,motor_type=1)
-                my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
-                self.superman_skill_release_time[my_information.flag]=self.turn_num
 
         for k in range(len(order)):
             #print(Get_id_information(order[k][1]).Get_type_name())
-            if (Get_id_information(order[k][1]).Get_type_name() == 5):#'bolt_tank'
+            if (Get_id_information(order[k][1]).Get_type_name() == 0):#'base'
+                base_skill1(order[k][1], order[k][2], order[k][3])
+            elif (Get_id_information(order[k][1]).Get_type_name() == 5):#'bolt_tank'
                 bolt_tank_skill1(order[k][1], order[k][2])
                 #print('use skill1')
             elif (Get_id_information(order[k][1]).Get_type_name() == 2):#'hacker'
@@ -688,7 +711,7 @@ class GameMain:
             del self.produce_instr_0[0]
             if self.units[building_id].flag !=0:
                 continue
-            if self.units[building_id].Get_type_name() == 9:
+            if self.units[building_id].Get_type_name() == 9:#黑客学院
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['hacker']['people_cost'] or \
                                 self.resource[ai_id]['money'] < unit.origin_attribute['hacker']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['hacker']['tech_cost']:
@@ -700,7 +723,7 @@ class GameMain:
                 self.units[self.total_id] = weapon
                 self.total_id += 1
                 continue
-            if self.units[building_id].Get_type_name() == 10:
+            if self.units[building_id].Get_type_name() == 10:#生化研究院
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['superman']['people_cost'] or \
                                 self.resource[ai_id]['money'] < unit.origin_attribute['superman']['money_cost'] or \
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['superman']['tech_cost'] or \
@@ -714,66 +737,66 @@ class GameMain:
                 self.units[self.total_id] = weapon
                 self.total_id += 1
                 continue
-            if self.units[building_id].Get_type_name() == 11:
+            if self.units[building_id].Get_type_name() == 11:#特殊车辆系
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['battle_tank']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['battle_tank']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['battle_tank']['tech_cost']:
+                                self.resource[ai_id]['money'] < unit.origin_attribute['battle_tank']['money_cost']*(1-self.buff[0][2]['produce_buff']) or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['battle_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']):
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'battle_tank', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['battle_tank']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['battle_tank']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['battle_tank']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['battle_tank']['money_cost']*(1-self.buff[0][2]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['battle_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']))
                 self.units[self.total_id] = weapon
                 self.total_id += 1
                 continue
-            if self.units[building_id].Get_type_name() == 12:
+            if self.units[building_id].Get_type_name() == 12:#电子对抗学院
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['bolt_tank']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['bolt_tank']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['bolt_tank']['tech_cost']:
+                                self.resource[ai_id]['money'] < unit.origin_attribute['bolt_tank']['money_cost']*(1-self.buff[0][2]['produce_buff']) or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['bolt_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']):
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'bolt_tank', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['bolt_tank']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['bolt_tank']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['bolt_tank']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['bolt_tank']['money_cost']*(1-self.buff[0][2]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['bolt_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']))
                 self.units[self.total_id] = weapon
                 self.total_id += 1
                 continue
-            if self.units[building_id].Get_type_name() == 13:
+            if self.units[building_id].Get_type_name() == 13:#辐射系
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['nuke_tank']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['nuke_tank']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['nuke_tank']['tech_cost'] or \
+                                self.resource[ai_id]['money'] < unit.origin_attribute['nuke_tank']['money_cost']*(1-self.buff[0][2]['produce_buff']) or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['nuke_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']) or \
                                 self.amount_limit[ai_id]['nuke_tank'] == True:
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'nuke_tank', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['nuke_tank']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['nuke_tank']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['nuke_tank']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['nuke_tank']['money_cost']*(1-self.buff[0][2]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['nuke_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']))
                 self.amount_limit[ai_id]['nuke_tank'] = True
                 self.units[self.total_id] = weapon
                 self.total_id += 1
                 continue
-            if self.units[building_id].Get_type_name() == 14:
+            if self.units[building_id].Get_type_name() == 14:#无人机系
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['uav']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['uav']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['uav']['tech_cost']:
+                                self.resource[ai_id]['money'] < unit.origin_attribute['uav']['money_cost']*(1-self.buff[0][3]['produce_buff']) or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['uav']['tech_cost']*(1-self.buff[0][3]['produce_buff']):
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'uav', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['uav']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['uav']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['uav']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['uav']['money_cost']*(1-self.buff[0][3]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['uav']['tech_cost']*(1-self.buff[0][3]['produce_buff']))
                 self.units[self.total_id] = weapon
                 self.total_id += 1
                 continue
-            if self.units[building_id].Get_type_name() == 15:
+            if self.units[building_id].Get_type_name() == 15:#高等飞行器研究院
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['eagle']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['eagle']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['eagle']['tech_cost'] or \
+                                self.resource[ai_id]['money'] < unit.origin_attribute['eagle']['money_cost']*(1-self.buff[0][3]['produce_buff']) or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['eagle']['tech_cost']*(1-self.buff[0][3]['produce_buff']) or \
                                 self.amount_limit[ai_id]['eagle'] == True:
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'eagle', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['eagle']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['eagle']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['eagle']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['eagle']['money_cost']*(1-self.buff[0][3]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['eagle']['tech_cost']*(1-self.buff[0][3]['produce_buff']))
                 self.amount_limit[ai_id]['eagle'] = True
                 self.units[self.total_id] = weapon
                 self.total_id += 1
@@ -823,64 +846,65 @@ class GameMain:
                 continue
             if self.units[building_id].Get_type_name() == 11:
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['battle_tank']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['battle_tank']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['battle_tank']['tech_cost']:
+                                self.resource[ai_id]['money'] < unit.origin_attribute['battle_tank']['money_cost']*(1-self.buff[1][2]['produce_buff']) or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['battle_tank']['tech_cost']*(1-self.buff[1][2]['produce_buff']):
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'battle_tank', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['battle_tank']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['battle_tank']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['battle_tank']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['battle_tank']['money_cost']*(1-self.buff[1][2]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['battle_tank']['tech_cost']*(1-self.buff[1][2]['produce_buff']))
                 self.units[self.total_id] = weapon
                 self.total_id += 1
                 continue
             if self.units[building_id].Get_type_name() == 12:
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['bolt_tank']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['bolt_tank']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['bolt_tank']['tech_cost']:
+                                self.resource[ai_id]['money'] < unit.origin_attribute['bolt_tank']['money_cost']*(1-self.buff[1][2]['produce_buff']) or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['bolt_tank']['tech_cost']*(1-self.buff[1][2]['produce_buff']):
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'bolt_tank', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['bolt_tank']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['bolt_tank']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['bolt_tank']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['bolt_tank']['money_cost']*(1-self.buff[1][2]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['bolt_tank']['tech_cost']*(1-self.buff[1][2]['produce_buff']))
                 self.units[self.total_id] = weapon
                 self.total_id += 1
                 continue
             if self.units[building_id].Get_type_name() == 13:
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['nuke_tank']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['nuke_tank']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['nuke_tank']['tech_cost'] or \
+                                self.resource[ai_id]['money'] < unit.origin_attribute['nuke_tank']['money_cost']*(1-self.buff[1][2]['produce_buff']) or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['nuke_tank']['tech_cost']*(1-self.buff[1][2]['produce_buff']) or \
                                 self.amount_limit[ai_id]['nuke_tank'] == True:
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'nuke_tank', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['nuke_tank']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['nuke_tank']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['nuke_tank']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['nuke_tank']['money_cost']*(1-self.buff[1][2]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['nuke_tank']['tech_cost']*(1-self.buff[1][2]['produce_buff']))
                 self.amount_limit[ai_id]['nuke_tank'] = True
                 self.units[self.total_id] = weapon
                 self.total_id += 1
                 continue
             if self.units[building_id].Get_type_name() == 14:
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['uav']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['uav']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['uav']['tech_cost']:
+                                self.resource[ai_id]['money'] < unit.origin_attribute['uav']['money_cost'] *(1-self.buff[1][3]['produce_buff'])or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['uav']['tech_cost']*(1-self.buff[1][3]['produce_buff']):
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'uav', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['uav']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['uav']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['uav']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['uav']['money_cost']*(1-self.buff[1][3]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['uav']['tech_cost']*(1-self.buff[1][3]['produce_buff']))
                 self.units[self.total_id] = weapon
                 self.total_id += 1
+                print(unit.origin_attribute['uav']['money_cost']*(1-self.buff[1][3]['produce_buff']))
                 continue
             if self.units[building_id].Get_type_name() == 15:
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['eagle']['people_cost'] or \
-                                self.resource[ai_id]['money'] < unit.origin_attribute['eagle']['money_cost'] or \
-                                self.resource[ai_id]['tech'] < unit.origin_attribute['eagle']['tech_cost'] or \
+                                self.resource[ai_id]['money'] < unit.origin_attribute['eagle']['money_cost']*(1-self.buff[1][3]['produce_buff']) or \
+                                self.resource[ai_id]['tech'] < unit.origin_attribute['eagle']['tech_cost']*(1-self.buff[1][3]['produce_buff']) or \
                                 self.amount_limit[ai_id]['eagle'] == True:
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'eagle', self.units[building_id].position, self.buff)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['eagle']['people_cost']
-                self.resource[ai_id]['money'] -= unit.origin_attribute['eagle']['money_cost']
-                self.resource[ai_id]['tech'] -= unit.origin_attribute['eagle']['tech_cost']
+                self.resource[ai_id]['money'] -= int(unit.origin_attribute['eagle']['money_cost']*(1-self.buff[1][3]['produce_buff']))
+                self.resource[ai_id]['tech'] -= int(unit.origin_attribute['eagle']['tech_cost']*(1-self.buff[1][3]['produce_buff']))
                 self.amount_limit[ai_id]['eagle'] = True
                 self.units[self.total_id] = weapon
                 self.total_id += 1
@@ -900,14 +924,37 @@ class GameMain:
         pass
 
     def resource_phase(self):
-        # 资源结算阶段
+        # 资源及单位状态结算阶段
         for unit_id in self.units.values():
             if unit_id.flag == -1:
                 continue
             if unit_id.Get_type_name() == 21:
-                self.resource[unit_id.flag]["money"] += 50
+                if(self.buff[unit_id.flag][0]['produce_buff']!=0):
+                    self.resource[unit_id.flag]["money"] += 55
+                else:
+                    self.resource[unit_id.flag]["money"] += 50
             if unit_id.Get_type_name() == 20:
                 self.resource[unit_id.flag]["tech"] += 25
+        for u in self.units.values():
+            if  u.Get_unit_type() != 4:
+                health_percentage = u.health_now/u.max_health_now
+                my_type_name=u.Get_type_name()
+                my_unit_type=u.Get_unit_type()
+                u.reset_attribute(self.buff,max_health = origin_attribute[name[my_type_name]]['origin_max_health'] *(1 + self.buff[u.flag][my_unit_type]['health_buff']))
+                u.reset_attribute(self.buff,health = u.max_health_now * health_percentage)
+                u.reset_attribute(self.buff,attack = origin_attribute[name[my_type_name]]['origin_attack'] * (1 + self.buff[u.flag][my_unit_type]['attack_buff']))
+                u.reset_attribute(self.buff,defense = origin_attribute[name[my_type_name]]['origin_defense'] * (1 + self.buff[u.flag][my_unit_type]['defense_buff']))
+                u.reset_attribute(self.buff,shot_range = origin_attribute[name[my_type_name]]['origin_shot_range'] + self.buff[u.flag][my_unit_type]['shot_range_buff'])
+                u.reset_attribute(self.buff,speed = origin_attribute[name[my_type_name]]['origin_max_speed'] + self.buff[u.flag][my_unit_type]['speed_buff'])
+
+                if(u.is_disable == True and self.turn_now-u.disable_since>=5):
+                    u.reset_attribute(self.buff,is_disable=False)
+                if u.Get_type_name() == 8 and u.eagle_flag == 1 and self.turn_num - u.skill_last_release_time2 > 10:
+                    u.reset_attribute(self.buff, speed=u.max_speed_now - 5, eagle_flag=0)
+                if u.Get_type_name() == 3 and u.motor_type == 1 and self.turn_num - u.skill_last_release_time2 > 20:
+                    u.reset_attribute(self.buff, speed=4, motor_type=0)
+                #if  u.Get_type_name() == 3:
+                    #print(u.attack_now, u.defense_now, u.max_speed_now, u.shot_range_now)
         pass
 
     def capture_phase(self):
@@ -949,50 +996,62 @@ class GameMain:
                     for things in unit_obj:
                         if things.flag == units.flag:
                             things.hacked_point *= 1.5
-                if units.Get_type_name() == 10:
+                if units.Get_type_name() == 10:#生化研究院
                     if units.flag == 0:
                         self.buff[unit.FLAG_0][unit.INFANTRY]['health_buff'] = 0.5
+                        self.buff[unit.FLAG_0][unit.INFANTRY]['attack_buff'] = 0.1
                     if units.flag == 1:
                         self.buff[unit.FLAG_1][unit.INFANTRY]['health_buff'] = 0.5
-                if units.Get_type_name() == 11:
+                        self.buff[unit.FLAG_1][unit.INFANTRY]['attack_buff'] = 0.1
+                if units.Get_type_name() == 11:#特种车辆系
                     if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.VEHICLE]['attack_buff'] = 0.05
-                        self.buff[unit.FLAG_0][unit.VEHICLE]['defence_buff'] = 0.05
+                        self.buff[unit.FLAG_0][unit.VEHICLE]['defense_buff'] = 0.15
+                        self.buff[unit.FLAG_0][unit.VEHICLE]['speed_buff'] = 3.0
                     if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['attack_buff'] = 0.05
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['defence_buff'] = 0.05
-                if units.Get_type_name() == 12:
+                        self.buff[unit.FLAG_1][unit.VEHICLE]['defense_buff'] = 0.15
+                        self.buff[unit.FLAG_1][unit.VEHICLE]['speed_buff'] = 3.0
+                if units.Get_type_name() == 12:#电子对抗系
                     if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.VEHICLE]['attack_buff'] = 0.1
-                        self.buff[unit.FLAG_0][unit.AIRCRAFT]['attack_buff'] = 0.1
+                        self.buff[unit.FLAG_0][unit.VEHICLE]['shot_range_buff'] = 4.0
                     if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['attack_buff']= 0.1
-                        self.buff[unit.FLAG_1][unit.AIRCRAFT]['attack_buff'] = 0.1
-                if units.Get_type_name() == 13:
+                        self.buff[unit.FLAG_1][unit.VEHICLE]['shot_range_buff'] = 4.0
+                if units.Get_type_name() == 13:#辐射系
                     if units.flag == 0:
                         self.buff[unit.FLAG_0][unit.VEHICLE]['attack_buff'] = 0.2
                     if units.flag == 1:
                         self.buff[unit.FLAG_1][unit.VEHICLE]['attack_buff'] = 0.2
-
-                if units.Get_type_name() == 14:
+                if units.Get_type_name() == 14:#无人机
                     if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.VEHICLE]['produce_buff'] = 0.15
-                        self.buff[unit.FLAG_0][unit.INFANTRY]['produce_buff'] = 0.15
-                        self.buff[unit.FLAG_0][unit.AIRCRAFT]['produce_buff'] = 0.15
-
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['produce_buff'] = 0.15
-                        self.buff[unit.FLAG_1][unit.INFANTRY]['produce_buff'] = 0.15
-                        self.buff[unit.FLAG_1][unit.AIRCRAFT]['produce_buff'] = 0.15
-                if units.Get_type_name() == 15:
-                    if units.flag == 0:
+                        self.buff[unit.FLAG_0][unit.VEHICLE]['produce_buff'] = 0.1
                         self.buff[unit.FLAG_0][unit.AIRCRAFT]['produce_buff'] = 0.1
-                        self.buff[unit.FLAG_0][unit.AIRCRAFT]['speed_buff'] = 3
-                        self.buff[unit.FLAG_0][unit.AIRCRAFT]['attack_buff'] = 0.1
                     if units.flag == 1:
                         self.buff[unit.FLAG_1][unit.VEHICLE]['produce_buff'] = 0.1
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['speed_buff'] = 3
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['attack_buff'] = 0.1
+                        self.buff[unit.FLAG_1][unit.AIRCRAFT]['produce_buff'] = 0.1
+                if units.Get_type_name() == 15:#高等飞行研究院
+                    if units.flag == 0:
+                        self.buff[unit.FLAG_0][unit.AIRCRAFT]['speed_buff'] = 3.0
+                        self.buff[unit.FLAG_0][unit.AIRCRAFT]['attack_buff'] = 0.15
+                    if units.flag == 1:
+                        self.buff[unit.FLAG_1][unit.AIRCRAFT]['speed_buff'] = 3.0
+                        self.buff[unit.FLAG_1][unit.AIRCRAFT]['attack_buff'] = 0.15
+                if units.Get_type_name() == 15: #建筑土木学院
+                    if units.flag == 0:
+                        self.buff[unit.FLAG_0][unit.BASE]['defense_buff'] = 2.0
+                        self.buff[unit.FLAG_0][unit.BASE]['attack_buff'] = 1.0
+                    if units.flag == 1:
+                        self.buff[unit.FLAG_1][unit.BASE]['defense_buff'] = 2.0
+                        self.buff[unit.FLAG_1][unit.BASE]['attack_buff'] = 1.0
+                if units.Get_type_name() == 15:  # 社会金融学院
+                    if units.flag == 0:
+                        self.buff[unit.FLAG_0][unit.BASE]['produce_buff'] = 1.0
+                    if units.flag == 1:
+                        self.buff[unit.FLAG_1][unit.BASE]['produce_buff'] = 1.0
+                if units.Get_type_name() == 15:  # 特殊材料学院
+                    if units.flag == 0:
+                        self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
+                    if units.flag == 1:
+                        self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
+        #print(self.buff)
 
     def fetch_instruction(self):
         # 获取指令存入两个指令list
