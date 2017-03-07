@@ -1157,8 +1157,8 @@ class GameMain:
                 ai0[u.Get_type_name()] += 1
             if u.flag==1:
                 ai1[u.Get_type_name()] += 1
-        print(ai0)
-        print(ai1)
+        #print(ai0)
+        #print(ai1)
         self.skill_instr_0 = []  # ai0的当前回合指令
         self.skill_instr_1 = []  # ai1的当前回合制令
         self.produce_instr_0 = []  # 指令格式为[building_id,building_id,]
