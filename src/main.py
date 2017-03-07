@@ -40,7 +40,7 @@ while (game.is_end==False):
 
     comm_server.send_to_player(game.resource)
     comm_server.send_to_player(game.buff)
-    print(game.buff)
+    #print(game.buff)
     #print(game.resource)
     while((comm_server.conn_list[0].patient==False and comm_server.conn_list[0].patient_time<=150000)or(comm_server.conn_list[1].patient == False and comm_server.conn_list[1].patient_time<=150000)):
         comm_server.conn_list[0].patient_time+=1
