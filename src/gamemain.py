@@ -18,6 +18,8 @@ class GameMain:
     # turn_flag = 0  # 谁的回合
     is_end = False
     check_winner = 3 #胜利者
+    ai0_healing_flag = 0
+    ai1_healing_flag = 0
     turn_num = 0  # 回合数
     phase_num = 0  # 回合阶段指示
     skill_instr_0 = []  # ai0的当前回合指令
@@ -390,8 +392,11 @@ class GameMain:
         tempcache=self.units.copy()
         for unit_id in tempcache.keys():
             things = self.units[unit_id]
-            if self.units[unit_id].health_now <= 0:
+            if self.units[unit_id].health_now <= 0 or things.hacked_point >= things.health_now:
                 del self.units[unit_id]  # 从字典的value列表中把死亡单位删除
+                if things.Get_type_name() == 1:
+                    self.resource[things.flag]['remain_people'] += origin_attribute['meat']['people_cost']
+                    continue
                 if things.Get_type_name() == 2:
                     self.resource[things.flag]['remain_people'] += origin_attribute['hacker']['people_cost']
                     continue
@@ -408,28 +413,6 @@ class GameMain:
                 if things.Get_type_name() == 6:
                     self.amount_limit[things.flag]['nuke_tank'] = False
                     self.resource[things.flag]['remain_people'] += origin_attribute['nuke_tank']['people_cost']
-                    continue
-                if things.Get_type_name() == 7:
-                    self.resource[things.flag]['remain_people'] += origin_attribute['uav']['people_cost']
-                    continue
-                if things.Get_type_name() == 8:
-                    self.resource[things.flag]['remain_people'] += origin_attribute['eagle']['people_cost']
-                    self.amount_limit[things.flag]['eagle'] = False
-                    continue
-                if things.Get_type_name() == 1:
-                    self.resource[things.flag]['remain_people'] += origin_attribute['meat']['people_cost']
-                    continue
-            if things.hacked_point >= things.max_health_now:
-                del self.units[unit_id]  # 从字典里删除被黑了的单位
-                if things.Get_type_name() == 4:
-                    self.resource[things.flag]['remain_people'] += origin_attribute['battle_tank']['people_cost']
-                    continue
-                if things.Get_type_name() == 5:
-                    self.resource[things.flag]['remain_people'] += origin_attribute['bolt_tank']['people_cost']
-                    continue
-                if things.Get_type_name() == 6:
-                    self.resource[things.flag]['remain_people'] += origin_attribute['nuke_tank']['people_cost']
-                    self.amount_limit[things.flag]['nuke_tank'] = False
                     continue
                 if things.Get_type_name() == 7:
                     self.resource[things.flag]['remain_people'] += origin_attribute['uav']['people_cost']
@@ -513,11 +496,7 @@ class GameMain:
             if (my_information != -1):
                 skill_cd = self.turn_num - my_information.skill_last_release_time2
                 if (skill_cd >= origin_attribute['superman']['skill_cd_2']):
-                    if (my_information.health.now + 0.02 * my_information.max_health_now > my_information.max_health_now):
-                        new_health = my_information.max_health_now
-                    else:
-                        new_health = my_information.health.now + 0.02 * my_information.max_health_now
-                    my_information.reset_attribute(self.buff, speed=12, health=new_health, motor_type=1,skill_last_release_time2=self.turn_num)
+                    my_information.reset_attribute(self.buff, speed=12, healing_rate=0.02, motor_type=1,skill_last_release_time2=self.turn_num)
                     #self.superman_skill_release_time[my_information.flag] = self.turn_num
 
         # 主站坦克技能1
@@ -570,7 +549,7 @@ class GameMain:
                     for k in self.units:
                         enemy_position = self.units[k].position
                         if (Get_distance2(enemy_position, attack_range) < 2):
-                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 800 * (1 - self.units[k].defense_now / 1000))
+                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 800)
                             my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         # 无人战机技能1
@@ -612,7 +591,7 @@ class GameMain:
                     for k in self.units:
                         enemy_position = self.units[k].position
                         if (enemy_position == attack_range1 or enemy_position == attack_range2):
-                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400 * (1 - self.units[k].defense_now / 1000))
+                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400)
                             #print(my_information.max_speed_now)
                             my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5,eagle_flag = 1)
                             my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
@@ -893,7 +872,7 @@ class GameMain:
                 self.resource[ai_id]['tech'] -= int(unit.origin_attribute['uav']['tech_cost']*(1-self.buff[1][3]['produce_buff']))
                 self.units[self.total_id] = weapon
                 self.total_id += 1
-                print(unit.origin_attribute['uav']['money_cost']*(1-self.buff[1][3]['produce_buff']))
+                #print(unit.origin_attribute['uav']['money_cost']*(1-self.buff[1][3]['produce_buff']))
                 continue
             if self.units[building_id].Get_type_name() == 15:
                 if self.resource[ai_id]['remain_people'] < unit.origin_attribute['eagle']['people_cost'] or \
@@ -946,7 +925,11 @@ class GameMain:
                 u.reset_attribute(self.buff,defense = origin_attribute[name[my_type_name]]['origin_defense'] * (1 + self.buff[u.flag][my_unit_type]['defense_buff']))
                 u.reset_attribute(self.buff,shot_range = origin_attribute[name[my_type_name]]['origin_shot_range'] + self.buff[u.flag][my_unit_type]['shot_range_buff'])
                 u.reset_attribute(self.buff,speed = origin_attribute[name[my_type_name]]['origin_max_speed'] + self.buff[u.flag][my_unit_type]['speed_buff'])
-
+                if(u.health_now + u.healing_rate * u.max_health_now >= u.max_health_now):
+                    new_health = u.max_health_now
+                else:
+                    new_health = u.health_now + u.healing_rate * u.max_health_now
+                u.reset_attribute(self.buff, health = new_health)
                 if(u.is_disable == True and self.turn_now-u.disable_since>=5):
                     u.reset_attribute(self.buff,is_disable=False)
                 if u.Get_type_name() == 8 and u.eagle_flag == 1 and self.turn_num - u.skill_last_release_time2 > 10:
@@ -964,26 +947,22 @@ class GameMain:
         unit_building=list(self.buildings)
         for x in unit_building:
             current_pointer[x.unit_id]=0
-        for orders in self.capture_instr_0:
+        for orders in self.capture_instr_0:#AI0_capture
             for things in unit_obj:
-                #print("am")
                 if orders[0] == things.unit_id and things.Get_type_name() == 1 and things.flag == 0:
                     for k in unit_building:
-                        if k.unit_id == orders[1]:
-                            if k.Get_unit_type() == 4 and abs(
-                                        things.position[0] - k.position[0]) + abs(things.position[1] - k.position[1]) == 1:
-                                current_pointer[k.unit_id] += 1
+                        if k.unit_id == orders[1] and k.Get_unit_type() == 4 and abs(things.position[0] - k.position[0]) + abs(things.position[1] - k.position[1]) == 1:
+                            current_pointer[k.unit_id] += 1
                     things.health_now=0
 
-        for orders in self.capture_instr_1:
+        for orders in self.capture_instr_1:#AI1_capture
             for things in unit_obj:
                 if orders[0] == things.unit_id and things.Get_type_name() == 1 and things.flag == 1:
                     for k in unit_building:
-                        if k.unit_id == orders[1] :
-                            if k.Get_unit_type() == 4 and abs(
-                                        things.position[0] - k.position[0]) + abs(things.position[1] - k.position[1]) == 1:
-                                current_pointer[k.unit_id] -= 1
+                        if k.unit_id == orders[1] and k.Get_unit_type() == 4 and abs(things.position[0] - k.position[0]) + abs(things.position[1] - k.position[1]) == 1:
+                            current_pointer[k.unit_id] -= 1
                     things.health_now=0
+
         for obj in unit_building:  # 结算建筑都是哪一方的
             if current_pointer[obj.unit_id] > 0:
                 obj.flag = 0
@@ -991,66 +970,75 @@ class GameMain:
                 obj.flag = 1
             if current_pointer[obj.unit_id] == 0:
                 pass
-            for units in unit_building:
-                if units.Get_type_name() == 9:
-                    for things in unit_obj:
-                        if things.flag == units.flag:
-                            things.hacked_point *= 1.5
-                if units.Get_type_name() == 10:#生化研究院
-                    if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.INFANTRY]['health_buff'] = 0.5
-                        self.buff[unit.FLAG_0][unit.INFANTRY]['attack_buff'] = 0.1
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.INFANTRY]['health_buff'] = 0.5
-                        self.buff[unit.FLAG_1][unit.INFANTRY]['attack_buff'] = 0.1
-                if units.Get_type_name() == 11:#特种车辆系
-                    if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.VEHICLE]['defense_buff'] = 0.15
-                        self.buff[unit.FLAG_0][unit.VEHICLE]['speed_buff'] = 3.0
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['defense_buff'] = 0.15
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['speed_buff'] = 3.0
-                if units.Get_type_name() == 12:#电子对抗系
-                    if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.VEHICLE]['shot_range_buff'] = 4.0
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['shot_range_buff'] = 4.0
-                if units.Get_type_name() == 13:#辐射系
-                    if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.VEHICLE]['attack_buff'] = 0.2
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['attack_buff'] = 0.2
-                if units.Get_type_name() == 14:#无人机
-                    if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.VEHICLE]['produce_buff'] = 0.1
-                        self.buff[unit.FLAG_0][unit.AIRCRAFT]['produce_buff'] = 0.1
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.VEHICLE]['produce_buff'] = 0.1
-                        self.buff[unit.FLAG_1][unit.AIRCRAFT]['produce_buff'] = 0.1
-                if units.Get_type_name() == 15:#高等飞行研究院
-                    if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.AIRCRAFT]['speed_buff'] = 3.0
-                        self.buff[unit.FLAG_0][unit.AIRCRAFT]['attack_buff'] = 0.15
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.AIRCRAFT]['speed_buff'] = 3.0
-                        self.buff[unit.FLAG_1][unit.AIRCRAFT]['attack_buff'] = 0.15
-                if units.Get_type_name() == 15: #建筑土木学院
-                    if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.BASE]['defense_buff'] = 2.0
-                        self.buff[unit.FLAG_0][unit.BASE]['attack_buff'] = 1.0
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.BASE]['defense_buff'] = 2.0
-                        self.buff[unit.FLAG_1][unit.BASE]['attack_buff'] = 1.0
-                if units.Get_type_name() == 15:  # 社会金融学院
-                    if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.BASE]['produce_buff'] = 1.0
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_1][unit.BASE]['produce_buff'] = 1.0
-                if units.Get_type_name() == 15:  # 特殊材料学院
-                    if units.flag == 0:
-                        self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
-                    if units.flag == 1:
-                        self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
+
+        for units in unit_building:#根据建筑的flag结算被动效果
+            if units.Get_type_name() == 9:
+                pass
+            if units.Get_type_name() == 10:#生化研究院
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.INFANTRY]['health_buff'] = 0.5
+                    self.buff[unit.FLAG_0][unit.INFANTRY]['attack_buff'] = 0.1
+                if units.flag == 1:
+                    self.buff[unit.FLAG_1][unit.INFANTRY]['health_buff'] = 0.5
+                    self.buff[unit.FLAG_1][unit.INFANTRY]['attack_buff'] = 0.1
+            if units.Get_type_name() == 11:#特种车辆系
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.VEHICLE]['defense_buff'] = 0.15
+                    self.buff[unit.FLAG_0][unit.VEHICLE]['speed_buff'] = 3.0
+                if units.flag == 1:
+                    self.buff[unit.FLAG_1][unit.VEHICLE]['defense_buff'] = 0.15
+                    self.buff[unit.FLAG_1][unit.VEHICLE]['speed_buff'] = 3.0
+            if units.Get_type_name() == 12:#电子对抗系
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.VEHICLE]['shot_range_buff'] = 4.0
+                if units.flag == 1:
+                    self.buff[unit.FLAG_1][unit.VEHICLE]['shot_range_buff'] = 4.0
+            if units.Get_type_name() == 13:#辐射系
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.VEHICLE]['attack_buff'] = 0.2
+                if units.flag == 1:
+                    self.buff[unit.FLAG_1][unit.VEHICLE]['attack_buff'] = 0.2
+            if units.Get_type_name() == 14:#无人机
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.VEHICLE]['produce_buff'] = 0.1
+                    self.buff[unit.FLAG_0][unit.AIRCRAFT]['produce_buff'] = 0.1
+                if units.flag == 1:
+                    self.buff[unit.FLAG_1][unit.VEHICLE]['produce_buff'] = 0.1
+                    self.buff[unit.FLAG_1][unit.AIRCRAFT]['produce_buff'] = 0.1
+            if units.Get_type_name() == 15:#高等飞行研究院
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.AIRCRAFT]['speed_buff'] = 3.0
+                    self.buff[unit.FLAG_0][unit.AIRCRAFT]['attack_buff'] = 0.15
+                if units.flag == 1:
+                    self.buff[unit.FLAG_1][unit.AIRCRAFT]['speed_buff'] = 3.0
+                    self.buff[unit.FLAG_1][unit.AIRCRAFT]['attack_buff'] = 0.15
+            if units.Get_type_name() == 16: #建筑土木学院
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.BASE]['defense_buff'] = 2.0
+                    self.buff[unit.FLAG_0][unit.BASE]['attack_buff'] = 1.0
+                if units.flag == 1:
+                    self.buff[unit.FLAG_1][unit.BASE]['defense_buff'] = 2.0
+                    self.buff[unit.FLAG_1][unit.BASE]['attack_buff'] = 1.0
+            if units.Get_type_name() == 17:  # 社会金融学院
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.BASE]['produce_buff'] = 1.0
+                if units.flag == 1:
+                    self.buff[unit.FLAG_1][unit.BASE]['produce_buff'] = 1.0
+            if units.Get_type_name() == 18:  # 特殊材料学院
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
+                if units.flag == 1:
+                    self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
+            if units.Get_type_name() == 19:  # 纳米研究学院
+                if units.flag == 0:
+                    self.ai0_healing_flag =1
+                if units.flag == 1:
+                    self.ai1_healing_flag =1
+            for u in self.units.values():
+                if (u.flag == 0 and self.ai0_healing_flag ==1) or (u.flag ==1 and self.ai1_healing_flag ==1) and (u.Get_unit_type() == 2 or u.Get_unit_type() ==3):
+                    u.reset_attribute(self.buff, healing_rate = 0.025)
+                else:
+                    u.reset_attribute(self.buff, healing_rate = 0)
         #print(self.buff)
 
     def fetch_instruction(self):
