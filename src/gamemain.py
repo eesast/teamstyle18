@@ -561,7 +561,9 @@ class GameMain:
                 distance = Get_distance(my_information.position, enemy_information.position)
                 if (skill_cd >= origin_attribute['uav']['skill_cd_1'] and distance <= origin_attribute['uav']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
                     if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
+                        print(my_information.attack_now,enemy_information.defense_now)
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * ( 1 - enemy_information.defense_now / 1000))
+                        print(enemy_information.health_now)
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 鹰式战斗机技能1
@@ -904,6 +906,9 @@ class GameMain:
 
     def resource_phase(self):
         # 资源及单位状态结算阶段
+        #print(self.hqs[0].health_now)
+        #print('*****************************')
+        #print(self.hqs[1].health_now)
         for unit_id in self.units.values():
             if unit_id.flag == -1:
                 continue
@@ -930,7 +935,7 @@ class GameMain:
                 else:
                     new_health = u.health_now + u.healing_rate * u.max_health_now
                 u.reset_attribute(self.buff, health = new_health)
-                if(u.is_disable == True and self.turn_now-u.disable_since>=5):
+                if(u.is_disable == True and self.turn_num-u.disable_since>=5):
                     u.reset_attribute(self.buff,is_disable=False)
                 if u.Get_type_name() == 8 and u.eagle_flag == 1 and self.turn_num - u.skill_last_release_time2 > 10:
                     u.reset_attribute(self.buff, speed=u.max_speed_now - 5, eagle_flag=0)
@@ -1035,7 +1040,7 @@ class GameMain:
                 if units.flag == 1:
                     self.ai1_healing_flag =1
             for u in self.units.values():
-                if (u.flag == 0 and self.ai0_healing_flag ==1) or (u.flag ==1 and self.ai1_healing_flag ==1) and (u.Get_unit_type() == 2 or u.Get_unit_type() ==3):
+                if ((u.flag == 0 and self.ai0_healing_flag ==1) or (u.flag ==1 and self.ai1_healing_flag ==1)) and (u.Get_unit_type() == 2 or u.Get_unit_type() ==3):
                     u.reset_attribute(self.buff, healing_rate = 0.025)
                 else:
                     u.reset_attribute(self.buff, healing_rate = 0)
