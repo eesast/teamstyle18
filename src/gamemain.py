@@ -1035,7 +1035,7 @@ class GameMain:
                 if units.flag == 1:
                     self.ai1_healing_flag =1
             for u in self.units.values():
-                if (u.flag == 0 and self.ai0_healing_flag ==1) or (u.flag ==1 and self.ai1_healing_flag ==1) and (u.Get_unit_type() == 2 or u.Get_unit_type() ==3):
+                if ((u.flag == 0 and self.ai0_healing_flag ==1) or (u.flag ==1 and self.ai1_healing_flag ==1)) and (u.Get_unit_type() == 2 or u.Get_unit_type() ==3):
                     u.reset_attribute(self.buff, healing_rate = 0.025)
                 else:
                     u.reset_attribute(self.buff, healing_rate = 0)
