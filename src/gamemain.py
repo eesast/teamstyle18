@@ -930,7 +930,7 @@ class GameMain:
                 else:
                     new_health = u.health_now + u.healing_rate * u.max_health_now
                 u.reset_attribute(self.buff, health = new_health)
-                if(u.is_disable == True and self.turn_now-u.disable_since>=5):
+                if(u.is_disable == True and self.turn_num-u.disable_since>=5):
                     u.reset_attribute(self.buff,is_disable=False)
                 if u.Get_type_name() == 8 and u.eagle_flag == 1 and self.turn_num - u.skill_last_release_time2 > 10:
                     u.reset_attribute(self.buff, speed=u.max_speed_now - 5, eagle_flag=0)
