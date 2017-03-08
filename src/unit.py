@@ -29,7 +29,7 @@ name_list ={'base':0,'meat':1,'hacker':2,'superman':3,'battle_tank':4,'bolt_tank
 
 origin_attribute = {
 
-    'base':          {'unit_type':BASE,    'origin_max_health':7500,    'origin_max_speed':0, 'origin_shot_range':12,'origin_defense':50,  'origin_attack':8, 'skill_cd_1':1,'skill_cd_2':1,    'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'base':          {'unit_type':BASE,    'origin_max_health':7500,    'origin_max_speed':0, 'origin_shot_range':12,'origin_defense':50,  'origin_attack':8, 'skill_cd_1':1,'skill_cd_2':-1,    'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
     'meat':          {'unit_type':INFANTRY,'origin_max_health':100,      'origin_max_speed':3, 'origin_shot_range':1, 'origin_defense':10, 'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':200,'people_cost':1, 'money_cost':100, 'tech_cost':0   },
     'hacker':        {'unit_type':INFANTRY,'origin_max_health':150,      'origin_max_speed':3, 'origin_shot_range':18,'origin_defense':20, 'origin_attack':0,  'skill_cd_1':1,   'skill_cd_2':-1, 'max_account':200,'people_cost':2, 'money_cost':600, 'tech_cost':300 },
     'superman':      {'unit_type':INFANTRY,'origin_max_health':500,      'origin_max_speed':4, 'origin_shot_range':10,'origin_defense':150,'origin_attack':15, 'skill_cd_1':1,   'skill_cd_2':50,   'max_account':1,   'people_cost':6,'money_cost':2000,'tech_cost':1500},
@@ -106,17 +106,6 @@ class UnitObject(object):
         self.shot_range_now = origin_attribute[type_name]['origin_shot_range']*1.0
         self.defense_now = origin_attribute[type_name]['origin_defense']*1.0
         self.attack_now = origin_attribute[type_name]['origin_attack']*1.0
-        ''''# 增加了对建筑的判断
-        if (self.__unit_type != BASE)and(self.__unit_type != BUILDING):
-            self.health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])   #单位生成时默认为最大血量，以下同理
-            self.max_health_now = origin_attribute[type_name]['origin_max_health'] * (1+buff[flag][self.__unit_type]['health_buff'])
-            self.max_speed_now = origin_attribute[type_name]['origin_max_speed'] * (1+buff[flag][self.__unit_type]['speed_buff'])
-            self.shot_range_now = origin_attribute[type_name]['origin_shot_range'] * (1+buff[flag][self.__unit_type]['shot_range_buff'])
-            self.defense_now = origin_attribute[type_name]['origin_defense'] * (1+buff[flag][self.__unit_type]['defense_buff'])
-            self.attack_now = origin_attribute[type_name]['origin_attack'] * (1+buff[flag][self.__unit_type]['attack_buff'])
-
-        else:'''
-
 
     #输出基本信息，已实现，测试用
     def print_info(self):
@@ -155,6 +144,8 @@ class UnitObject(object):
             self.is_disable = kwargs['is_disable']
         if 'hacked_point' in kwargs:
             self.hacked_point = kwargs['hacked_point']
+        if 'healing_rate' in kwargs:
+            self.healing_rate = kwargs['healing_rate']
         if 'motor_type' in kwargs:
             self.motor_type = kwargs['motor_type']
         if 'skill_last_release_time1' in kwargs:
@@ -170,13 +161,6 @@ class UnitObject(object):
         if 'disable_since' in kwargs:
             self.disable_since = kwargs['disable_since']
 
-        #增加了对建筑的判断
-        '''if(self.__unit_type != BASE )and(self.__unit_type != BUILDING):
-            self.max_health_now *= (1 + buff[self.flag][self.__unit_type]['health_buff'])
-            self.max_speed_now *= (1 + buff[self.flag][self.__unit_type]['speed_buff'])
-            self.shot_range_now *= (1 + buff[self.flag][self.__unit_type]['shot_range_buff'])
-            self.defense_now *= (1 + buff[self.flag][self.__unit_type]['defense_buff'])
-            self.attack_now *= (1 + buff[self.flag][self.__unit_type]['attack_buff'])'''
 
 #以下这个buff是方便测试的，无实际作用
 test_buff = {
