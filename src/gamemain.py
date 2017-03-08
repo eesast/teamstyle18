@@ -561,9 +561,7 @@ class GameMain:
                 distance = Get_distance(my_information.position, enemy_information.position)
                 if (skill_cd >= origin_attribute['uav']['skill_cd_1'] and distance <= origin_attribute['uav']['origin_shot_range'] and (my_information.flag != enemy_information.flag)):
                     if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
-                        print(my_information.attack_now,enemy_information.defense_now)
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * ( 1 - enemy_information.defense_now / 1000))
-                        print(enemy_information.health_now)
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
 
         # 鹰式战斗机技能1
@@ -906,9 +904,6 @@ class GameMain:
 
     def resource_phase(self):
         # 资源及单位状态结算阶段
-        #print(self.hqs[0].health_now)
-        #print('*****************************')
-        #print(self.hqs[1].health_now)
         for unit_id in self.units.values():
             if unit_id.flag == -1:
                 continue
