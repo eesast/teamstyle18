@@ -35,8 +35,8 @@ origin_attribute = {
     'superman':      {'unit_type':INFANTRY,'origin_max_health':500,      'origin_max_speed':4, 'origin_shot_range':10,'origin_defense':150,'origin_attack':15, 'skill_cd_1':1,   'skill_cd_2':50,   'max_account':1,   'people_cost':6,'money_cost':2000,'tech_cost':1500},
     'battle_tank':   {'unit_type':VEHICLE, 'origin_max_health':600,      'origin_max_speed':7, 'origin_shot_range':12,'origin_defense':400,'origin_attack':100,'skill_cd_1':10,  'skill_cd_2':-1, 'max_account':200,'people_cost':4, 'money_cost':1500,'tech_cost':600 },
     'bolt_tank':     {'unit_type':VEHICLE, 'origin_max_health':500,      'origin_max_speed':6, 'origin_shot_range':14,'origin_defense':100,'origin_attack':200,'skill_cd_1':10,  'skill_cd_2':-1, 'max_account':200,'people_cost':3, 'money_cost':1000,'tech_cost':400 },
-    'nuke_tank':     {'unit_type':VEHICLE, 'origin_max_health':800,      'origin_max_speed':5, 'origin_shot_range':20,'origin_defense':100,'origin_attack':300,'skill_cd_1':10,  'skill_cd_2':75,  'max_account':1,   'people_cost':10,'money_cost':4000,'tech_cost':2500},
-    'uav':           {'unit_type':AIRCRAFT,'origin_max_health':300,      'origin_max_speed':12,'origin_shot_range':10,'origin_defense':50, 'origin_attack':5,  'skill_cd_1':1,   'skill_cd_2':-1, 'max_account':200,'people_cost':2, 'money_cost':200, 'tech_cost':300 },
+    'nuke_tank':     {'unit_type':VEHICLE, 'origin_max_health':800,      'origin_max_speed':5, 'origin_shot_range':20,'origin_defense':200,'origin_attack':300,'skill_cd_1':10,  'skill_cd_2':70,  'max_account':1,   'people_cost':10,'money_cost':4000,'tech_cost':2500},
+    'uav':           {'unit_type':AIRCRAFT,'origin_max_health':300,      'origin_max_speed':12,'origin_shot_range':10,'origin_defense':50, 'origin_attack':5,  'skill_cd_1':1,   'skill_cd_2':-1, 'max_account':200,'people_cost':2, 'money_cost':300, 'tech_cost':450 },
     'eagle':         {'unit_type':AIRCRAFT,'origin_max_health':600,      'origin_max_speed':15,'origin_shot_range':16,'origin_defense':200,'origin_attack':200,'skill_cd_1':20,  'skill_cd_2':50,   'max_account':1,   'people_cost':8, 'money_cost':1500,'tech_cost':3000},
     'hack_lab':      {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
     'bid_lab':       {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
@@ -67,8 +67,7 @@ class UnitObject(object):
     name = 'Teamstyle'  # 单位名字，给选手闹着玩的
     flag = -1 #所属阵营
     position = [-1,-1] #单位位置，目测是一个point之类的东西
-    motor_type = -1  # 移动方式，分地面和空中，精英步兵的技能会用到
-    eagle_flag=0 #鹰式战机技能2是否启用
+    motor_type = 0  # 移动方式，分地面和空中，精英步兵的技能会用到
     max_health_now = -1 #当前HP上限
     health_now = -1  # 当前生命值
     max_speed_now = 0 #当前最大速度
@@ -81,7 +80,6 @@ class UnitObject(object):
     disable_since = 0  # 被瘫痪的时间点，用于判断瘫痪时间
     skill_last_release_time1 = 0 #上次技能1释放时间
     skill_last_release_time2 = 0 #上次技能2释放时间
-    motor_type=0
     attack_mode = 0 #攻击模式，例如可对空，可对坦克，可对步兵之类的
 
     def __init__(self, unit_id, flag, type_name, position, buff):
@@ -90,7 +88,6 @@ class UnitObject(object):
         self.position = position
         self.__type_name = name_list[type_name]
         self.__unit_type = origin_attribute[type_name]['unit_type']
-        #self.__producing_building = -1
         self.healing_rate = 0  # 治疗/维修速率
         self.hacked_point = 0  # 被黑的点数
         self.is_disable = False  # 是否被瘫痪
