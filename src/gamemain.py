@@ -591,7 +591,7 @@ class GameMain:
                     for k in self.units:
                         enemy_position = self.units[k].position
                         if (enemy_position == attack_range1 or enemy_position == attack_range2):
-                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400)
+                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 450)
                             my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5, skill_last_release_time2=self.turn_num)
                             if my_information.flag == 0:
                                 self.ai0_eagle_flag = 1
