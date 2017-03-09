@@ -192,12 +192,12 @@ class IOHandler(asyncore.dispatcher):
         temp_instruction=[]
 
         for i in range(0, num):
-            itype, uid, bid, pos1x, pos1y, po2x, pos2y = (struct.unpack('iiiiiii', instruction[28 * i:28 * i + 28]))
-            temp_instruction.append((itype, uid, bid, pos1x, pos1y, po2x, pos2y))
+            itype, uid, bid, pos1x, pos1y, pos2x, pos2y = (struct.unpack('iiiiiii', instruction[28 * i:28 * i + 28]))
+            temp_instruction.append((itype, uid, bid, pos1x, pos1y, pos2x, pos2y))
             #print(struct.unpack('iiiiiii',instruction[28*i:28*i+28]))
             if itype is 1 or itype is 2:
                 if bid is -1:
-                    self.skill_instr.append([itype,uid,pos1x,pos1y])
+                    self.skill_instr.append([itype,uid,pos1x,pos1y,pos2x,pos2y])
                 else:
                     self.skill_instr.append([itype,uid,bid])
             elif itype is 3:
