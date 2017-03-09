@@ -734,7 +734,6 @@ class GameMain:
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['bolt_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']):
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'bolt_tank', self.units[building_id].position, self.buff)
-                print(weapon.unit_id)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['bolt_tank']['people_cost']
                 self.resource[ai_id]['money'] -= int(unit.origin_attribute['bolt_tank']['money_cost']*(1-self.buff[0][2]['produce_buff']))
                 self.resource[ai_id]['tech'] -= int(unit.origin_attribute['bolt_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']))
