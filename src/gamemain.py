@@ -20,6 +20,8 @@ class GameMain:
     check_winner = 3 #胜利者
     ai0_healing_flag = 0
     ai1_healing_flag = 0
+    ai0_eagle_flag = 0  # 鹰式战机技能2是否启用
+    ai1_eagle_flag = 0  # 鹰式战机技能2是否启用
     turn_num = 0  # 回合数
     phase_num = 0  # 回合阶段指示
     skill_instr_0 = []  # ai0的当前回合指令
@@ -30,8 +32,6 @@ class GameMain:
     move_instr_1 = []
     capture_instr_0 = []  # 指令格式[[unit_id,building_id][unit_id,building_id][]]
     capture_instr_1 = []
-    superman_motortype = [0,0]
-    superman_skill_release_time = [0,0]
     buff = {
         unit.FLAG_0: {
             unit.BASE:{'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
@@ -549,7 +549,7 @@ class GameMain:
                     for k in self.units:
                         enemy_position = self.units[k].position
                         if (Get_distance2(enemy_position, attack_range) < 2):
-                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 800)
+                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400)
                             my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         # 无人战机技能1
@@ -592,10 +592,12 @@ class GameMain:
                         enemy_position = self.units[k].position
                         if (enemy_position == attack_range1 or enemy_position == attack_range2):
                             self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 400)
-                            #print(my_information.max_speed_now)
-                            my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5,eagle_flag = 1)
-                            my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
-                            #print(my_information.max_speed_now)
+                            my_information.reset_attribute(self.buff, speed=my_information.max_speed_now + 5, skill_last_release_time2=self.turn_num)
+                            if my_information.flag == 0:
+                                self.ai0_eagle_flag = 1
+                            if my_information.flag == 1:
+                                self.ai1_eagle_flag = 1
+
 
 
 
@@ -939,12 +941,15 @@ class GameMain:
                 u.reset_attribute(self.buff, health = new_health)
                 if(u.is_disable == True and self.turn_num-u.disable_since>=5):
                     u.reset_attribute(self.buff,is_disable=False)
-                if u.Get_type_name() == 8 and u.eagle_flag == 1 and self.turn_num - u.skill_last_release_time2 > 10:
-                    u.reset_attribute(self.buff, speed=u.max_speed_now - 5, eagle_flag=0)
+                if u.Get_type_name() == 8 and u.flag == 0 and self.ai0_eagle_flag == 1 and self.turn_num - u.skill_last_release_time2 > 10:
+                    self.ai0_eagle_flag = 0
+                    u.reset_attribute(self.buff, speed=u.max_speed_now - 5)
+                if u.Get_type_name() == 8 and u.flag == 1 and self.ai1_eagle_flag == 1 and self.turn_num - u.skill_last_release_time2 > 10:
+                    self.ai1_eagle_flag = 1
+                    u.reset_attribute(self.buff, speed=u.max_speed_now - 5)
                 if u.Get_type_name() == 3 and u.motor_type == 1 and self.turn_num - u.skill_last_release_time2 > 20:
                     u.reset_attribute(self.buff, speed=4, motor_type=0)
-                #if  u.Get_type_name() == 3:
-                    #print(u.attack_now, u.defense_now, u.max_speed_now, u.shot_range_now)
+
         pass
 
     def capture_phase(self):
