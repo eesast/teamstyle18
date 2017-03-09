@@ -736,6 +736,7 @@ class GameMain:
                                 self.resource[ai_id]['tech'] < unit.origin_attribute['bolt_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']):
                     continue
                 weapon = unit.UnitObject(self.total_id, ai_id, 'bolt_tank', self.units[building_id].position, self.buff)
+                print(weapon.unit_id)
                 self.resource[ai_id]['remain_people'] -= unit.origin_attribute['bolt_tank']['people_cost']
                 self.resource[ai_id]['money'] -= int(unit.origin_attribute['bolt_tank']['money_cost']*(1-self.buff[0][2]['produce_buff']))
                 self.resource[ai_id]['tech'] -= int(unit.origin_attribute['bolt_tank']['tech_cost']*(1-self.buff[0][2]['produce_buff']))
@@ -906,19 +907,23 @@ class GameMain:
 
     def resource_phase(self):
         # 资源及单位状态结算阶段
-        #print(self.hqs[0].health_now)
-        #print('*****************************')
-        #print(self.hqs[1].health_now)
         for unit_id in self.units.values():
             if unit_id.flag == -1:
                 continue
             if unit_id.Get_type_name() == 21:
-                if(self.buff[unit_id.flag][0]['produce_buff']!=0):
-                    self.resource[unit_id.flag]["money"] += 55
+                if self.buff[unit_id.flag][0]['produce_buff'] == 1.1 or self.buff[unit_id.flag][0]['produce_buff'] == 1.0 or self.buff[unit_id.flag][0]['produce_buff'] == 0.9:
+                    self.resource[unit_id.flag]["money"] += 45
+                elif self.buff[unit_id.flag][0]['produce_buff'] == -1.1 or self.buff[unit_id.flag][0]['produce_buff'] == -1.0 or self.buff[unit_id.flag][0]['produce_buff'] == -0.9:
+                    self.resource[unit_id.flag]["money"] += 35
                 else:
-                    self.resource[unit_id.flag]["money"] += 50
+                    self.resource[unit_id.flag]["money"] += 40
             if unit_id.Get_type_name() == 20:
-                self.resource[unit_id.flag]["tech"] += 25
+                if self.buff[unit_id.flag][0]['produce_buff'] == 1.1 or self.buff[unit_id.flag][0]['produce_buff'] == 0.1 or self.buff[unit_id.flag][0]['produce_buff'] == -0.9:
+                    self.resource[unit_id.flag]["tech"] += 30
+                elif self.buff[unit_id.flag][0]['produce_buff'] == -1.1 or self.buff[unit_id.flag][0]['produce_buff'] == -0.1 or self.buff[unit_id.flag][0]['produce_buff'] == 0.9:
+                    self.resource[unit_id.flag]["tech"] += 20
+                else:
+                    self.resource[unit_id.flag]["tech"] += 25
         for u in self.units.values():
             if  u.Get_unit_type() != 4:
                 health_percentage = u.health_now/u.max_health_now
@@ -976,9 +981,16 @@ class GameMain:
             if current_pointer[obj.unit_id] == 0:
                 pass
 
+        self.buff[unit.FLAG_0][unit.BASE]['produce_buff'] = 0.0
+        self.buff[unit.FLAG_1][unit.BASE]['produce_buff'] = 0.0
         for units in unit_building:#根据建筑的flag结算被动效果
             if units.Get_type_name() == 9:
-                pass
+                if units.flag == 0:
+                    self.buff[unit.FLAG_0][unit.BASE]['produce_buff'] += 0.1
+                    self.buff[unit.FLAG_1][unit.BASE]['produce_buff'] -= 0.1
+                if units.flag == 1:
+                    self.buff[unit.FLAG_1][unit.BASE]['produce_buff'] += 0.1
+                    self.buff[unit.FLAG_0][unit.BASE]['produce_buff'] -= 0.1
             if units.Get_type_name() == 10:#生化研究院
                 if units.flag == 0:
                     self.buff[unit.FLAG_0][unit.INFANTRY]['health_buff'] = 0.5
@@ -1026,9 +1038,11 @@ class GameMain:
                     self.buff[unit.FLAG_1][unit.BASE]['attack_buff'] = 1.0
             if units.Get_type_name() == 17:  # 社会金融学院
                 if units.flag == 0:
-                    self.buff[unit.FLAG_0][unit.BASE]['produce_buff'] = 1.0
+                    self.buff[unit.FLAG_0][unit.BASE]['produce_buff'] += 1.0
+                    self.buff[unit.FLAG_1][unit.BASE]['produce_buff'] -= 1.0
                 if units.flag == 1:
-                    self.buff[unit.FLAG_1][unit.BASE]['produce_buff'] = 1.0
+                    self.buff[unit.FLAG_1][unit.BASE]['produce_buff'] += 1.0
+                    self.buff[unit.FLAG_0][unit.BASE]['produce_buff'] -= 1.0
             if units.Get_type_name() == 18:  # 特殊材料学院
                 if units.flag == 0:
                     self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
