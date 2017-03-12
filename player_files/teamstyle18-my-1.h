@@ -9,10 +9,9 @@ using namespace std;
 using std::string;
 using std::vector;
 //using std::mutex;
-
 //若干枚举型变量
-//type_name
-enum UnitType
+
+enum UnitType //type_name
 {
 	BASE,	     //主基地
 	INFANTRY,	 //步兵
@@ -23,12 +22,30 @@ enum UnitType
 
 enum BuffType
 {
-	ATTACK,		 //攻击buff
-	DEFENSE,	 //防御buff
-	HEALTH,	     //最大生命值buff
-	SHOT_RANGE, 	 //射程buff
-	SPEED,		 //速度buff
-	PRODUCE
+	HEALTH,	     //最大生命值BUFF
+	ATTACK,		 //攻击BUFF
+	SPEED,		 //速度BUFF，基地该项对应科技BUFF
+	DEFENSE,	 //防御BUFF
+	SHOT_RANGE, 	 //射程UFF
+	PRODUCE		//生产BUFF，基地该项对应经济BUFF
+};
+
+enum attack_type
+{
+	FORT, //城甲
+	UNARMORED, //无甲
+	LIGHT, //轻甲
+	MEDIUM, //中甲
+	HEAVY //重甲
+};
+
+enum defense_type
+{
+	MACHINEGUN, //机枪
+	ELEC,  //电磁
+	ARTILLERY, //火炮
+	PENETRATING, //穿甲
+	EXPLOSION, //高爆
 };
 
 enum TypeName
@@ -55,7 +72,9 @@ enum attribute
 	ORIGIN_MAX_SPEED,
 	ORIGIN_SHOT_RANGE,
 	ORIGIN_DEFENSE,
+	DEFENSE_TYPE,
 	ORIGIN_ATTACK,
+	ATTACK_TYPE,
 	SKILL_CD_1,
 	SKILL_CD_2,
 	MAX_ACCOUNT,
@@ -64,32 +83,42 @@ enum attribute
 	TECH_COST,
 	attribute_num
 };
+
+//伤害百分比[攻击类型][护甲类型]
+const float damage_percentage[5][5]={
+	0.25,2.00,1.00,0.75,0.50,
+	0.75,0.00,1.50,1.00,0.50,
+	1.00,0.50,1.00,1.25,0.75,
+	1.00,0.25,0.75,0.75,1.50,
+	1.50,0.75,0.50,0.50,1.25
+};
+
 //用来给unit初始化
 const int origin_attribute[Type_num][attribute_num] =
 {
 
-{BASE,      7500   ,  0,   12,  50,   8,   1,   -1,   -1,    0,   0,     0      },
-{INFANTRY,	100    ,  3,   1,   10,   0,   -1,  -1,   -1,    1,   100,   0	    },
-{INFANTRY,	150    ,  3,   18,  20,   0,   1,   -1,   -1,    2,   600,   300	},
-{INFANTRY,	500    ,  4,   10,  150,  15,  1,   50,   1,     6,   2000,  1500	},
-{VEHICLE,	600    ,  7,   12,  400,  100, 10,  -1,   -1,    4,   1500,  600	},
-{VEHICLE,	500    ,  6,   14,  100,  200, 10,  -1,   -1,    3,   1000,  400	},
-{VEHICLE,	800    ,  5,   20,  200,  300, 10,  70,   1,     10,  4000,  2500	},
-{AIRCRAFT,	300    ,  12,  10,  50,   5,   1,   -1,   -1,    2,   300,   450	},
-{AIRCRAFT,	600    ,  15,  16,  200,  200, 20,  50,   1,     8,   1500,  3000	},
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    },
-{BUILDING,	INT_MAX,  0,   0,   0,    0,   -1,  -1,   0,     0,   0,     0	    }
+{BASE,      7500   ,  0,   12,  50,   0,  12,   2,    1,   -1,   -1,   0,   0,     0	    },
+{INFANTRY,	100    ,  3,   1,   10,   1,  0,    -1,   -1,  -1,   -1,   1,   100,   0	    },
+{INFANTRY,	150    ,  3,   18,  20,   1,  0,    -1,   1,   -1,   -1,   2,   600,  300		},
+{INFANTRY,	500    ,  4,   10,  150,  3,  15,   1,   1,   50,   1,     5,   2000,  1500		},
+{VEHICLE,	600    ,  7,   12,  400,  4,  150,  2,   10,  -1,   -1,    4,   1500,  600		},
+{VEHICLE,	500    ,  6,   14,  100,  2,  200,  1,   10,  -1,   -1,    3,   1000,  400		},
+{VEHICLE,	800    ,  5,   20,  200,  4,  300,  3,   10,  70,   1,     10,  4000,  2500		},
+{AIRCRAFT,	300    ,  12,  10,  50,   2,  5,    0,   1,   -1,   -1,    2,   300,   450		},
+{AIRCRAFT,	600    ,  15,  16,  300,  3,  200,  4,   20,  50,   1,     8,   1500,  3000		},
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    },
+{BUILDING,	INT_MAX,  0,   0,   0,    0,  0,   -1,   -1,  -1,   0,     0,   0,     0	    }
 
 };
 

@@ -14,6 +14,21 @@ BUILDING = 4
 FLAG_0 = 0
 FLAG_1 = 1
 
+#armor_type
+FORT = 0
+UNARMORED = 1
+LIGHT = 2
+MEDIUM =3
+HEAVY =4
+
+#attack_type
+NULL = -1
+MACHINEGUN = 0
+ELEC =1
+ARTILLERY = 2
+PENETRATING = 3
+EXPLOSION = 4
+
 #暂定主基地为0, 1-8依次为小鲜肉，黑客，改造人战士，主战坦克，电子对抗坦克，核子坦克，无人机，鹰式战斗机,剩余9-21为建筑
 
 #物体名称
@@ -29,28 +44,28 @@ name_list ={'base':0,'meat':1,'hacker':2,'superman':3,'battle_tank':4,'bolt_tank
 
 origin_attribute = {
 
-    'base':          {'unit_type':BASE,    'origin_max_health':7500,    'origin_max_speed':0, 'origin_shot_range':12,'origin_defense':50,  'origin_attack':8, 'skill_cd_1':1,'skill_cd_2':-1,    'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'meat':          {'unit_type':INFANTRY,'origin_max_health':100,      'origin_max_speed':3, 'origin_shot_range':1, 'origin_defense':10, 'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':200,'people_cost':1, 'money_cost':100, 'tech_cost':0   },
-    'hacker':        {'unit_type':INFANTRY,'origin_max_health':150,      'origin_max_speed':3, 'origin_shot_range':18,'origin_defense':20, 'origin_attack':0,  'skill_cd_1':1,   'skill_cd_2':-1, 'max_account':200,'people_cost':2, 'money_cost':600, 'tech_cost':300 },
-    'superman':      {'unit_type':INFANTRY,'origin_max_health':500,      'origin_max_speed':4, 'origin_shot_range':10,'origin_defense':150,'origin_attack':15, 'skill_cd_1':1,   'skill_cd_2':50,   'max_account':1,   'people_cost':6,'money_cost':2000,'tech_cost':1500},
-    'battle_tank':   {'unit_type':VEHICLE, 'origin_max_health':600,      'origin_max_speed':7, 'origin_shot_range':12,'origin_defense':400,'origin_attack':100,'skill_cd_1':10,  'skill_cd_2':-1, 'max_account':200,'people_cost':4, 'money_cost':1500,'tech_cost':600 },
-    'bolt_tank':     {'unit_type':VEHICLE, 'origin_max_health':500,      'origin_max_speed':6, 'origin_shot_range':14,'origin_defense':100,'origin_attack':200,'skill_cd_1':10,  'skill_cd_2':-1, 'max_account':200,'people_cost':3, 'money_cost':1000,'tech_cost':400 },
-    'nuke_tank':     {'unit_type':VEHICLE, 'origin_max_health':800,      'origin_max_speed':5, 'origin_shot_range':20,'origin_defense':200,'origin_attack':300,'skill_cd_1':10,  'skill_cd_2':70,  'max_account':1,   'people_cost':10,'money_cost':4000,'tech_cost':2500},
-    'uav':           {'unit_type':AIRCRAFT,'origin_max_health':300,      'origin_max_speed':12,'origin_shot_range':10,'origin_defense':50, 'origin_attack':5,  'skill_cd_1':1,   'skill_cd_2':-1, 'max_account':200,'people_cost':2, 'money_cost':300, 'tech_cost':450 },
-    'eagle':         {'unit_type':AIRCRAFT,'origin_max_health':600,      'origin_max_speed':15,'origin_shot_range':16,'origin_defense':200,'origin_attack':200,'skill_cd_1':20,  'skill_cd_2':50,   'max_account':1,   'people_cost':8, 'money_cost':1500,'tech_cost':3000},
-    'hack_lab':      {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'bid_lab':       {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'car_lab':       {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'elec_lab':      {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'radiation_lab': {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'uav_lab':       {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'aircraft_lab':  {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'build_lab':     {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'finance_lab':   {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'material_lab':  {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'nano_lab':      {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'teach_building':{'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
-    'bank':          {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'origin_attack':0,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   }
+    'base':          {'unit_type':BASE,    'origin_max_health':7500,    'origin_max_speed':0, 'origin_shot_range':12,'origin_defense':50, 'defense_type':FORT,      'origin_attack':12, 'attack_type':ARTILLERY, 'skill_cd_1':1,'skill_cd_2':-1,    'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'meat':          {'unit_type':INFANTRY,'origin_max_health':100,      'origin_max_speed':3, 'origin_shot_range':1, 'origin_defense':10, 'defense_type':UNARMORED,'origin_attack':0, 'attack_type':NULL, 'skill_cd_1':-1,  'skill_cd_2':-1, 'max_account':200,'people_cost':1, 'money_cost':100, 'tech_cost':0   },
+    'hacker':        {'unit_type':INFANTRY,'origin_max_health':150,      'origin_max_speed':3, 'origin_shot_range':18,'origin_defense':20, 'defense_type':UNARMORED,'origin_attack':0, 'attack_type':NULL, 'skill_cd_1':1,   'skill_cd_2':-1, 'max_account':200,'people_cost':2, 'money_cost':600, 'tech_cost':300 },
+    'superman':      {'unit_type':INFANTRY,'origin_max_health':500,      'origin_max_speed':4, 'origin_shot_range':10,'origin_defense':150,'defense_type':MEDIUM,   'origin_attack':15,'attack_type':ELEC, 'skill_cd_1':1,   'skill_cd_2':50,   'max_account':1,   'people_cost':5,'money_cost':2000,'tech_cost':1200},
+    'battle_tank':   {'unit_type':VEHICLE, 'origin_max_health':600,      'origin_max_speed':7, 'origin_shot_range':12,'origin_defense':400,'defense_type':HEAVY,   'origin_attack':150,'attack_type':ARTILLERY,'skill_cd_1':10,  'skill_cd_2':-1, 'max_account':200,'people_cost':4, 'money_cost':1500,'tech_cost':600 },
+    'bolt_tank':     {'unit_type':VEHICLE, 'origin_max_health':500,      'origin_max_speed':6, 'origin_shot_range':14,'origin_defense':100,'defense_type':LIGHT,   'origin_attack':200,'attack_type':ELEC,'skill_cd_1':10,  'skill_cd_2':-1, 'max_account':200,'people_cost':3, 'money_cost':1000,'tech_cost':400 },
+    'nuke_tank':     {'unit_type':VEHICLE, 'origin_max_health':800,      'origin_max_speed':5, 'origin_shot_range':20,'origin_defense':200,'defense_type':HEAVY,   'origin_attack':300,'attack_type':PENETRATING,'skill_cd_1':10,  'skill_cd_2':70,  'max_account':1,   'people_cost':10,'money_cost':4000,'tech_cost':2500},
+    'uav':           {'unit_type':AIRCRAFT,'origin_max_health':300,      'origin_max_speed':12,'origin_shot_range':10,'origin_defense':50, 'defense_type':LIGHT,    'origin_attack':5, 'attack_type':MACHINEGUN, 'skill_cd_1':1,   'skill_cd_2':-1, 'max_account':200,'people_cost':2, 'money_cost':300, 'tech_cost':450 },
+    'eagle':         {'unit_type':AIRCRAFT,'origin_max_health':600,      'origin_max_speed':15,'origin_shot_range':16,'origin_defense':300,'defense_type':MEDIUM,   'origin_attack':200,'attack_type':EXPLOSION,'skill_cd_1':20,  'skill_cd_2':50,   'max_account':1,   'people_cost':8, 'money_cost':1500,'tech_cost':3000},
+    'hack_lab':      {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,     'origin_attack':0, 'attack_type':NULL, 'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'bid_lab':       {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,     'origin_attack':0, 'attack_type':NULL, 'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'car_lab':       {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,     'origin_attack':0, 'attack_type':NULL, 'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'elec_lab':      {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,     'origin_attack':0, 'attack_type':NULL, 'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'radiation_lab': {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,    'origin_attack':0,  'attack_type':NULL,'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'uav_lab':       {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,     'origin_attack':0, 'attack_type':NULL, 'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'aircraft_lab':  {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,    'origin_attack':0,  'attack_type':NULL,'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'build_lab':     {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,    'origin_attack':0,  'attack_type':NULL,'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'finance_lab':   {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,    'origin_attack':0,  'attack_type':NULL,'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'material_lab':  {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,    'origin_attack':0,  'attack_type':NULL,'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'nano_lab':      {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,     'origin_attack':0, 'attack_type':NULL, 'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'teach_building':{'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,    'origin_attack':0,  'attack_type':NULL,'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   },
+    'bank':          {'unit_type':BUILDING,'origin_max_health':100000000,'origin_max_speed':0, 'origin_shot_range':0, 'origin_defense':0,  'defense_type':FORT,      'origin_attack':0,'attack_type':NULL,  'skill_cd_1':-1,'skill_cd_2':-1, 'max_account':0,   'people_cost':0, 'money_cost':0,   'tech_cost':0   }
 
 }
 
@@ -76,7 +91,7 @@ class UnitObject(object):
     attack_now = 0  #当前攻击
     healing_rate = 0  # 治疗/维修速率
     hacked_point = 0 #被黑的点数
-    is_disable = False  # 是否被瘫痪
+    is_disable = False  # 是否被瘫'denfense_type':FORT,痪
     disable_since = 0  # 被瘫痪的时间点，用于判断瘫痪时间
     skill_last_release_time1 = 0 #上次技能1释放时间
     skill_last_release_time2 = 0 #上次技能2释放时间
