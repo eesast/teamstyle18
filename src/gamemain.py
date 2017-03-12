@@ -659,8 +659,10 @@ class GameMain:
 
     def move_phase(self):
         # 移动指令结算
+        flag = 1
         id_collection = list(self.units.values())  # 寻找传入ai_id对应的value(unitobject)
         for things in self.move_instr_0:
+            flag = 1
             for obj in id_collection:
                 if obj.unit_id == things[0]:  # 如果unit_id 相符
                     if obj.Get_unit_type() == 0 or obj.Get_unit_type() == 4 or obj.flag != 0:
@@ -671,17 +673,18 @@ class GameMain:
                         x1 = obj.position[0]
                         y1 = obj.position[1]
                         if x >= 100 or y >= 100 or x < 0 or y < 0:
-                            return
+                            pass
                         elif abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:
                             for obj_1 in id_collection:
-                                if obj_1.position[0] == x and obj_1.position[1] == y:
-                                    pass
-                                else:
-                                    obj.position=[x,y]
-
+                                if obj_1.position[0] == x and obj_1.position[1] == y and obj_1.Get_unit_type() == 4 and obj.Get_unit_type != 3:
+                                    flag = 0
+                            if flag ==1:
+                                obj.position = [x,y]
                         else:
                             pass
+
         for things in self.move_instr_1:
+            flag = 1
             for obj in id_collection:
                 if obj.unit_id == things[0]:  # 如果unit_id 相符
                     if obj.Get_unit_type() == 0 or obj.Get_unit_type() == 4 or obj.flag == 0:
@@ -692,13 +695,13 @@ class GameMain:
                         x1 = obj.position[0]
                         y1 = obj.position[1]
                         if x >= 100 or y >= 100 or x < 0 or y < 0:
-                            return
+                            pass
                         elif abs(x1 - x) + abs(y1 - y) <= obj.max_speed_now:
                             for obj_1 in id_collection:
-                                if obj_1.position[0] == x and obj_1.position[1] == y:
-                                    pass
-                                else:
-                                    obj.position=[x,y]
+                                if obj_1.position[0] == x and obj_1.position[1] == y and obj_1.Get_unit_type() == 4 and obj.Get_unit_type != 3:
+                                    flag = 0
+                            if flag ==1:
+                                obj.position = [x,y]
                         else:
                             pass
 
