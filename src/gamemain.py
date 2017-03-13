@@ -1071,7 +1071,7 @@ class GameMain:
                 if units.flag == 0:
                     self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
                 if units.flag == 1:
-                    self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
+                    self.buff[unit.FLAG_1][unit.INFANTRY]['speed_buff'] = 5.0
             if units.Get_type_name() == 19:  # 纳米研究学院
                 if units.flag == 0:
                     self.ai0_healing_flag =1
