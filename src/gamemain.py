@@ -95,8 +95,8 @@ class GameMain:
         ai_id1 = 1
         # 地图生成模块
         # 初始化self.resource
-        self.resource = {ai_id0: {"tech": 160000, "money": 160000, "remain_people": 100},
-                         ai_id1: {"tech": 160000, "money": 160000, "remain_people": 100}}
+        self.resource = {ai_id0: {"tech": 1600, "money": 4000, "remain_people": 100},
+                         ai_id1: {"tech": 1600, "money": 4000, "remain_people": 100}}
         # 在一定范围内random出一个基地并中心对称 并伴随生成bank 和teaching building 各一个
         box_base0_x = random.randint(2, 7)
         box_base0_y = random.randint(2, 3)
