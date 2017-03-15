@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
 import unit
 from unit import origin_attribute
 import random
@@ -96,8 +95,8 @@ class GameMain:
         ai_id1 = 1
         # 地图生成模块
         # 初始化self.resource
-        self.resource = {ai_id0: {"tech": 1600, "money": 4000, "remain_people": 100},
-                         ai_id1: {"tech": 1600, "money": 4000, "remain_people": 100}}
+        self.resource = {ai_id0: {"tech": 160000, "money": 160000, "remain_people": 100},
+                         ai_id1: {"tech": 160000, "money": 160000, "remain_people": 100}}
         # 在一定范围内random出一个基地并中心对称 并伴随生成bank 和teaching building 各一个
         box_base0_x = random.randint(2, 7)
         box_base0_y = random.randint(2, 3)
@@ -314,12 +313,6 @@ class GameMain:
         # 胜利判定
         # 胜利判定:0 ai_id0 wins; 1 ai_id1 wins; 2 tie; 3 game goes on
         unit_obj = list(self.units.values())  # 所有的单位
-        flag_0 = self.hqs[0].flag
-        flag_1 = self.hqs[1].flag
-        counter_01 = 0  # 0方的兵力
-        counter_11 = 0  # 1方的兵力
-        counter_02 = 0  # 0方的建筑数
-        counter_12 = 0  # 1方的建筑数
         if self.hqs[0].health_now * self.hqs[1].health_now > 0 and self.hqs[0].health_now + self.hqs[
             1].health_now > 0:  # 如果双方主基地都正Hp
             return 3
@@ -328,29 +321,17 @@ class GameMain:
                 return 1
             if self.hqs[0].health_now > self.hqs[1].health_now:
                 return 0
-            if self.hqs[0].health_now == self.hqs[1].health_now:
-                for things in unit_obj:
-                    if things.__unit_type == 1 or things.__unit_type == 2 or things.__unit_type == 3:
-                        if things.flag == flag_0:
-                            counter_01 += 1
-                        if things.flag == flag_1:
-                            counter_11 += 1
-                    else:
-                        if things.flag == flag_0:
-                            counter_02 += 1
-                        if things.flag == flag_1:
-                            counter_12 += 1
-                    if counter_01 > counter_11:
-                        return 0
-                    if counter_01 < counter_11:
-                        return 1
-                    if counter_01 == counter_11:
-                        if counter_02 > counter_12:
-                            return 0
-                        if counter_02 < counter_12:
-                            return 1
-                        if counter_02 == counter_12:
-                            return 2
+            if self.hqs[0].health_now == self.hqs[1].health_now:#HP相等
+                if self.resource[0]["remain_people"]<self.resource[1]["remain_people"]:
+                    return 0
+                elif self.resource[0]["remain_people"]>self.resource[1]["remain_people"]:
+                    return 1
+                elif self.resource[0]["tech"] + self.resource[0]["money"]>self.resource[1]["tech"] + self.resource[1]["money"]:
+                    return 0
+                elif self.resource[0]["tech"] + self.resource[0]["money"]<self.resource[1]["tech"] + self.resource[1]["money"]:
+                    return 1
+                else:
+                    return 2
 
     def timeup_determine(self):
         # 超时胜利判定
@@ -358,39 +339,21 @@ class GameMain:
             return 3
         if self.turn_num > MAXROUND:  # 如果超过了最大回合数
             unit_obj = list(self.units.values())
-            flag_0 = self.hqs[0].flag
-            flag_1 = self.hqs[1].flag
-            counter_01 = 0  # 0方的兵力
-            counter_11 = 0  # 1方的兵力
-            counter_02 = 0  # 0方的建筑数
-            counter_12 = 0  # 1方的建筑数
             if self.hqs[0].health_now < self.hqs[1].health_now:
                 return 1
             if self.hqs[0].health_now > self.hqs[1].health_now:
                 return 0
-            if self.hqs[0].health_now == self.hqs[1].health_now:
-                for things in unit_obj:
-                    if things.Get_unit_type() == 1 or things.Get_unit_type() == 2 or things.Get_unit_type() == 3:
-                        if things.flag == flag_0:
-                            counter_01 += 1
-                        if things.flag == flag_1:
-                            counter_11 += 1
-                    else:
-                        if things.flag == flag_0:
-                            counter_02 += 1
-                        if things.flag == flag_1:
-                            counter_12 += 1
-                    if counter_01 > counter_11:
-                        return 0
-                    if counter_01 < counter_11:
-                        return 1
-                    if counter_01 == counter_11:
-                        if counter_02 > counter_12:
-                            return 0
-                        if counter_02 < counter_12:
-                            return 1
-                        if counter_02 == counter_12:
-                            return 2
+            if self.hqs[0].health_now == self.hqs[1].health_now:#HP相等
+                if self.resource[0]["remain_people"]<self.resource[1]["remain_people"]:
+                    return 0
+                elif self.resource[0]["remain_people"]>self.resource[1]["remain_people"]:
+                    return 1
+                elif self.resource[0]["tech"] + self.resource[0]["money"]>self.resource[1]["tech"] + self.resource[1]["money"]:
+                    return 0
+                elif self.resource[0]["tech"] + self.resource[0]["money"]<self.resource[1]["tech"] + self.resource[1]["money"]:
+                    return 1
+                else:
+                    return 2
 
     def cleanup_phase(self):
         # 单位死亡判定
@@ -456,7 +419,7 @@ class GameMain:
                 skill_cd = self.turn_num - my_information.skill_last_release_time1
                 distance = Get_distance(my_information.position, attack_range)
                 my_attack_type = origin_attribute['base']['attack_type']
-                if (skill_cd >= origin_attribute['base']['skill_cd_1'] and distance <= my_information.shota_range_now):
+                if (skill_cd >= origin_attribute['base']['skill_cd_1'] and distance <= my_information.shot_range_now):
                     for k in self.units:
                         enemy_position = self.units[k].position
                         enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
@@ -476,7 +439,7 @@ class GameMain:
             if (my_information != -1 and enemy_information != -1):
                 skill_cd = self.turn_num - my_information.skill_last_release_time1
                 distance = Get_distance(my_information.position, enemy_information.position)
-                if (skill_cd >= origin_attribute['hacker']['skill_cd_1'] and distance <= my_information.shota_range_now):
+                if (skill_cd >= origin_attribute['hacker']['skill_cd_1'] and distance <= my_information.shot_range_now):
                     if (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 2):
                         enemy_information.reset_attribute(self.buff,hacked_point=enemy_information.hacked_point + 15)
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
@@ -493,7 +456,7 @@ class GameMain:
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['superman']['attack_type']
                 enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
-                if (skill_cd >= origin_attribute['superman']['skill_cd_1'] and distance <= my_information.shota_range_now and (my_information.flag != enemy_information.flag)):
+                if (skill_cd >= origin_attribute['superman']['skill_cd_1'] and distance <= my_information.shot_range_now and (my_information.flag != enemy_information.flag)):
                     if (my_information.motor_type == 0) and (enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2):
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
@@ -507,7 +470,9 @@ class GameMain:
             if (my_information != -1):
                 skill_cd = self.turn_num - my_information.skill_last_release_time2
                 if (skill_cd >= origin_attribute['superman']['skill_cd_2']):
-                    my_information.reset_attribute(self.buff, speed=12, healing_rate=0.02, motor_type=1,skill_last_release_time2=self.turn_num)
+                    #print(my_information.max_speed_now)
+                    my_information.reset_attribute(self.buff, speed=12.0,healing_rate=0.02, motor_type=1,skill_last_release_time2=self.turn_num)
+                    #print(my_information.max_speed_now)
                     #self.superman_skill_release_time[my_information.flag] = self.turn_num
 
         # 主站坦克技能1
@@ -519,7 +484,7 @@ class GameMain:
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['bolt_tank']['attack_type']
                 enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
-                if (skill_cd >= origin_attribute['battle_tank']['skill_cd_1'] and distance <= my_information.shota_range_now and (my_information.flag != enemy_information.flag)):
+                if (skill_cd >= origin_attribute['battle_tank']['skill_cd_1'] and distance <= my_information.shot_range_now and (my_information.flag != enemy_information.flag)):
                     if (enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
                         enemy_information.reset_attribute(self.buff, health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
@@ -533,7 +498,7 @@ class GameMain:
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['bolt_tank']['attack_type']
                 enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
-                if (skill_cd >= origin_attribute['bolt_tank']['skill_cd_1'] and distance <= my_information.shota_range_now):
+                if (skill_cd >= origin_attribute['bolt_tank']['skill_cd_1'] and distance <= my_information.shot_range_now):
                     if (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 3):
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
@@ -550,7 +515,7 @@ class GameMain:
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['nuke_tank']['attack_type']
                 enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
-                if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_1'] and distance <= my_information.shota_range_now and (my_information.flag != enemy_information.flag)):
+                if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_1'] and distance <= my_information.shot_range_now and (my_information.flag != enemy_information.flag)):
                     if (enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
                         enemy_information.reset_attribute(self.buff, health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
@@ -562,7 +527,7 @@ class GameMain:
             if (my_information != -1):
                 skill_cd = self.turn_num - my_information.skill_last_release_time2
                 distance = Get_distance(my_information.position, attack_range)
-                if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_2'] and distance <= my_information.shota_range_now):
+                if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_2'] and distance <= my_information.shot_range_now):
                     for k in self.units:
                         enemy_position = self.units[k].position
                         if (Get_distance2(enemy_position, attack_range) < 2):
@@ -578,7 +543,7 @@ class GameMain:
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['uav']['attack_type']
                 enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
-                if (skill_cd >= origin_attribute['uav']['skill_cd_1'] and distance <= my_information.shota_range_now and (my_information.flag != enemy_information.flag)):
+                if (skill_cd >= origin_attribute['uav']['skill_cd_1'] and distance <= my_information.shot_range_now and (my_information.flag != enemy_information.flag)):
                     if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * ( 1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
                         my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
@@ -591,7 +556,7 @@ class GameMain:
                 skill_cd = self.turn_num - my_information.skill_last_release_time1
                 distance = Get_distance(my_information.position, attack_range)
                 my_attack_type = origin_attribute['eagle']['attack_type']
-                if (skill_cd >= origin_attribute['eagle']['skill_cd_1'] and distance <= my_information.shota_range_now):
+                if (skill_cd >= origin_attribute['eagle']['skill_cd_1'] and distance <= my_information.shot_range_now):
                     for k in self.units:
                         enemy_position = self.units[k].position
                         enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
@@ -608,7 +573,7 @@ class GameMain:
                 skill_cd = self.turn_num - my_information.skill_last_release_time2
                 distance1 = Get_distance(my_information.position, attack_range1)
                 distance2 = Get_distance(my_information.position, attack_range2)
-                if (skill_cd >= origin_attribute['eagle']['skill_cd_2'] and distance1 <= my_information.shota_range_now and distance2 <= my_information.shota_range_now):
+                if (skill_cd >= origin_attribute['eagle']['skill_cd_2'] and distance1 <= my_information.shot_range_now and distance2 <= my_information.shot_range_now):
                     for k in self.units:
                         enemy_position = self.units[k].position
                         if (enemy_position == attack_range1 or enemy_position == attack_range2):
@@ -623,6 +588,8 @@ class GameMain:
 
 
         for k in range(len(order)):
+            #print("-------------------------------")
+            #print(len(order))
             #print(Get_id_information(order[k][1]).Get_type_name())
             if (Get_id_information(order[k][1]).Get_type_name() == 0):#'base'
                 base_skill1(order[k][1], order[k][2], order[k][3])
@@ -957,8 +924,12 @@ class GameMain:
                 u.reset_attribute(self.buff,attack = origin_attribute[name[my_type_name]]['origin_attack'] * (1 + self.buff[u.flag][my_unit_type]['attack_buff']))
                 u.reset_attribute(self.buff,defense = origin_attribute[name[my_type_name]]['origin_defense'] * (1 + self.buff[u.flag][my_unit_type]['defense_buff']))
                 u.reset_attribute(self.buff,shot_range = origin_attribute[name[my_type_name]]['origin_shot_range'] + self.buff[u.flag][my_unit_type]['shot_range_buff'])
-                if(my_unit_type != 0):
+                if(my_unit_type != 0 and my_type_name != 3):
                     u.reset_attribute(self.buff,speed = origin_attribute[name[my_type_name]]['origin_max_speed'] + self.buff[u.flag][my_unit_type]['speed_buff'])
+                if (my_type_name == 3 and u.motor_type == 1 and self.buff[u.flag][my_unit_type]["speed_buff"] >0):
+                    u.reset_attribute(self.buff, speed= 12 + self.buff[u.flag][my_unit_type]['speed_buff'])
+                elif (my_type_name == 3 and u.motor_type == 0 and self.buff[u.flag][my_unit_type]["speed_buff"] >0):
+                    u.reset_attribute(self.buff, speed= 4 + self.buff[u.flag][my_unit_type]['speed_buff'])
                 if(u.health_now + u.healing_rate * u.max_health_now >= u.max_health_now):
                     new_health = u.max_health_now
                 else:
@@ -973,7 +944,7 @@ class GameMain:
                     self.ai1_eagle_flag = 1
                     u.reset_attribute(self.buff, speed=u.max_speed_now - 5)
                 if u.Get_type_name() == 3 and u.motor_type == 1 and self.turn_num - u.skill_last_release_time2 > 20:
-                    u.reset_attribute(self.buff, speed=4, motor_type=0)
+                    u.reset_attribute(self.buff, speed = 4.0, motor_type=0)
         pass
 
     def capture_phase(self):
@@ -1116,6 +1087,7 @@ class GameMain:
                 if things.unit_id == self.capture_instr_0[i][0] and things.flag == 1:  # 如果移动的不是自己的单位
                     pass
         self.capture_instr_0 = list(temp_c_instr_0.values())
+        #print(len(self.capture_instr_1))
         for i in range(len(self.capture_instr_1)):
             for things in self.units.values():
                 if things.unit_id == self.capture_instr_1[i][0] and things.flag == 1:  # 如果移动的是自己的单位
@@ -1123,9 +1095,12 @@ class GameMain:
                 if things.unit_id == self.capture_instr_1[i][0] and things.flag == 0:  # 如果移动的不是自己的单位
                     pass
         self.capture_instr_1 = list(temp_c_instr_1.values())
+        #print(len(self.capture_instr_1))
+        #print("******************************")
 
         temp_p_instr_1 = {}
         temp_p_instr_0 = {}
+        #print(len(self.produce_instr_0))
         for i in range(len(self.produce_instr_0)):
             for things in self.units.values():
                 if things.unit_id == self.produce_instr_0[i] and things.flag == 0:  # 如果移动的是自己的单位
@@ -1133,6 +1108,10 @@ class GameMain:
                 if things.unit_id == self.produce_instr_0[i] and things.flag == 1:  # 如果移动的不是自己的单位
                     pass
         self.produce_instr_0 = list(temp_p_instr_0.values())
+        #print(len(self.produce_instr_0))
+        #print("******************************")
+
+        #print(len(self.produce_instr_1))
         for i in range(len(self.produce_instr_1)):
             for things in self.units.values():
                 if things.unit_id == self.produce_instr_1[i] and things.flag == 1:  # 如果移动的是自己的单位
@@ -1140,9 +1119,12 @@ class GameMain:
                 if things.unit_id == self.produce_instr_1[i] and things.flag == 0:  # 如果移动的不是自己的单位
                     pass
         self.produce_instr_1 = list(temp_p_instr_1.values())
+        #print(len(self.produce_instr_1))
+        #print("******************************")
 
         temp_s_instr_0 = {}
         temp_s_instr_1 = {}
+        #print(len(self.skill_instr_0))
         for i in range(len(self.skill_instr_0)):
             for things in self.units.values():
                 if things.unit_id == self.skill_instr_0[i][1] and things.flag == 0:  # 如果移动的是自己的单位
@@ -1150,6 +1132,10 @@ class GameMain:
                 if things.unit_id == self.skill_instr_0[i][1] and things.flag == 1:  # 如果移动的不是自己的单位
                     pass
         self.skill_instr_0 = list(temp_s_instr_0.values())
+        #print(len(self.skill_instr_0))
+       # print("******************************")
+
+        #print(len(self.skill_instr_1))
         for i in range(len(self.skill_instr_1)):
             for things in self.units.values():
                 if things.unit_id == self.skill_instr_1[i][1] and things.flag == 1:  # 如果移动的是自己的单位
@@ -1157,7 +1143,8 @@ class GameMain:
                 if things.unit_id == self.skill_instr_1[i][1] and things.flag == 0:  # 如果移动的不是自己的单位
                     pass
         self.skill_instr_1 = list(temp_s_instr_1.values())
-
+        #print(len(self.skill_instr_1))
+        #print("******************************")
 
     def next_tick(self):
         # 获取指令，指令检测合法与去重，回合演算
