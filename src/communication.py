@@ -34,7 +34,7 @@ def u_serializer(object_list):
     args = [12345, len(object_list)]
     for obj in object_list:
         for name, value in sorted(vars(obj).items(), key=lambda t: t[0]):
-            if (name[0] == '_') and name != '_UnitObject__unit_type' and name != '_UnitObject__type_name':
+            if (name[0] == '_') and name != '_UnitObject__unit_type' and name != '_UnitObject__type_name' or name=='motor_type':
                 continue
             elif (name == '_UnitObject__unit_type' or name == '_UnitObject__type_name'):
                 name = name[-9:]
@@ -144,7 +144,7 @@ class IOHandler(asyncore.dispatcher):
         args = [0, len(object_list),c_unit_num]
         for obj in object_list:
             for name, value in sorted(vars(obj).items(), key=lambda t: t[0]):
-                if (name[0]=='_') and name!='_UnitObject__unit_type' and name!='_UnitObject__type_name':
+                if (name[0]=='_') and name!='_UnitObject__unit_type' and name!='_UnitObject__type_name' or name=='motor_type':
                     continue
                 elif (name=='_UnitObject__unit_type' or name == '_UnitObject__type_name'):
                     name=name[-9:]
