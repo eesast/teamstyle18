@@ -455,7 +455,7 @@ class GameMain:
                 skill_cd = self.turn_num - my_information.skill_last_release_time1
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['superman']['attack_type']
-                enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
+                enemy_defense_type = origin_attribute[name[enemy_information.Get_type_name()]]['defense_type']
                 if (skill_cd >= origin_attribute['superman']['skill_cd_1'] and distance <= my_information.shot_range_now and (my_information.flag != enemy_information.flag)):
                     if (my_information.motor_type == 0) and (enemy_information.Get_unit_type() == 0 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 2):
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
@@ -483,7 +483,7 @@ class GameMain:
                 skill_cd = self.turn_num - my_information.skill_last_release_time1
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['bolt_tank']['attack_type']
-                enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
+                enemy_defense_type = origin_attribute[name[enemy_information.Get_type_name()]]['defense_type']
                 if (skill_cd >= origin_attribute['battle_tank']['skill_cd_1'] and distance <= my_information.shot_range_now and (my_information.flag != enemy_information.flag)):
                     if (enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
                         enemy_information.reset_attribute(self.buff, health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
@@ -497,7 +497,7 @@ class GameMain:
                 skill_cd = self.turn_num - my_information.skill_last_release_time1
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['bolt_tank']['attack_type']
-                enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
+                enemy_defense_type = origin_attribute[name[enemy_information.Get_type_name()]]['defense_type']
                 if (skill_cd >= origin_attribute['bolt_tank']['skill_cd_1'] and distance <= my_information.shot_range_now):
                     if (my_information.flag != enemy_information.flag) and (enemy_information.Get_unit_type() == 3):
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
@@ -514,7 +514,7 @@ class GameMain:
                 skill_cd = self.turn_num - my_information.skill_last_release_time1
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['nuke_tank']['attack_type']
-                enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
+                enemy_defense_type = origin_attribute[name[enemy_information.Get_type_name()]]['defense_type']
                 if (skill_cd >= origin_attribute['nuke_tank']['skill_cd_1'] and distance <= my_information.shot_range_now and (my_information.flag != enemy_information.flag)):
                     if (enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
                         enemy_information.reset_attribute(self.buff, health=enemy_information.health_now - my_information.attack_now * (1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
@@ -542,7 +542,7 @@ class GameMain:
                 skill_cd = self.turn_num - my_information.skill_last_release_time1
                 distance = Get_distance(my_information.position, enemy_information.position)
                 my_attack_type = origin_attribute['uav']['attack_type']
-                enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
+                enemy_defense_type = origin_attribute[name[enemy_information.Get_type_name()]]['defense_type']
                 if (skill_cd >= origin_attribute['uav']['skill_cd_1'] and distance <= my_information.shot_range_now and (my_information.flag != enemy_information.flag)):
                     if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1 or enemy_information.Get_unit_type() == 0):
                         enemy_information.reset_attribute(self.buff,health=enemy_information.health_now - my_information.attack_now * ( 1 - enemy_information.defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
