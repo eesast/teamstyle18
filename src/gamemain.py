@@ -559,7 +559,7 @@ class GameMain:
                 if (skill_cd >= origin_attribute['eagle']['skill_cd_1'] and distance <= my_information.shot_range_now):
                     for k in self.units:
                         enemy_position = self.units[k].position
-                        enemy_defense_type = origin_attribute[name[self.units[k].Get_type_name()]]['defense_type']
+                        enemy_defense_type = origin_attribute[name[enemy_information.Get_type_name()]]['defense_type']
                         if (enemy_position == attack_range):
                             self.units[k].reset_attribute(self.buff,health=self.units[k].health_now - my_information.attack_now * (1 - self.units[k].defense_now / 1000)*attack_percentage[my_attack_type][enemy_defense_type])
                             my_information.reset_attribute(self.buff, skill_last_release_time1=self.turn_num)
