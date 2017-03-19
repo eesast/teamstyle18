@@ -40,7 +40,7 @@ class GameMain:
     capture_instr_1 = []
     buff = {
         unit.FLAG_0: {
-            unit.BASE:{'health_buff': 0.0, 'attack_buff': 0.0, 'tech_buff': 0.0, 'defense_buff': 0.0,
+            unit.BASE: {'health_buff': 0.0, 'attack_buff': 0.0, 'tech_buff': 0.0, 'defense_buff': 0.0,
                             'shot_range_buff': 0.0, 'economy_buff': 0.0},
             unit.INFANTRY: {'health_buff': 0.0, 'attack_buff': 0.0, 'speed_buff': 0.0, 'defense_buff': 0.0,
                             'shot_range_buff': 0.0, 'produce_buff': 0.0},
@@ -901,16 +901,16 @@ class GameMain:
             if unit_id.flag == -1:
                 continue
             if unit_id.Get_type_name() == 21:
-                if self.buff[unit_id.flag][0]['economy_buff'] > 0:
+                if self.buff[unit_id.flag][0]['economy_buff'] > 0.1: #-1.0+1.0不一定为0，所以可以稍微大一点，因为最小有效值是1.0
                     self.resource[unit_id.flag]["money"] += 50
-                elif self.buff[unit_id.flag][0]['economy_buff'] < 0:
+                elif self.buff[unit_id.flag][0]['economy_buff'] < -0.1:
                     self.resource[unit_id.flag]["money"] += 40
                 else:
                     self.resource[unit_id.flag]["money"] += 45
             if unit_id.Get_type_name() == 20:
-                if self.buff[unit_id.flag][0]['tech_buff'] > 0:
+                if self.buff[unit_id.flag][0]['tech_buff'] > 0.1:
                     self.resource[unit_id.flag]["tech"] += 25
-                elif self.buff[unit_id.flag][0]['tech_buff'] < 0:
+                elif self.buff[unit_id.flag][0]['tech_buff'] < -0.1:
                     self.resource[unit_id.flag]["tech"] += 15
                 else:
                     self.resource[unit_id.flag]["tech"] += 20
@@ -978,14 +978,20 @@ class GameMain:
             if current_pointer[obj.unit_id] == 0:
                 pass
 
+        #先将Buff置0，然后不同建筑加和，避免丢失建筑后还遗留Buff
+        for flag in [unit.FLAG_0, unit.FLAG_1]:
+            for unit_type in [unit.BASE, unit.INFANTRY, unit.VEHICLE, unit.AIRCRAFT]:
+                for key in self.buff[flag][unit_type]:
+                    self.buff[flag][unit_type][key] = 0.0
+
         for units in unit_building:#根据建筑的flag结算被动效果
             if units.Get_type_name() == 9:
                 if units.flag == 0:
-                    self.buff[unit.FLAG_0][unit.BASE]['tech_buff'] = 1.0
-                    self.buff[unit.FLAG_1][unit.BASE]['tech_buff'] = -1.0
+                    self.buff[unit.FLAG_0][unit.BASE]['tech_buff'] += 1.0
+                    self.buff[unit.FLAG_1][unit.BASE]['tech_buff'] += -1.0
                 if units.flag == 1:
-                    self.buff[unit.FLAG_1][unit.BASE]['tech_buff'] = 1.0
-                    self.buff[unit.FLAG_0][unit.BASE]['tech_buff'] = -1.0
+                    self.buff[unit.FLAG_1][unit.BASE]['tech_buff'] += 1.0
+                    self.buff[unit.FLAG_0][unit.BASE]['tech_buff'] += -1.0
             if units.Get_type_name() == 10:#生化研究院
                 if units.flag == 0:
                     self.buff[unit.FLAG_0][unit.INFANTRY]['health_buff'] = 0.5
@@ -1033,11 +1039,11 @@ class GameMain:
                     self.buff[unit.FLAG_1][unit.BASE]['attack_buff'] = 1.0
             if units.Get_type_name() == 17:  # 社会金融学院
                 if units.flag == 0:
-                    self.buff[unit.FLAG_0][unit.BASE]['economy_buff'] = 1.0
-                    self.buff[unit.FLAG_1][unit.BASE]['economy_buff'] = -1.0
+                    self.buff[unit.FLAG_0][unit.BASE]['economy_buff'] += 1.0
+                    self.buff[unit.FLAG_1][unit.BASE]['economy_buff'] += -1.0
                 if units.flag == 1:
-                    self.buff[unit.FLAG_1][unit.BASE]['economy_buff'] = 1.0
-                    self.buff[unit.FLAG_0][unit.BASE]['economy_buff'] = -1.0
+                    self.buff[unit.FLAG_1][unit.BASE]['economy_buff'] += 1.0
+                    self.buff[unit.FLAG_0][unit.BASE]['economy_buff'] += -1.0
             if units.Get_type_name() == 18:  # 特殊材料学院
                 if units.flag == 0:
                     self.buff[unit.FLAG_0][unit.INFANTRY]['speed_buff'] = 5.0
@@ -1045,11 +1051,11 @@ class GameMain:
                     self.buff[unit.FLAG_1][unit.INFANTRY]['speed_buff'] = 5.0
             if units.Get_type_name() == 19:  # 纳米研究学院
                 if units.flag == 0:
-                    self.ai0_healing_flag =1
+                    self.ai0_healing_flag = 1
                 if units.flag == 1:
-                    self.ai1_healing_flag =1
+                    self.ai1_healing_flag = 1
             for u in self.units.values():
-                if ((u.flag == 0 and self.ai0_healing_flag ==1) or (u.flag ==1 and self.ai1_healing_flag ==1)) and (u.Get_unit_type() == 2 or u.Get_unit_type() ==3):
+                if ((u.flag == 0 and self.ai0_healing_flag == 1) or (u.flag == 1 and self.ai1_healing_flag == 1)) and (u.Get_unit_type() == 2 or u.Get_unit_type() == 3):
                     u.reset_attribute(self.buff, healing_rate = 0.025)
                 else:
                     u.reset_attribute(self.buff, healing_rate = 0)
