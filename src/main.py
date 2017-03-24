@@ -9,12 +9,24 @@ import threading
 import asyncore
 import os
 import sys
-
-filename = 'ts18_' + time.strftime('%m%d%H%M%S') + '.rpy'
+#
+lines=[]
 connection_port=18223
+host='127.0.0.1'
+if os.path.exists('settings.ini'):
+    with open('settings.ini','r')as f:
+        lines=f.readlines()
+if len(lines)>0:
+    for x in lines:
+        if "port" in x.replace(" ",""):
+            connection_port=int(x.replace(" ","").split('=')[1])
+        if "host" in x.replace(" ",""):
+            host =x.replace(" ", "").replace("\n", "").replace("\r", "").split('=')[1]
+filename = 'ts18_' + time.strftime('%m%d%H%M%S') + '.rpy'
+
 if (len(sys.argv)>1):
     filename = sys.argv[1]
-comm_server=MainServer(('127.0.0.1',connection_port))
+comm_server=MainServer((host,connection_port))
 game=GameMain()
 server_thread=threading.Thread(target=asyncore.loop)
 server_thread.start()
