@@ -28,6 +28,8 @@ class GameMain:
     ai1_healing_flag = 0
     ai0_eagle_flag = 0  # 鹰式战机技能2是否启用
     ai1_eagle_flag = 0  # 鹰式战机技能2是否启用
+    ai0_shield_flag = [0,-1,-1]
+    ai1_shield_flag = [0,-1,-1]
     turn_num = 0  # 回合数
     phase_num = 0  # 回合阶段指示
     skill_instr_0 = []  # ai0的当前回合指令
@@ -584,6 +586,48 @@ class GameMain:
                             if my_information.flag == 1:
                                 self.ai1_eagle_flag = 1
 
+        # 建筑学院技能2
+        def construct_skill2(id, attack_range_x1, attack_range_y1, attack_range_x2, attack_range_y2):
+            k = (attack_range_y2 - attack_range_y1) / (attack_range_x2 - attack_range_x1)
+            b = attack_range_y1 -k * attack_range_x1
+            my_information = Get_id_information(id)
+            if (my_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time2
+                if skill_cd >= origin_attribute['build_lab']['skill_cd_2']:
+                    for k in self.units:
+                        enemy_position_x1 = self.units[k].position[0]
+                        enemy_position_y1 = self.units[k].position[1]
+                        distance= abs(k*enemy_position_x1 - enemy_position_y1 +b) / ((1+k*k) ** 0.5)
+                        if (distance <= 2):
+                            self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 250)
+                            my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
+
+        # 社会心理学院技能2
+        def society_skill2(id, attack_id):
+            my_information = Get_id_information(id)
+            enemy_information = Get_id_information(attack_id)
+            if (my_information != -1 and enemy_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time2
+                if (skill_cd >= origin_attribute['finance_lab']['skill_cd_2'] and my_information.flag != enemy_information.flag):
+                    if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1):
+                        if(enemy_information.Get_type_name() != 3 and enemy_information.Get_type_name() != 6 and enemy_information.Get_type_name() != 8):
+                            if self.resource[my_information.flag]['remain_people'] + unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost'] < 100:
+                                self.resource[my_information.flag]['remain_people'] += unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost']
+                                self.resource[enemy_information.flag]['remain_people'] -= unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost']
+                                my_information.reset_attribute(self.buff, flag = my_information.flag, skill_last_release_time2=self.turn_num)
+
+        # 特殊材料学院技能2
+        def material_skill2(id, target_id):
+            my_information = Get_id_information(id)
+            target_information = Get_id_information(target_id)
+            if (my_information != -1 and target_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time2
+                if (skill_cd >= origin_attribute['material_']['skill_cd_2']):
+                    target_information.reset_attribute(self.buff, defense = 1000, skill_last_release_time2=self.turn_num)
+                    if target_information.flag == 0:
+                        self.ai0_shield_flag = [1,target_id,self.turn_num]
+                    elif target_information.flag == 1:
+                        self.ai1_shield_flag = [1,target_id,self.turn_num]
 
 
 
@@ -914,6 +958,7 @@ class GameMain:
                     self.resource[unit_id.flag]["tech"] += 15
                 else:
                     self.resource[unit_id.flag]["tech"] += 20
+
         for u in self.units.values():
             if  u.Get_unit_type() != 4:
                 health_percentage = u.health_now/u.max_health_now
@@ -945,6 +990,17 @@ class GameMain:
                     u.reset_attribute(self.buff, speed=u.max_speed_now - 5)
                 if u.Get_type_name() == 3 and u.motor_type == 1 and self.turn_num - u.skill_last_release_time2 > 20:
                     u.reset_attribute(self.buff, speed = 4.0, motor_type=0)
+
+        if self.ai0_shield_flag[0] == 1 and self.turn_num - self.ai0_shield_flag[2] > unit.origin_attribute['material_lab']['skill_cd_2']:
+            for u in self.units.values()
+                if u.unit_id == self.ai0_shield_flag[1]:
+                    u.reset_attribute(self.buff, defense = unit.origin_attribute[name[u.Get_type_name()]]['origin_defense'])
+                    self.ai0_shield_flag[0] = 0
+        if self.ai1_shield_flag[0] == 1 and self.turn_num - self.ai1_shield_flag[2] > unit.origin_attribute['material_lab']['skill_cd_2']:
+            for u in self.units.values()
+                if u.unit_id == self.ai1_shield_flag[1]:
+                    u.reset_attribute(self.buff, defense = unit.origin_attribute[name[u.Get_type_name()]]['origin_defense'])
+                    self.ai1_shield_flag[0] = 0
         pass
 
     def capture_phase(self):
@@ -1169,6 +1225,7 @@ class GameMain:
             self.produce_phase()
             self.resource_phase()
             self.capture_phase()
+            self.cleanup_phase()
         check_timeup =self.timeup_determine()
         #print("after HP0:", self.hqs[0].health_now, "after HP1:", self.hqs[1].health_now)
         ai0 = {}
