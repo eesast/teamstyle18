@@ -992,12 +992,12 @@ class GameMain:
                     u.reset_attribute(self.buff, speed = 4.0, motor_type=0)
 
         if self.ai0_shield_flag[0] == 1 and self.turn_num - self.ai0_shield_flag[2] > unit.origin_attribute['material_lab']['skill_cd_2']:
-            for u in self.units.values()
+            for u in self.units.values():
                 if u.unit_id == self.ai0_shield_flag[1]:
                     u.reset_attribute(self.buff, defense = unit.origin_attribute[name[u.Get_type_name()]]['origin_defense'])
                     self.ai0_shield_flag[0] = 0
         if self.ai1_shield_flag[0] == 1 and self.turn_num - self.ai1_shield_flag[2] > unit.origin_attribute['material_lab']['skill_cd_2']:
-            for u in self.units.values()
+            for u in self.units.values():
                 if u.unit_id == self.ai1_shield_flag[1]:
                     u.reset_attribute(self.buff, defense = unit.origin_attribute[name[u.Get_type_name()]]['origin_defense'])
                     self.ai1_shield_flag[0] = 0
