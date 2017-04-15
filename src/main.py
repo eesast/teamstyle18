@@ -42,7 +42,7 @@ while (game.is_end==False):
         comm_server.send_to_player(list(game.units.values()))
     else:
         for unit in game.units.values():
-            if unit.Get_unit_type()!=4:
+            if unit.Get_unit_type()!=4 or  unit.Get_type_name()==16 or  unit.Get_type_name()==17 or  unit.Get_type_name()==18 or  unit.Get_type_name()==19:
                 other_unit.append(unit)
             else:
                 changed_building.add((unit.unit_id,unit.flag,unit.Get_type_name(),unit.position[0],unit.position[1]))
