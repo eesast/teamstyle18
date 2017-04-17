@@ -10,9 +10,10 @@ MAXROUND = 1000
 name=['base','meat','hacker','superman','battle_tank','bolt_tank','nuke_tank','uav','eagle',
             'hack_lab','bid_lab','car_lab','elec_lab','radiation_lab','uav_lab','aircraft_lab',
            'build_lab','finance_lab','material_lab','nano_lab','teach_building','bank']
+type=[0,1,1,1,2,2,2,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4]
 attack_percentage={
                     unit.MACHINEGUN: {unit.FORT:0.25,unit.UNARMORED:2.00,unit.LIGHT:1.00,unit.MEDIUM:0.75,unit.HEAVY:0.50},
-                    unit.ELEC:       {unit.FORT:0.75,unit.UNARMORED:0.00,unit.LIGHT:1.50,unit.MEDIUM:1.00,unit.HEAVY:0.75},
+                    unit.ELEC:       {unit.FORT:0.75,unit.UNARMORED:0.00,unit.LIGHT:1.50,unit.MEDIUM:1.00,unit.HEAVY:0.50},
                     unit.ARTILLERY:  {unit.FORT:1.00,unit.UNARMORED:0.50,unit.LIGHT:1.00,unit.MEDIUM:1.25,unit.HEAVY:0.75},
                     unit.PENETRATING:{unit.FORT:1.00,unit.UNARMORED:0.25,unit.LIGHT:0.75,unit.MEDIUM:0.75,unit.HEAVY:1.50},
                     unit.EXPLOSION:  {unit.FORT:1.50,unit.UNARMORED:0.75,unit.LIGHT:0.50,unit.MEDIUM:0.50,unit.HEAVY:1.25}
@@ -600,7 +601,7 @@ class GameMain:
                         distance= abs(k*enemy_position_x1 - enemy_position_y1 +b) / ((1+k*k) ** 0.5)
                         if (distance <= 2):
                             self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 250)
-                            my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
+                    my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         # 社会心理学院技能2
         def society_skill2(id, attack_id):
@@ -622,14 +623,31 @@ class GameMain:
             target_information = Get_id_information(target_id)
             if (my_information != -1 and target_information != -1):
                 skill_cd = self.turn_num - my_information.skill_last_release_time2
-                if (skill_cd >= origin_attribute['material_']['skill_cd_2']):
+                if (skill_cd >= origin_attribute['material_lab']['skill_cd_2']):
                     target_information.reset_attribute(self.buff, defense = 1000, skill_last_release_time2=self.turn_num)
                     if target_information.flag == 0:
                         self.ai0_shield_flag = [1,target_id,self.turn_num]
                     elif target_information.flag == 1:
                         self.ai1_shield_flag = [1,target_id,self.turn_num]
 
-
+        # 纳米研究科技技能2
+        def nano_skill2(id, produce_num):
+            my_information = Get_id_information(id)
+            if (my_information != -1):
+                skill_cd = self.turn_num - my_information.skill_last_release_time2
+                ai_id = my_information.flag
+                produce_name=name[produce_num]
+                produce_type=type[produce_num]
+                if (skill_cd >= origin_attribute['nano_lab']['skill_cd_2']):
+                    if self.resource[ai_id]['remain_people'] < unit.origin_attribute[produce_name]['people_cost'] or self.resource[ai_id]['money'] < unit.origin_attribute[produce_name][ 'money_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']) or self.resource[ai_id]['tech'] < unit.origin_attribute[produce_name]['tech_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']):
+                        pass
+                    else:
+                        weapon = unit.UnitObject(self.total_id, ai_id, produce_name,my_information.position,self.buff)
+                        self.resource[ai_id]['remain_people'] -= unit.origin_attribute[produce_name]['people_cost']
+                        self.resource[ai_id]['money'] -= int(unit.origin_attribute[produce_name]['money_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']))
+                        self.resource[ai_id]['tech'] -= int(unit.origin_attribute[produce_name]['tech_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']))
+                        self.units[self.total_id] = weapon
+                        self.total_id += 1
 
         for k in range(len(order)):
             #print("-------------------------------")
@@ -667,6 +685,14 @@ class GameMain:
             elif (Get_id_information(order[k][1]).Get_type_name() == 3 and order[k][0]==2):#'superman'
                 superman_skill2(order[k][1])
                 #print('use skill0')
+            elif (Get_id_information(order[k][1]).Get_type_name() == 16):
+                construct_skill2(order[k][1],order[k][2],order[k][3],order[k][4],order[k][5])
+            elif (Get_id_information(order[k][1]).Get_type_name() == 17):
+                society_skill2(order[k][1],order[k][2])
+            elif (Get_id_information(order[k][1]).Get_type_name() == 18):
+                material_skill2(order[k][1],order[k][2])
+            elif (Get_id_information(order[k][1]).Get_type_name() == 19):
+                nano_skill2(order[k][1],order[k][2])
         pass
 
     def move_phase(self):
@@ -955,9 +981,21 @@ class GameMain:
                 if self.buff[unit_id.flag][0]['tech_buff'] > 0.1:
                     self.resource[unit_id.flag]["tech"] += 25
                 elif self.buff[unit_id.flag][0]['tech_buff'] < -0.1:
+
                     self.resource[unit_id.flag]["tech"] += 15
                 else:
                     self.resource[unit_id.flag]["tech"] += 20
+
+        if self.ai0_shield_flag[0] == 1 and self.turn_num - self.ai0_shield_flag[2] > 10:
+            for u in self.units.values():
+                if u.unit_id == self.ai0_shield_flag[1]:
+                    u.reset_attribute(self.buff, defense = unit.origin_attribute[name[u.Get_type_name()]]['origin_defense'])
+                    self.ai0_shield_flag[0] = 0
+        if self.ai1_shield_flag[0] == 1 and self.turn_num - self.ai1_shield_flag[2] > 10:
+            for u in self.units.values():
+                if u.unit_id == self.ai1_shield_flag[1]:
+                    u.reset_attribute(self.buff, defense = unit.origin_attribute[name[u.Get_type_name()]]['origin_defense'])
+                    self.ai1_shield_flag[0] = 0.
 
         for u in self.units.values():
             if  u.Get_unit_type() != 4:
@@ -967,7 +1005,12 @@ class GameMain:
                 u.reset_attribute(self.buff,max_health = origin_attribute[name[my_type_name]]['origin_max_health'] *(1 + self.buff[u.flag][my_unit_type]['health_buff']))
                 u.reset_attribute(self.buff,health = u.max_health_now * health_percentage)
                 u.reset_attribute(self.buff,attack = origin_attribute[name[my_type_name]]['origin_attack'] * (1 + self.buff[u.flag][my_unit_type]['attack_buff']))
-                u.reset_attribute(self.buff,defense = origin_attribute[name[my_type_name]]['origin_defense'] * (1 + self.buff[u.flag][my_unit_type]['defense_buff']))
+                if u.flag==0 and u.unit_id==self.ai0_shield_flag[1]:
+                    pass
+                elif u.flag==1 and u.unit_id==self.ai1_shield_flag[1]:
+                    pass
+                else:
+                    u.reset_attribute(self.buff,defense = origin_attribute[name[my_type_name]]['origin_defense'] * (1 + self.buff[u.flag][my_unit_type]['defense_buff']))
                 u.reset_attribute(self.buff,shot_range = origin_attribute[name[my_type_name]]['origin_shot_range'] + self.buff[u.flag][my_unit_type]['shot_range_buff'])
                 if(my_unit_type != 0 and my_type_name != 3):
                     u.reset_attribute(self.buff,speed = origin_attribute[name[my_type_name]]['origin_max_speed'] + self.buff[u.flag][my_unit_type]['speed_buff'])
@@ -991,16 +1034,7 @@ class GameMain:
                 if u.Get_type_name() == 3 and u.motor_type == 1 and self.turn_num - u.skill_last_release_time2 > 20:
                     u.reset_attribute(self.buff, speed = 4.0, motor_type=0)
 
-        if self.ai0_shield_flag[0] == 1 and self.turn_num - self.ai0_shield_flag[2] > unit.origin_attribute['material_lab']['skill_cd_2']:
-            for u in self.units.values():
-                if u.unit_id == self.ai0_shield_flag[1]:
-                    u.reset_attribute(self.buff, defense = unit.origin_attribute[name[u.Get_type_name()]]['origin_defense'])
-                    self.ai0_shield_flag[0] = 0
-        if self.ai1_shield_flag[0] == 1 and self.turn_num - self.ai1_shield_flag[2] > unit.origin_attribute['material_lab']['skill_cd_2']:
-            for u in self.units.values():
-                if u.unit_id == self.ai1_shield_flag[1]:
-                    u.reset_attribute(self.buff, defense = unit.origin_attribute[name[u.Get_type_name()]]['origin_defense'])
-                    self.ai1_shield_flag[0] = 0
+
         pass
 
     def capture_phase(self):
@@ -1089,7 +1123,7 @@ class GameMain:
             if units.Get_type_name() == 16: #建筑土木学院
                 if units.flag == 0:
                     self.buff[unit.FLAG_0][unit.BASE]['defense_buff'] = 2.0
-                    self.buff[unit.FLAG_0][unit.BASE]['attack_buff'] = 1.0
+                    self.buff[unit.FLAG_0][unit.BASE]['attack_buff'] = 0.5
                 if units.flag == 1:
                     self.buff[unit.FLAG_1][unit.BASE]['defense_buff'] = 2.0
                     self.buff[unit.FLAG_1][unit.BASE]['attack_buff'] = 1.0
