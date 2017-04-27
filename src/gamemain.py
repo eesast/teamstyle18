@@ -693,7 +693,7 @@ class GameMain:
                 superman_skill2(order[k][1])
                 #print('use skill0')
             elif (Get_id_information(order[k][1]).Get_type_name() == 16):
-                construct_skill2(order[k][1],order[k][2],order[k][3],order[k][4],order[k][5])
+                construct_skill2(order[k][1],order[k][2],order[k][3])
             elif (Get_id_information(order[k][1]).Get_type_name() == 17):
                 society_skill2(order[k][1],order[k][2])
             elif (Get_id_information(order[k][1]).Get_type_name() == 18):
