@@ -636,18 +636,27 @@ class GameMain:
             if (my_information != -1):
                 skill_cd = self.turn_num - my_information.skill_last_release_time2
                 ai_id = my_information.flag
-                produce_name=name[produce_num]
-                produce_type=type[produce_num]
-                if (skill_cd >= origin_attribute['nano_lab']['skill_cd_2']):
-                    if self.resource[ai_id]['remain_people'] < unit.origin_attribute[produce_name]['people_cost'] or self.resource[ai_id]['money'] < unit.origin_attribute[produce_name][ 'money_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']) or self.resource[ai_id]['tech'] < unit.origin_attribute[produce_name]['tech_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']):
-                        pass
-                    else:
-                        weapon = unit.UnitObject(self.total_id, ai_id, produce_name,my_information.position,self.buff)
-                        self.resource[ai_id]['remain_people'] -= unit.origin_attribute[produce_name]['people_cost']
-                        self.resource[ai_id]['money'] -= int(unit.origin_attribute[produce_name]['money_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']))
-                        self.resource[ai_id]['tech'] -= int(unit.origin_attribute[produce_name]['tech_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']))
-                        self.units[self.total_id] = weapon
-                        self.total_id += 1
+                if produce_num >= 1 and produce_num <= 8:
+                    produce_name=name[produce_num]
+                    produce_type=type[produce_num]
+                    if (skill_cd >= origin_attribute['nano_lab']['skill_cd_2']):
+                        if self.resource[ai_id]['remain_people'] < unit.origin_attribute[produce_name]['people_cost'] or self.resource[ai_id]['money'] < unit.origin_attribute[produce_name][ 'money_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']) or self.resource[ai_id]['tech'] < unit.origin_attribute[produce_name]['tech_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']):
+                            pass
+                        elif produce_num != 3 and produce_num != 6 and produce_num != 8:
+                            weapon = unit.UnitObject(self.total_id, ai_id, produce_name,my_information.position,self.buff)
+                            self.resource[ai_id]['remain_people'] -= unit.origin_attribute[produce_name]['people_cost']
+                            self.resource[ai_id]['money'] -= int(unit.origin_attribute[produce_name]['money_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']))
+                            self.resource[ai_id]['tech'] -= int(unit.origin_attribute[produce_name]['tech_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']))
+                            self.units[self.total_id] = weapon
+                            self.total_id += 1
+                        elif self.amount_limit[ai_id][produce_name] == False:
+                            weapon = unit.UnitObject(self.total_id, ai_id, produce_name, my_information.position,self.buff)
+                            self.resource[ai_id]['remain_people'] -= unit.origin_attribute[produce_name]['people_cost']
+                            self.resource[ai_id]['money'] -= int(unit.origin_attribute[produce_name]['money_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']))
+                            self.resource[ai_id]['tech'] -= int(unit.origin_attribute[produce_name]['tech_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']))
+                            self.units[self.total_id] = weapon
+                            self.total_id += 1
+                            self.amount_limit[ai_id][produce_name] ==True
 
         for k in range(len(order)):
             #print("-------------------------------")
