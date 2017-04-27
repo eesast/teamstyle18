@@ -588,9 +588,7 @@ class GameMain:
                         self.ai1_eagle_flag = 1
 
         # 建筑学院技能2
-        def construct_skill2(id, attack_range_x1, attack_range_y1, attack_range_x2, attack_range_y2):
-            k = (attack_range_y2 - attack_range_y1) / (attack_range_x2 - attack_range_x1)
-            b = attack_range_y1 -k * attack_range_x1
+        def construct_skill2(id, attack_range_x1, attack_range_y1):
             my_information = Get_id_information(id)
             if (my_information != -1):
                 skill_cd = self.turn_num - my_information.skill_last_release_time2
@@ -598,8 +596,8 @@ class GameMain:
                     for k in self.units:
                         enemy_position_x1 = self.units[k].position[0]
                         enemy_position_y1 = self.units[k].position[1]
-                        distance= abs(k*enemy_position_x1 - enemy_position_y1 +b) / ((1+k*k) ** 0.5)
-                        if (distance <= 2):
+                        distance= abs(abs(attack_range_x1-enemy_position_y1)-abs(attack_range_y1-enemy_position_y1))
+                        if (distance <= 1):
                             self.units[k].reset_attribute(self.buff, health=self.units[k].health_now - 250)
                     my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
