@@ -654,13 +654,13 @@ class GameMain:
                             self.resource[ai_id]['tech'] -= int(unit.origin_attribute[produce_name]['tech_cost'] * (1 - self.buff[ai_id][produce_type]['produce_buff']))
                             self.units[self.total_id] = weapon
                             self.total_id += 1
-                            self.amount_limit[ai_id][produce_name] ==True
+                            self.amount_limit[ai_id][produce_name] = True
 
         for k in range(len(order)):
             #print("-------------------------------")
             #print(len(order))
             #print(Get_id_information(order[k][1]).Get_type_name())
-            if (Get_id_information(order[k][1]).Get_type_name() == 0):#'base'
+            if (Get_id_information(order[k][1]).Get_type_name() == 0 and  len(order[k]) >= 4):#'base'
                 base_skill1(order[k][1], order[k][2], order[k][3])
             elif (Get_id_information(order[k][1]).Get_type_name() == 5):#'bolt_tank'
                 bolt_tank_skill1(order[k][1], order[k][2])
@@ -677,13 +677,13 @@ class GameMain:
             elif (Get_id_information(order[k][1]).Get_type_name() == 6 and order[k][0]==1):#'nuke_tank'
                 nuke_tank_skill1(order[k][1], order[k][2])
                 #print('use skill5')
-            elif (Get_id_information(order[k][1]).Get_type_name() == 6 and order[k][0]==2):#'nuke_tank'
+            elif (Get_id_information(order[k][1]).Get_type_name() == 6 and order[k][0]==2 and len(order[k])>=4):#'nuke_tank'
                 nuke_tank_skill2(order[k][1], order[k][2],order[k][3])
                 #print('use skill6')
-            elif (Get_id_information(order[k][1]).Get_type_name() == 8 and order[k][0]==1):#'eagle'
+            elif (Get_id_information(order[k][1]).Get_type_name() == 8 and order[k][0]==1 and len(order[k])>=4):#'eagle'
                 eagle_skill1(order[k][1], order[k][2],order[k][3])
                 #print('use skill7')
-            elif (Get_id_information(order[k][1]).Get_type_name() == 8 and order[k][0]==2):#'eagle'
+            elif (Get_id_information(order[k][1]).Get_type_name() == 8 and order[k][0]==2 and len(order[k])>=6):#'eagle'
                 eagle_skill2(order[k][1], order[k][2], order[k][3],order[k][4], order[k][5])
                 #print('use skill8')
             elif (Get_id_information(order[k][1]).Get_type_name() == 3 and order[k][0]==1):#'superman'
@@ -692,7 +692,7 @@ class GameMain:
             elif (Get_id_information(order[k][1]).Get_type_name() == 3 and order[k][0]==2):#'superman'
                 superman_skill2(order[k][1])
                 #print('use skill0')
-            elif (Get_id_information(order[k][1]).Get_type_name() == 16):
+            elif (Get_id_information(order[k][1]).Get_type_name() == 16 and len(order[k])>=4):
                 construct_skill2(order[k][1],order[k][2],order[k][3])
             elif (Get_id_information(order[k][1]).Get_type_name() == 17):
                 society_skill2(order[k][1],order[k][2])
