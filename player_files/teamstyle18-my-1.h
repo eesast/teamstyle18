@@ -30,7 +30,7 @@ enum BuffType
 	PRODUCE		//生产BUFF，基地该项对应经济BUFF
 };
 
-enum attack_type
+enum defense_type
 {
 	FORT, //城甲
 	UNARMORED, //无甲
@@ -39,7 +39,7 @@ enum attack_type
 	HEAVY //重甲
 };
 
-enum defense_type
+enum attack_type
 {
 	MACHINEGUN, //机枪
 	ELEC,  //电磁
