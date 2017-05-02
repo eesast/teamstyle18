@@ -610,10 +610,11 @@ class GameMain:
                 if (skill_cd >= origin_attribute['finance_lab']['skill_cd_2'] and my_information.flag != enemy_information.flag):
                     if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1):
                         if(enemy_information.Get_type_name() != 3 and enemy_information.Get_type_name() != 6 and enemy_information.Get_type_name() != 8):
-                            if self.resource[my_information.flag]['remain_people'] + unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost'] < 100:
+                            if  self.resource[my_information.flag]['remain_people'] + unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost'] < 100:
                                 self.resource[my_information.flag]['remain_people'] += unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost']
                                 self.resource[enemy_information.flag]['remain_people'] -= unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost']
-                                my_information.reset_attribute(self.buff, flag = my_information.flag, skill_last_release_time2=self.turn_num)
+                                enemy_information.reset_attribute(self.buff, flag = my_information.flag)
+                    my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         # 特殊材料学院技能2
         def material_skill2(id, target_id):
@@ -627,6 +628,7 @@ class GameMain:
                         self.ai0_shield_flag = [1,target_id,self.turn_num]
                     elif target_information.flag == 1:
                         self.ai1_shield_flag = [1,target_id,self.turn_num]
+                    my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         # 纳米研究科技技能2
         def nano_skill2(id, produce_num):
@@ -655,6 +657,7 @@ class GameMain:
                             self.units[self.total_id] = weapon
                             self.total_id += 1
                             self.amount_limit[ai_id][produce_name] = True
+                        my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
         for k in range(len(order)):
             #print("-------------------------------")
