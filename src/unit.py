@@ -140,6 +140,8 @@ class UnitObject(object):
 
     #写了一个接口虽然不觉得有什么卵用
     def reset_attribute(self, buff, **kwargs):
+        if 'flag' in kwargs:
+            self.flag = kwargs['flag']
         if 'health' in kwargs:
             self.health_now = kwargs['health']
         if 'max_health' in kwargs:
