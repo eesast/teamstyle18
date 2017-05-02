@@ -610,9 +610,9 @@ class GameMain:
                 if (skill_cd >= origin_attribute['finance_lab']['skill_cd_2'] and my_information.flag != enemy_information.flag):
                     if (enemy_information.Get_unit_type() == 3 or enemy_information.Get_unit_type() == 2 or enemy_information.Get_unit_type() == 1):
                         if(enemy_information.Get_type_name() != 3 and enemy_information.Get_type_name() != 6 and enemy_information.Get_type_name() != 8):
-                            if  self.resource[my_information.flag]['remain_people'] + unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost'] < 100:
-                                self.resource[my_information.flag]['remain_people'] += unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost']
-                                self.resource[enemy_information.flag]['remain_people'] -= unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost']
+                            if  self.resource[my_information.flag]['remain_people'] >= unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost']:
+                                self.resource[my_information.flag]['remain_people'] -= unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost']
+                                self.resource[enemy_information.flag]['remain_people'] += unit.origin_attribute[name[enemy_information.Get_type_name()]]['people_cost']
                                 enemy_information.reset_attribute(self.buff, flag = my_information.flag)
                     my_information.reset_attribute(self.buff, skill_last_release_time2=self.turn_num)
 
