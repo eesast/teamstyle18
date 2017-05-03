@@ -115,7 +115,10 @@ class IOHandler(asyncore.dispatcher):
             elif type(data)is dict and 1 in data[0]:
                 byte_message=self.buff_serializer(data)
             elif type(data)is int:
-                byte_message = self.end_serializer(int(data)+300)
+                if int(data)<30000:
+                    byte_message = self.end_serializer(int(data)+300)
+                elif int(data)>=50000:
+                    byte_message = self.turn_serializer(int(data)-50000)
             else:
                 byte_message=self.resource_serializer(data)
             self.send(byte_message)
@@ -182,6 +185,10 @@ class IOHandler(asyncore.dispatcher):
                     args.append(value if type(value)!=str else value.encode('utf-8'))
         return struct.pack(header,*args)
 
+    def turn_serializer(self, turns):
+        header = "ii"
+        args = [66666,turns]
+        return struct.pack(header, *args)
     def end_serializer(self,winner):
         header = "i"
         args = [winner]

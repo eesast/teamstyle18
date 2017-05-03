@@ -37,6 +37,7 @@ file =[]
 while (game.is_end==False):
     changed_building=set()
     other_unit=[]
+    comm_server.send_to_player(game.turn_num+50000)
     if game.turn_num==0:
         communication.c_unit_num = len(game.units)
         comm_server.send_to_player(list(game.units.values()))
