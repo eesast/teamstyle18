@@ -18,6 +18,7 @@ extern bool flag_of_gameOver;
 extern bool recv_except = false;
 extern queue <Instr>  q_instruction;
 int changed_building_num = 0;
+int platform_turn=0;
 int other_unit_num = 0;
 BuildingHandle changed_building[200];
 
@@ -89,6 +90,9 @@ int recv_send_socket::recv_data(void)
 		Sleep(1);
 		switch (recvType)
 		{
+		case 66666:						
+            recv(sockClient, (char*)&platform_turn, sizeof(int), 0);
+			break;
 		case 302:						
 			cout << "game is tie!!" << endl;
 			runAI = false;
