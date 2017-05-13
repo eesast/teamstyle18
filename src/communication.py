@@ -180,7 +180,7 @@ class IOHandler(asyncore.dispatcher):
         args=[1]
         for name, value in sorted(object_dict.items(),key=lambda t:t[0]):
             for name, value in sorted(value.items(),key=lambda t:t[0]):
-                for name, value in sorted(value.items(),key=lambda t:t[0]):
+                for name, value in value.items():
                     header+="i" if type(value)==int else ((str(len(value))+"s") if type(value)==str else 'f')
                     args.append(value if type(value)!=str else value.encode('utf-8'))
         return struct.pack(header,*args)
